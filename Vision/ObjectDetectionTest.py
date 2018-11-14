@@ -1,11 +1,13 @@
 # import the necessary packages
 from collections import deque
 from imutils.video import VideoStream
-import numpy as np
 import argparse
 import cv2
 import imutils
 import time
+
+
+# TODO: Fix if needed due to no reference video being passed will always be webcam (speed on startup concerns)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -29,7 +31,15 @@ yellowUpper = (33, 255, 255)
 
 redLower = (0, 95, 84)
 redUpper = (18, 255, 255)
+
+# TODO: Removes Arguments from buffer Im pretty sure?
 pts = deque(maxlen=args["buffer"])
+
+
+
+
+# TODO: Fix Below code if VideoStream is better at video capture reference to VideoStream class here :https://github.com/jrosebr1/imutils/blob/master/imutils/video/videostream.py
+
 
 # if a video path was not supplied, grab the reference
 # to the webcam
@@ -48,6 +58,8 @@ while True:
     # grab the current frame
     frame = vs.read()
 
+# TODO: If above edited fix
+    
     # handle the frame from VideoCapture or VideoStream
     frame = frame[1] if args.get("video", False) else frame
 
@@ -58,6 +70,8 @@ while True:
 
     # resize the frame, blur it, and convert it to the HSV
     # color space
+    
+# TODO: maybe not resize or blur?
     frame = imutils.resize(frame, width=600)
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
@@ -81,6 +95,7 @@ while True:
     maskR = cv2.erode(maskR, None, iterations=2)
     maskR = cv2.dilate(maskR, None, iterations=2)
 
+# TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
     cntsB = cv2.findContours(maskB.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -98,7 +113,7 @@ while True:
     cntsR = cv2.findContours(maskR.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cntsR = cntsR[0] if imutils.is_cv2() else cntsR[1]
     centerR = None
-
+# TODO: Make dict for contour arrays and loop
     # only proceed if at least one contour was found
     if len(cntsB) > 0:
         # find the largest contour in the mask, then use
@@ -184,12 +199,11 @@ while True:
                 cv2.circle(frame, (int(xR), int(yR)), int(radiusR), (0, 0, 255), 2)
                 cv2.circle(frame, centerR, 5, (0, 0, 0), -1)
 
-    cv2.imshow("Yellow", maskY)
-    #cv2.imshow("Frame", frame)
-    key = cv2.waitKey(1) & 0xFF
+    #cv2.imshow("Yellow", maskY)
+    cv2.imshow("Frame", frame)
 
     # if the 'q' key is pressed, stop the loop
-    if key == ord("q"):
+    if (cv2.waitKey(1) & 0xFF) == ord("q"):
         break
 
 # if we are not using a video file, stop the camera video stream
