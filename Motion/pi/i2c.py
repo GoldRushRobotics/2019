@@ -1,30 +1,41 @@
 #RPi Pinouts
 
 #I2C Pins
-#GPIO2 -> SDA
-#GPIO3 -> SCL
+#PI       Arduino
+#GPIO2 -> A4
+#GPIO3 -> A5
+#Ground -> Ground
 
-#Import the Library Requreid
-import smbus2 as smbus
+#On Arduino
+
+
+#Import the Library Requreid 
+import smbus
 import time
 
-# for RPI version 1, use "bus = smbus.SMBus(0)"
 bus = smbus.SMBus(1)
 
 # This is the address we setup in the Arduino Program
 #Slave Address 1
 address = 0x04
 
-
 def writeNumber(value):
     bus.write_byte(address, value)
+    # bus.write_byte_data(address, 0, value)
+    return -1
 
+def sendMessage(msg):
+    data = msg
+    data_list = list(data)
 
-x = []
-for n in range(10):
-    x.appned[n]
+    for i in data_list:
+        #Sends to the Slaves 
+        writeNumber(int(ord(i)))
+        time.sleep(.1)
+    writeNumber(int(0x0A))
 
-print(x)
+#Send a message to Arduino
+sendMessage('a')
+
 
 #End of the Script
-
