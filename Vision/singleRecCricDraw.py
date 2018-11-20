@@ -7,6 +7,10 @@ import imutils
 import time
 
 # TODO: Fix if needed due to no reference video being passed will always be webcam (speed on startup concerns)
+NUM_SIDES = 10
+BLOCK_DIVISION = 100
+MIN_VALUE = 20
+
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -25,8 +29,8 @@ blueUpper = (134, 255, 255)
 greenLower = (35, 82, 0)
 greenUpper = (70, 255, 255)
 
-yellowLower = (7, 78, 0)
-yellowUpper = (33, 255, 255)
+yellowLower = (15, 41, 0)
+yellowUpper = (32, 255, 255)
 
 redLower = (0, 180, 0)
 redUpper = (4, 255, 255)
@@ -79,23 +83,38 @@ while True:
     # construct a mask for blue, green, yellow, and red, then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
+
     maskB = cv2.inRange(hsv, blueLower, blueUpper)
+    maskB = cv2.erode(maskB, None, iterations=1)
     maskB = cv2.erode(maskB, None, iterations=2)
-    maskB = cv2.dilate(maskB, None, iterations=2)
+    maskB = cv2.dilate(maskB, None, iterations=1)
+    maskB = cv2.dilate(maskB, None, iterations=1)
+    maskB = cv2.dilate(maskB, None, iterations=1)
 
     maskG = cv2.inRange(hsv, greenLower, greenUpper)
+    maskG = cv2.erode(maskG, None, iterations=1)
     maskG = cv2.erode(maskG, None, iterations=2)
-    maskG = cv2.dilate(maskG, None, iterations=2)
+    maskG = cv2.dilate(maskG, None, iterations=1)
+    maskG = cv2.dilate(maskG, None, iterations=1)
+    maskG = cv2.dilate(maskG, None, iterations=1)
 
     maskY = cv2.inRange(hsv, yellowLower, yellowUpper)
     maskY = cv2.erode(maskY, None, iterations=2)
+    maskY = cv2.erode(maskY, None, iterations=2)
+    maskY = cv2.dilate(maskY, None, iterations=2)
+    maskY = cv2.dilate(maskY, None, iterations=2)
     maskY = cv2.dilate(maskY, None, iterations=2)
 
     maskR = cv2.inRange(hsv, redLower, redUpper)
+    maskR = cv2.erode(maskR, None, iterations=1)
     maskR = cv2.erode(maskR, None, iterations=2)
-    maskR = cv2.dilate(maskR, None, iterations=2)
+    maskR = cv2.dilate(maskR, None, iterations=1)
+    maskR = cv2.dilate(maskR, None, iterations=1)
+    maskR = cv2.dilate(maskR, None, iterations=1)
 
     maskS = cv2.inRange(hsv, stLower, stUpper)
+    maskS = cv2.dilate(maskS, None, iterations=2)
+    maskS = cv2.dilate(maskS, None, iterations=2)
     maskS = cv2.dilate(maskS, None, iterations=2)
     maskS = cv2.erode(maskS, None, iterations=2)
 
@@ -132,27 +151,32 @@ while True:
             # centroid
             for cB in dictionary[key]:
                 approx = cv2.approxPolyDP(cB, 0.01 * cv2.arcLength(cB, True), True)
-                if len(approx) <= 10:
+                if len(approx) <= NUM_SIDES:
 
                     x, y, w, h = cv2.boundingRect(cB)
-                    if ((int(h/100) == int(w/100)) and w > 20 and h > 20):
+                    if ((int(h/BLOCK_DIVISION) == int(w/BLOCK_DIVISION)) and w > MIN_VALUE and h > MIN_VALUE):
                         cv2.rectangle(frame, (x, y), (x + w, y + h), colors[key], 2)
+                    #elif (h < w * 2):
+                     #   cv2.rectangle(frame, (x,y), (x + w, y + h), (255, 255, 255), 2)
                     elif (h > w * 2):
                         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 0), 2)
-                elif len(approx) > 10:
+                elif len(approx) > NUM_SIDES:
                     ((xB, yB), radiusB) = cv2.minEnclosingCircle(cB)
                     mB = cv2.moments(cB)
-                    centerB = (int(mB["m10"] / mB["m00"]), int(mB["m01"] / mB["m00"]))
+                    #centerB = (int(mB["m10"] / mB["m00"]), int(mB["m01"] / mB["m00"]))
 
                     # only proceed if the radius meets a minimum size
-                    if radiusB > 20:
+                    if radiusB > MIN_VALUE:
                         # draw the circle and centroid on the frame,
                         # then update the list of tracked points
                         cv2.circle(frame, (int(xB), int(yB)), int(radiusB), colors[key], 2)
                         cv2.circle(frame, centerB, 5, (0, 0, 0), -1)
 
     cv2.imshow("Frame", frame)
-    cv2.imshow("blue", maskS)
+    cv2.imshow("blue", maskB)
+    cv2.imshow("red", maskR)
+    cv2.imshow("yellow", maskY)
+    cv2.imshow("green", maskG)
     # if the 'q' key is pressed, stop the loop
     if (cv2.waitKey(1) & 0xFF) == ord("q"):
         break
