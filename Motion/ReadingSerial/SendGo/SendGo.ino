@@ -4,9 +4,9 @@ void setup() {
 }
 
 void loop() {
-  if (i == 0){
-    while(micros() < 2000);
-    Serial.write(1);
+  if (!i){
+    while (micros() < 2000);
+    Serial.write("1");
     i = 1;
   }
 }
