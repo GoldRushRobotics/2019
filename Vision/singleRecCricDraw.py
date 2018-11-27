@@ -117,6 +117,7 @@ while True:
     maskS = cv2.erode(maskS, None, iterations=2)
     maskS = cv2.dilate(maskS, None, iterations=2)
     maskS = cv2.dilate(maskS, None, iterations=2)
+    #maskS = cv2.dilate(maskS, None, iterations=2)
 
     # TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
     # find contours in the mask and initialize the current
