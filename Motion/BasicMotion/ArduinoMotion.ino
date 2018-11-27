@@ -74,6 +74,12 @@ void loop(void)
   move(currentMovement[vl], currentMovement[tn]); //Update the motor controllers with their new values
 }
 
+moveChar(int velocityChar, int turnChar){   //Takes in values from 0 to 255 for velocity and turn
+  int convertedVel = map(velocityChar, 0, 255, -255, 255);  //Stretch a char's range to int for the function
+  int convertedTurn = map(turnChar, 0, 255, -255, 255)
+  move(convertedVel, convertedturn);
+}
+
 void move(int velocity, int turn){  //Velocity is the forward/back speed. Right is positive turn. left is negative
   int leftVelocity;
   int rightVelocity;
