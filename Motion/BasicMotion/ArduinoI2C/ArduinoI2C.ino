@@ -8,7 +8,7 @@
 #include <Wire.h>
 
 //Slave Address for the Communication
-#define SLAVE_ADDRESS 0x04
+#define SLAVE_ADDRESS 0x08
 
 char number[50];
 int state = 0;
@@ -17,6 +17,7 @@ int state = 0;
 void setup() {
   // initialize i2c as slave
   Serial.begin(9600);
+  Serial.println("Startup");
   Wire.begin(SLAVE_ADDRESS);
   // define callbacks for i2c communication
   Wire.onReceive(receiveData);

@@ -22,7 +22,7 @@ void derement();          //Have the speed and turn slowly return to 0
 void setup(void)
 {
   Serial.begin(9600);     //##Change Code And Wiring To Serial1##
-  Wire.begin(8);                // join i2c bus with address #8
+  Wire.begin(0x08);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // register event
   Serial.println("setup");
   pinMode(rightSpd, OUTPUT);
@@ -119,7 +119,8 @@ void receiveEvent(int howMany) {
   Serial.println(x);         // print the integer
   currentMovement[vl] = data[1];
   currentMovement[tn] = data[2];
-  //moveChar(data[1], data[2]);
+  Serial.print(data[1]); Serial.print(" "); Serial.print(data[2]);
+  ///moveChar(data[1], data[2]);
   
 //  if(stopFlag != 0){
 //    Serial.println("STOP DAMNIT");
