@@ -6,12 +6,12 @@ bus = smbus.SMBus(1)
 slave_address = 0x08
 
 def writeArray(value):
-    bus.write_i2c_block_data(slave_address, 0, value)
+    msg = []
+    for x in value:
+        msg.append(int(ord(x)))
+    print(msg)
+    bus.write_i2c_block_data(slave_address, 0, msg)
+        #bus.write_byte_data(slave_address, 0, ord(x))
     return -1
 
-#while 1:
-writeArray([ord('w'),200,1])
-time.sleep(3)
-
-writeArray([ord('f'),0,127])
-#time.sleep(5)
+writeArray('Hello World, my name is Matt')
