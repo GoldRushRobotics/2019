@@ -30,18 +30,15 @@ void loop() {
 
 // callback for received data
 void receiveData(int byteCount) {
+  Serial.println("Received Message!");
   int i = 0;
   while (Wire.available()) {
     number[i] = Wire.read();
+    Serial.print(number[i]);
     i++;
   }
   number[i] = '\0';
-  Serial.print(number);
+  Serial.println();
 }  // end while
-
-// callback for sending data
-void sendData() {
-  Wire.write(number);
-}
 
 //End of the program
