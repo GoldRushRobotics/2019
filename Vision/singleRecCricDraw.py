@@ -21,14 +21,19 @@ args = vars(ap.parse_args())
 # list of tracked points
 blueLower = (96, 86, 0)
 blueUpper = (134, 255, 255)
+
 greenLower = (35, 82, 0)
 greenUpper = (70, 255, 255)
+
 yellowLower = (18, 64, 0)
 yellowUpper = (38, 255, 255)
+
 redLower = (0, 180, 0)
 redUpper = (4, 255, 255)
+
 stLower = (10, 60, 0)
 stUpper = (17, 255, 255)
+
 objects = []
 colors = {'cntsB': (255, 0, 0), 'cntsY': (0, 255, 255), 'cntsR': (0, 0, 255), 'cntsG': (0, 255, 0), 'cntsS': (0, 128, 255)}
 # TODO: Removes Arguments from buffer Im pretty sure?
@@ -69,44 +74,53 @@ while True:
     maskB = cv2.dilate(maskB, None, iterations=1)
     maskB = cv2.dilate(maskB, None, iterations=2)
     maskB = cv2.dilate(maskB, None, iterations=3)
+
     maskG = cv2.inRange(hsv, greenLower, greenUpper)
     maskG = cv2.erode(maskG, None, iterations=1)
     maskG = cv2.erode(maskG, None, iterations=2)
     maskG = cv2.dilate(maskG, None, iterations=1)
     maskG = cv2.dilate(maskG, None, iterations=1)
     maskG = cv2.dilate(maskG, None, iterations=1)
+
     maskY = cv2.inRange(hsv, yellowLower, yellowUpper)
     maskY = cv2.erode(maskY, None, iterations=2)
     maskY = cv2.erode(maskY, None, iterations=2)
     maskY = cv2.dilate(maskY, None, iterations=2)
     maskY = cv2.dilate(maskY, None, iterations=2)
     maskY = cv2.dilate(maskY, None, iterations=2)
+
     maskR = cv2.inRange(hsv, redLower, redUpper)
     maskR = cv2.erode(maskR, None, iterations=2)
     maskR = cv2.erode(maskR, None, iterations=2)
     maskR = cv2.dilate(maskR, None, iterations=1)
     maskR = cv2.dilate(maskR, None, iterations=2)
     maskR = cv2.dilate(maskR, None, iterations=2)
+
     maskS = cv2.inRange(hsv, stLower, stUpper)
     maskS = cv2.erode(maskS, None, iterations=2)
     maskS = cv2.erode(maskS, None, iterations=2)
     maskS = cv2.dilate(maskS, None, iterations=2)
     maskS = cv2.dilate(maskS, None, iterations=2)
-    #maskS = cv2.dilate(maskS, None, iterations=2)
+
     # TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
     dictionary = {}
     dictionary['cntsB'] = cv2.findContours(maskB.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dictionary['cntsB'] = dictionary['cntsB'][0] if imutils.is_cv2() else dictionary['cntsB'][1]
+
     dictionary['cntsG'] = cv2.findContours(maskG.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dictionary['cntsG'] = dictionary['cntsG'][0] if imutils.is_cv2() else dictionary['cntsG'][1]
+
     dictionary['cntsY'] = cv2.findContours(maskY.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dictionary['cntsY'] = dictionary['cntsY'][0] if imutils.is_cv2() else dictionary['cntsY'][1]
+
     dictionary['cntsR'] = cv2.findContours(maskR.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dictionary['cntsR'] = dictionary['cntsR'][0] if imutils.is_cv2() else dictionary['cntsR'][1]
+
     dictionary['cntsS'] = cv2.findContours(maskS.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     dictionary['cntsS'] = dictionary['cntsS'][0] if imutils.is_cv2() else dictionary['cntsS'][1]
+
     centerB = None
     # only proceed if at least one contour was found
     for key, cnts in dictionary.items():
@@ -139,21 +153,23 @@ while True:
                         cv2.circle(frame, (int(xB), int(yB)), int(radiusB), colors[key], 2)
                         objects.append((int(xB),int(yB),int(2*3.14*radiusB*radiusB)))
                         cv2.circle(frame, (int(xB),int(yB)), 5, (0, 0, 0), -1)
-    if len(objects) > 0 :
+
+    if len(objects) > 0:
         areaL = 0
-        for x in range (len(objects)):
-            x,y,area = objects.index(max(objectsL))
-            if area > areaL :
+        for x in range(len(objects)):
+            x, y, area = objects.index(max(objects))
+            if area > areaL:
                 xL = x
                 yL = y
+                areaL = area
         cv2.circle(frame, (xL, yL), 5, (0, 0, 0), -1)
 
     objects.clear()
     cv2.imshow("Frame", frame)
     #cv2.imshow("blue", maskB)
     #cv2.imshow("red", maskR)
-    cv2.imshow("yellow", maskY)
     #cv2.imshow("green", maskG)
+    cv2.imshow("yellow", maskY)
     cv2.imshow("space tell", maskS)
     # if the 'q' key is pressed, stop the loop
     if (cv2.waitKey(1) & 0xFF) == ord("q"):
