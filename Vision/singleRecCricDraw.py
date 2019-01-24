@@ -5,10 +5,12 @@ import argparse
 import cv2
 import imutils
 import time
+
 # TODO: Fix if needed due to no reference video being passed will always be webcam (speed on startup concerns)
 NUM_SIDES = 10
 BLOCK_DIVISION = 100
 MIN_VALUE = 30
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-v", "--video",
@@ -19,22 +21,23 @@ args = vars(ap.parse_args())
 # define the lower and upper boundaries of the "green"
 # ball in the HSV color space, then initialize the
 # list of tracked points
-blueLower = (96, 86, 0)
-blueUpper = (134, 255, 255)
+blueLower = (95, 109, 0)
+blueUpper = (117, 255, 255)
 
-greenLower = (35, 82, 0)
-greenUpper = (70, 255, 255)
+greenLower = (35, 115, 0)
+greenUpper = (86, 255, 255)
 
-yellowLower = (18, 64, 0)
-yellowUpper = (38, 255, 255)
+yellowLower = (13, 71, 0)
+yellowUpper = (26, 255, 255)
 
-redLower = (0, 180, 0)
-redUpper = (4, 255, 255)
+redLower = (0, 118, 0)
+redUpper = (6, 255, 255)
 
 stLower = (10, 60, 0)
 stUpper = (17, 255, 255)
 
 objects = []
+
 colors = {'cntsB': (255, 0, 0), 'cntsY': (0, 255, 255), 'cntsR': (0, 0, 255), 'cntsG': (0, 255, 0), 'cntsS': (0, 128, 255)}
 # TODO: Removes Arguments from buffer Im pretty sure?
 pts = deque(maxlen=args["buffer"])
@@ -43,28 +46,37 @@ pts = deque(maxlen=args["buffer"])
 # to the webcam
 if not args.get("video", False):
     vs = VideoStream(src=1).start()
+
 # otherwise, grab a reference to the video file
 else:
     vs = cv2.VideoCapture(args["video"])
+
 # allow the camera or video file to warm up
 time.sleep(2.0)
+
 # keep looping
 while True:
     # grab the current frame
     frame = vs.read()
+
     # TODO: If above edited fix
     # handle the frame from VideoCapture or VideoStream
     frame = frame[1] if args.get("video", False) else frame
+
     # if we are viewing a video and we did not grab a frame,
     # then we have reached the end of the video
     if frame is None:
         break
+
     # resize the frame, blur it, and convert it to the HSV
     # color space
     # TODO: maybe not resize or blur?
+
     frame = imutils.resize(frame, width=600)
+    frame1 = imutils.resize(frame, width=600)
     #blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
     # construct a mask for blue, green, yellow, and red, then perform
     # a series of dilations and erosions to remove any small
     # blobs left in the mask
@@ -156,21 +168,26 @@ while True:
 
     if len(objects) > 0:
         areaL = 0
+        xL = 0
+        yL = 0
         for x in range(len(objects)):
-            x, y, area = objects.index(max(objects))
+            x, y, area = objects[x]
             if area > areaL:
                 xL = x
                 yL = y
                 areaL = area
-        cv2.circle(frame, (xL, yL), 5, (0, 0, 0), -1)
+
+        if (xL > 0) and (yL > 0):
+            cv2.circle(frame1, (xL, yL), 10, (150, 150, 150), -1)
 
     objects.clear()
     cv2.imshow("Frame", frame)
+    cv2.imshow("Largest", frame1)
     #cv2.imshow("blue", maskB)
     #cv2.imshow("red", maskR)
     #cv2.imshow("green", maskG)
-    cv2.imshow("yellow", maskY)
-    cv2.imshow("space tell", maskS)
+    #cv2.imshow("yellow", maskY)
+    #cv2.imshow("space tell", maskS)
     # if the 'q' key is pressed, stop the loop
     if (cv2.waitKey(1) & 0xFF) == ord("q"):
         break
