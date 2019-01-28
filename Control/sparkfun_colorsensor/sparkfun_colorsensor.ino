@@ -1,31 +1,26 @@
 /*
-An Arduino code example for interfacing with the 
-HDJD-S822-QR999 Color Sensor.  Put an object in front of the
-sensor and look at the serial monitor to see the values the sensor
-is reading.  Scaling factors and gains may have to be adjusted
-for your application.
-
-by: Jordan McConnell
+First code by: Jordan McConnell
  SparkFun Electronics
  created on: 1/24/12
  license: OSHW 1.0, http://freedomdefined.org/OSHW
  
-Connect the gain pins of the sensor to digital pins 7 - 12 (or ground).
-Connect the led pin to digital 13.
-Connect Vr to analog 0, Vg to analog 1, and Vb to analog 2.
+Heavily modified by William Daniels
+
+To Dew:
+Fix shiny ball reading
+Get LEDS for ball reading
 */
 
-// Define pins
-const int ledpin = 13;
-/*const int GSR1 = 12;
-const int GSR0 = 11;
-const int GSG1 = 10;
-const int GSG0 = 9;
-const int GSB1 = 8;
-const int GSB0 = 7;*/
+#include <Servo.h>
 
-const int AVERAGE_AMOUNT=20;
-const int BASE_COLOR=500;
+Servo myservo;
+
+const int AVERAGE_AMOUNT=20; //number of times to average color
+const int BASE_COLOR=100;
+//add ball base color
+
+enum Color { RED, BLUE, GREEN, YELLOW, NONE };
+Color reading = NONE;
 
 int Raverage;
 int Gaverage;
@@ -41,30 +36,16 @@ int vGreen = 0;
 int vBlue = 0;
 int redValue, greenValue, blueValue = 0;
 
+  //GSX0 ground: Large drop
+  //GSX1 ground: Small drop
+  //GSX0 and GSX 1 ground: large gain
+  //Nothing needs to be tied to ground, though
 void setup() 
 {
   Serial.begin(9600);
 
-  pinMode(ledpin, OUTPUT);
-  //GSR1, GSR0, and GSB0 should be non-ground!!! XXGGGX
-  
-  /*pinMode(GSR1, OUTPUT);
-  pinMode(GSR0, OUTPUT);
-  pinMode(GSG1, OUTPUT);
-  pinMode(GSG0, OUTPUT);
-  pinMode(GSB1, OUTPUT);
-  pinMode(GSB0, OUTPUT);*/
-
-  // Turn on the LED
-  digitalWrite(ledpin, HIGH);
-  
-  // Set the gain of each sensor
-  /*digitalWrite(GSR1, LOW);
-  digitalWrite(GSR0, LOW);
-  digitalWrite(GSG1, LOW);
-  digitalWrite(GSG0, LOW);
-  digitalWrite(GSB1, LOW);
-  digitalWrite(GSB0, LOW);*/
+  myservo.attach(9);
+  myservo.write(0);
 }
 
 void loop() 
@@ -80,23 +61,22 @@ void loop()
   // selected based on this graph so that the gain of each 
   // color is closer to being equal
   vRed = analogRead(redpin) * 10;
-  vGreen = analogRead(greenpin) * 14;
-  vBlue = analogRead(bluepin) * 17;
-  redValue=((vRed*100)/16);
-  greenValue=((vGreen*130)/22);
-  blueValue=((vBlue*200)/25); 
+  vGreen = analogRead(greenpin) * 10; //14
+  vBlue = analogRead(bluepin) * 10;//17
 
-  // Print values to the serial monitor
+  if(vRed < 0) vRed *= -1;
+  if(vGreen < 0) vGreen *= -1;
+  if(vBlue < 0) vBlue *= -1;
+
+  redValue=vRed;
+  greenValue=vGreen/2;
+  blueValue=vBlue;
   
-  //Serial.print("Red: ");
-  //Serial.print(redValue, DEC);
-  //Serial.print("\t\tGreen: ");
-  //Serial.print(greenValue, DEC);
-  //Serial.print("\tBlue: ");
-  //Serial.println(blueValue, DEC);
-  if(Raverage < 0) Raverage *= -1;
-  if(Gaverage < 0) Gaverage *= -1;
-  if(Baverage < 0) Baverage *= -1;
+  
+  //old scale values
+  //redValue=((vRed*100)/2);
+  //greenValue=((vGreen*130)/4);
+  //blueValue=((vBlue*200)/8); 
   
   Raverage += redValue;
   Gaverage += greenValue;
@@ -108,14 +88,39 @@ void loop()
   Raverage /= AVERAGE_AMOUNT;
   Gaverage /= AVERAGE_AMOUNT;
   Baverage /= AVERAGE_AMOUNT;
+  /*Serial.print(Baverage);
+  Serial.print(",");
+  Serial.print(Raverage);
+  Serial.print(",");
+  Serial.println(Gaverage);*/
 
   if(Raverage > BASE_COLOR || Gaverage > BASE_COLOR || Baverage > BASE_COLOR) {
     if(Raverage > Gaverage && Raverage > Baverage) {
-      if(Gaverage > Baverage) Serial.println("YELLOW");
-      else Serial.println("RED");
+      if(abs(Baverage - Gaverage) >= 30) {
+        Serial.println("YELLOW");
+        if(reading != YELLOW) myservo.write(120);
+        reading=YELLOW;
+        }
+      else {
+        Serial.println("RED");
+        if(reading != RED) myservo.write(90);
+        reading=RED;
+        }
     }
-    else if(Gaverage > Raverage && Gaverage > Baverage) Serial.println("GREEN");
-    else Serial.println("BLUE");
-  }
-  else Serial.println("WHAT???");
+    else if(Gaverage > Raverage && Gaverage > Baverage) {
+      Serial.println("GREEN");
+      if(reading != GREEN) myservo.write(90);
+      reading=GREEN;
+      }
+    else {
+      Serial.println("BLUE");
+      if(reading != BLUE) myservo.write(60);
+      reading=BLUE;
+      }
+  }  
+      else {
+        Serial.println("WHAT???");
+        if(reading != NONE) myservo.write(90);
+        reading=NONE;
+        }
   }
