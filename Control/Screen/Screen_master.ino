@@ -1,7 +1,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_TFTLCD.h> // Hardware-specific library
 #include <SD.h>
-#include <SPI.h>
+//#include <SPI.h> Don't even need it lol
 //#include <Wire.h> //this line caused problems for compiling for the normal arduino
 
 //touchscreen bits
