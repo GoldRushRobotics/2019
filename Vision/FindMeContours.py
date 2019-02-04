@@ -30,7 +30,9 @@ def setup():
   else:
       vs = cv2.VideoCapture(args["video"])
 
-def death():
+  return vs, args
+
+def death(vs,args):
     # if we are not using a video file, stop the camera video stream
   if not args.get("video", False):
       vs.stop()
@@ -43,7 +45,7 @@ def death():
   cv2.destroyAllWindows()
 
 
-def loop():
+def loop(vs,args):
   while True:
     # grab the current frame
     frame = vs.read()
@@ -66,10 +68,6 @@ def loop():
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
     gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 
-    # construct a mask for blue, green, yellow, and red, then perform
-    # a series of dilations and erosions to remove any small
-    # blobs left in the mask
-
     # mask = cv2.inRange(gray, blueLower, blueUpper)
     # mask = cv2.erode(mask, None, iterations=2)
     # mask = cv2.dilate(mask, None, iterations=2)
@@ -90,6 +88,7 @@ def loop():
         # centroid
         cB = max(cnts, key=cv2.contourArea)
         approx = cv2.approxPolyDP(cB, 0.01 * cv2.arcLength(cB, True), True)
+
         if len(approx) < 10:
             x, y, w, h = cv2.boundingRect(cB)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
@@ -118,11 +117,11 @@ def loop():
 
 if __name__ == "__main__":
 
-  setup()
+  vs,args = setup()
 
   time.sleep(2.0)
 
-  loop()
+  loop(vs,args)
 
-  death()
+  death(vs,args)
 
