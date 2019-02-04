@@ -44,6 +44,13 @@ def death(vs,args):
   # close all windows
   cv2.destroyAllWindows()
 
+def is_contour_bad(c):
+  # approximate the contour
+  peri = cv2.arcLength(c, True)
+  approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+
+  # the contour is 'bad' if it is not a rectangle
+  return not len(approx) == 4
 
 def loop(vs,args):
   while True:
@@ -76,8 +83,7 @@ def loop(vs,args):
     # TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
-    cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+    cnts = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
     centerB = None
 
     # TODO: Make dict for contour arrays and loop
