@@ -1,0 +1,1 @@
+In an attempt to streamline the addition of code, I have split up the original code base into many files. All functions should be defined in their respective file and ONLY called in "main.py" or from a function called in "main.py". If there isn't an obvious ".py" file for what you are trying to code, add it.
