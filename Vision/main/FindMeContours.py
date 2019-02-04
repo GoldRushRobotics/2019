@@ -1,3 +1,13 @@
+'''
+
+This is currently some adapted code from our refrence library. The loop() function should probably be moved out into main.
+
+
+'''
+
+
+
+
 # import the necessary packages
 from collections import deque
 from imutils.video import VideoStream
@@ -116,18 +126,4 @@ def loop(vs,args):
     # if the 'q' key is pressed, stop the loop
     if (cv2.waitKey(1) & 0xFF) == ord("q"):
         break
-
-
-
-
-
-if __name__ == "__main__":
-
-  vs,args = setup()
-
-  time.sleep(2.0)
-
-  loop(vs,args)
-
-  death(vs,args)
 
