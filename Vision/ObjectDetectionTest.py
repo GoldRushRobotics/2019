@@ -59,7 +59,7 @@ while True:
     frame = vs.read()
 
 # TODO: If above edited fix
-    
+
     # handle the frame from VideoCapture or VideoStream
     frame = frame[1] if args.get("video", False) else frame
 
@@ -70,7 +70,7 @@ while True:
 
     # resize the frame, blur it, and convert it to the HSV
     # color space
-    
+
 # TODO: maybe not resize or blur?
     frame = imutils.resize(frame, width=600)
     blurred = cv2.GaussianBlur(frame, (11, 11), 0)
