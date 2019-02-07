@@ -148,7 +148,7 @@ def loop(vs,args):
 
         cv2.imshow("Frame", frame)
         cv2.imshow("Mask", gray)
-        cv2.imshow("Blue", maskb)
+        #cv2.imshow("Blue", maskb)
         # cv2.imshow("Green", maskg)
         # cv2.imshow("Red", maskr)
         # cv2.imshow("Yellow", masky)
