@@ -2,6 +2,7 @@
 
 This is where the code for communicating to the movement arduino will go.
 
+<<<<<<< HEAD
 WSAD + Z followed by an int 0 to 255
 
 W
@@ -30,3 +31,6 @@ def writeArray(value):
     return -1
 
 writeArray('Hello World, my name is Matt')
+=======
+'''
+>>>>>>> 5260c724b530e764e63d99257073e48c24688c8e
