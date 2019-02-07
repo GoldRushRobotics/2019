@@ -5,6 +5,7 @@ This is the main function. EVERYTHING should be called from here. This should be
 
 '''
 
+import time
 
 import movement as mov
 import FindMyHome as home
@@ -13,13 +14,13 @@ import FindMeContours as cont
 
 
 # This is crap, but can be used to test FindMeContours
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#   vs,args = cont.setup()
+  vs,args = cont.setup()
 
-#   cont.sleep(2.0)
+  time.sleep(2.0)
 
-#   cont.loop(vs,args)
+  cont.loop(vs,args)
 
-#   cont.death(vs,args)
+  cont.death(vs,args)
 
