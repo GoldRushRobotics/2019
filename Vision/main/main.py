@@ -16,6 +16,8 @@ import FindMeContours as cont
 # This is crap, but can be used to test FindMeContours
 if __name__ == "__main__":
 
+  homeColor = home.findHomeColor()
+
   vs,args = cont.setup()
 
   time.sleep(2.0)

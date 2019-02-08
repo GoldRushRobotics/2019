@@ -24,7 +24,7 @@ def is_contour_bad(c):
 	# approximate the contour
 	peri = cv2.arcLength(c, True)
 	approx = cv2.approxPolyDP(c, 0.02 * peri, True)
- 
+
 	# the contour is 'bad' if it is not a rectangle
 	return not len(approx) == 4
 =======
@@ -77,7 +77,6 @@ def death(vs,args):
 #   return not len(approx) == 4
 
 def loop(vs,args):
-<<<<<<< HEAD
   while True:
     # grab the current frame
     frame = vs.read()
@@ -108,36 +107,36 @@ def loop(vs,args):
     # TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
     # find contours in the mask and initialize the current
     # (x, y) center of the ball
-    
+
     #RETR_EXTERNAL is another option to RETR_TREE
     cnts = cv2.findContours(mask.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[0]
     #cnts = imutils.grab_contours(cnts)
     ctrs = numpy.array(cnts).reshape((-1,1,2)).astype(numpy.int32)
     maskinverse = numpy.ones(frame.shape[:2], dtype="uint8") * 255
- 
+
     # loop over the contours
     for c in ctrs:
     	# if the contour is bad, draw it on the mask
     	if is_contour_bad(c):
     		cv2.drawContours(maskinverse, [c], -1, 0, -1)
- 
+
     # remove the contours from the image and show the resulting images
     mask = cv2.bitwise_and(mask, mask, mask=maskinverse)
 
 
 #    ctrs = numpy.array(cnts).reshape((-1,1,2)).astype(numpy.int32)
 #    img = cv2.drawContours(mask, ctrs, -1, (0,255,0), 3)
-    
-    
+
+
     ################################################################################
 #    #watershed
-#    
+#
 #    # noise removal
 #    kernel = numpy.ones((3,3),numpy.uint8)
 #    opening = cv2.morphologyEx(gray,cv2.MORPH_OPEN,kernel, iterations = 2)
 #    # sure background area
 #    sure_bg = cv2.dilate(opening,kernel,iterations=3)
-#    
+#
 #    dist_transform = cv2.distanceTransform(opening,cv2.DIST_L2,5)
 #    ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
 #    # Finding unknown region
@@ -151,20 +150,20 @@ def loop(vs,args):
 #    markers[unknown==255] = 0
 #    markers = cv2.watershed(frame,markers)
 #    frame[markers == -1] = [255,0,0]
-    
+
     ##############################################################################
 #    #Kmeans segmentation
 #    #not working
-#    
+#
 #
 #    # convert to np.float32
 #    Z = numpy.float32(frame)
-#    
+#
 #    # define criteria, number of clusters(K) and apply kmeans()
 #    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
 #    K = 8
 #    ret,label,center=cv2.kmeans(Z,K,None,criteria,10,cv2.KMEANS_RANDOM_CENTERS)
-#    
+#
 #    # Now convert back into uint8, and make original image
 #    center = numpy.uint8(center)
 #    res = center[label.flatten()]
@@ -207,7 +206,6 @@ def loop(vs,args):
     # if the 'q' key is pressed, stop the loop
     if (cv2.waitKey(1) & 0xFF) == ord("q"):
         break
-=======
     bluelower = (96, 129, 149)
     blueupper = (116, 255, 255)
 
@@ -302,5 +300,4 @@ def loop(vs,args):
         # if the 'q' key is pressed, stop the loop
         if (cv2.waitKey(1) & 0xFF) == ord("q"):
             break
->>>>>>> 5260c724b530e764e63d99257073e48c24688c8e
 
