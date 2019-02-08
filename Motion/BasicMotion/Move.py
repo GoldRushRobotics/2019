@@ -1,23 +1,26 @@
 import time
 import serial
 
-ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
 
 ser.isOpen()
 
-ser.write("w20".encode())
+ser.write("w50".encode())
 print('forward')
-print('w20'.encode())
 time.sleep(2)
-ser.write('a30'.encode())
+
+ser.write('a70'.encode())
 print('left')
 time.sleep(2)
-ser.write('s20'.encode())
+
+ser.write('s50'.encode())
 print('back')
 time.sleep(2)
-ser.write('d30'.encode())
+
+ser.write('d70'.encode())
 print('right')
 time.sleep(2)
+
 ser.write('z0'.encode())
 print('stop')
 
