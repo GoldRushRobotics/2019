@@ -2,11 +2,10 @@
 
 This is where the code for communicating to the movement arduino will go.
 
-<<<<<<< HEAD
 WSAD + Z followed by an int 0 to 255
 
-W
-A
+W255 = FASTEST FORWARD PLZ
+A255 = FASTEST LEFT PLZ (Turn on a dime)
 S
 D
 Z0 = STOP
@@ -14,7 +13,7 @@ Z0 = STOP
 '''
 
 
-import smbus as smbus
+import smbus2 as smbus
 import time
 
 bus = smbus.SMBus(1)
@@ -31,6 +30,3 @@ def writeArray(value):
     return -1
 
 writeArray('Hello World, my name is Matt')
-=======
-'''
->>>>>>> 5260c724b530e764e63d99257073e48c24688c8e
