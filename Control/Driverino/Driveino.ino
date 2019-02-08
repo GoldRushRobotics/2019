@@ -46,7 +46,6 @@ void setup() {
   
 }
 
-// the loop function runs over and over again forever
 void loop() {
   if(debug){
     writeErrors(digitalRead(DLFF1), digitalRead(DLFF2), "Driver Left");
