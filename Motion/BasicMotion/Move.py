@@ -1,17 +1,27 @@
-import smbus as smbus
 import time
+import serial
 
-bus = smbus.SMBus(1)
+ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
 
-slave_address = 0x08
+ser.isOpen()
 
-def writeArray(value):
-    msg = []
-    for x in value:
-        msg.append(int(ord(x)))
-    print(msg)
-    bus.write_i2c_block_data(slave_address, 0, msg)
-        #bus.write_byte_data(slave_address, 0, ord(x))
-    return -1
+ser.write("w50".encode())
+print('forward')
+time.sleep(2)
 
-writeArray('Hello World, my name is Matt')
+ser.write('a70'.encode())
+print('left')
+time.sleep(2)
+
+ser.write('s50'.encode())
+print('back')
+time.sleep(2)
+
+ser.write('d70'.encode())
+print('right')
+time.sleep(2)
+
+ser.write('z0'.encode())
+print('stop')
+
+ser.close()
