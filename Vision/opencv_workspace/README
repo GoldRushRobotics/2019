@@ -1,4 +1,4 @@
-The dirs that look like {ball,cube,tels}Cas{5...32} correspond to trained cascades for an object with 5 to 32 iterations. Use identify.py to use these cascades to find objects in an image.
+The dirs that look like (ball|cube|tels)Cas(5 ... 32) correspond to trained cascades for an object with 5 to 32 iterations. Use identify.py to use these cascades to find objects in an image.
 
 The training dir contains a whole bunch of scripts to take raw videos/images and create vectors to train a cascade on an HPC server. The file structure has changed a bit, so some tweaking might be needed to run.
 
