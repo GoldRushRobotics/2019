@@ -6,8 +6,8 @@ import time
 #eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
 
 #this is the cascade we just made. Call what you want
-cube_cascade = cv2.CascadeClassifier('cubePos16/cascade.xml')
-ball_cascade = cv2.CascadeClassifier('ballPos16/cascade.xml')
+cube_cascade = cv2.CascadeClassifier('cube Cas16/cascade.xml')
+ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
 
 cap = cv2.VideoCapture('training/IMG_0024.MOV')
 cap.set(cv2.CAP_PROP_FPS, 240)
