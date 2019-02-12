@@ -2,10 +2,10 @@
 // R4: Jan 23, 2019: Smooth control         -Greg Lewis
 // R5L Feb 2, 2019: WASD and Int implementation over serial   -Matt Wells
 
-#define rightSpd 2  // PWM Magnitude
-#define rightDir 3  // Digital direction
-#define leftSpd 4
-#define leftDir 5
+#define rightSpd 3  // PWM Magnitude
+#define rightDir 2  // Digital direction
+#define leftSpd 5
+#define leftDir 4
 #define feedGND 6
 #define feedHOT 7
 
@@ -47,14 +47,14 @@ void loop(void){
 
   val = Serial.parseInt();
 
-  //Serial.println(mode);
-  //Serial.println(val);
+  Serial.println(mode);
+  Serial.println(val);
   
   switch(mode){
     case 'w': speed = val; direction = 0; break; //straight
-    case 'a': direction = -val; break; //left
+    case 'a': direction = -val; speed = abs(speed); break; //left
     case 's': speed = -val;  direction = 0; break; //backwards
-    case 'd': direction = val; break; //right
+    case 'd': direction = val; speed = abs(speed); break; //right
     case 'z': speed = 0; direction = 0; break; //stop
   }
   
@@ -94,23 +94,23 @@ void move(int velocity, int turn){  //Velocity is the forward/back speed. Right 
   
   if(leftVelocity > 0){   
     //Serial.print("left Positive");
-    digitalWrite(leftDir, HIGH); analogWrite(leftSpd, leftVelocity); //Left forwards
+    digitalWrite(leftDir, LOW); analogWrite(leftSpd, leftVelocity); //Left forwards
   }
   else if(leftVelocity < 0){
-    digitalWrite(leftDir, LOW); analogWrite(leftSpd, leftVelocity * -1); //Left backwards
+    digitalWrite(leftDir, HIGH); analogWrite(leftSpd, leftVelocity * -1); //Left backwards
   }
   else{
-    digitalWrite(leftDir, LOW); analogWrite(leftSpd, 0); //Left stop
+    digitalWrite(leftDir, HIGH); analogWrite(leftSpd, 0); //Left stop
   }
   
   if(rightVelocity > 0){
     //Serial.print("Right Positive");
-    digitalWrite(rightDir, LOW); analogWrite(rightSpd, rightVelocity); //Right forwards
+    digitalWrite(rightDir, HIGH); analogWrite(rightSpd, rightVelocity); //Right forwards
   }
   else if(rightVelocity < 0){
-    digitalWrite(rightDir, HIGH); analogWrite(rightSpd, rightVelocity * -1); //Right backwards
+    digitalWrite(rightDir, LOW); analogWrite(rightSpd, rightVelocity * -1); //Right backwards
   }
   else{
-    digitalWrite(rightDir, LOW); analogWrite(rightSpd, 0); //Right stop
+    digitalWrite(rightDir, HIGH); analogWrite(rightSpd, 0); //Right stop
   }
 }
