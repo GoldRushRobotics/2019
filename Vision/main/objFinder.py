@@ -7,6 +7,9 @@ class foodFinder:
     def __init__(self,vs):
 
         self.vs = vs
+        self.width = int(vs.get(3))
+        self.height = int(vs.get(4))
+
         self.cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
         #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
