@@ -6,24 +6,24 @@ This is the main function. EVERYTHING should be called from here. This should be
 '''
 
 import time
-
-import movement as mov
+import cv2
+# import movement as mov
 import FindMyHome as home
-import FindMeContours as cont
+# import FindMeContours as cont
+from objFinder import foodFinder
 
-
-
-# This is crap, but can be used to test FindMeContours
 if __name__ == "__main__":
 
-  homeColor = home.findHomeColor()
+  # real = cv2.VideoCapture(0)
+  trails = cv2.VideoCapture("all_Balls.JPG")
+  finder = foodFinder(trails)
 
-  vs,args = cont.setup()
+  x,y = finder.findFood()
 
-  time.sleep(2.0)
+  print(x,y)
 
-  cont.loop(vs,args)
+  #homeColor = home.findHomeColor()
 
-  cont.death(vs,args)
+
 
 
