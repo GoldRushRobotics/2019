@@ -1,3 +1,5 @@
 .DS_Store
 */__pycache__/*
 
+Vision/main/.DS_Store
+Vision/main/__pycache__/
