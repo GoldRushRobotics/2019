@@ -9,7 +9,7 @@ import time
 cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
 ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 # cap.set(cv2.CAP_PROP_FPS, 240)
 
 # prev = 0
