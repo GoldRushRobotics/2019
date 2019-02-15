@@ -29,6 +29,10 @@ slave_address = 0x08
 #         #bus.write_byte_data(slave_address, 0, ord(x))
 #     return -1
 
+def whereToGo(x,y,xmax,ymax):
+  return 0
+
+
 def chasefood(x, y):
     speed = 0
     if(y < 100):

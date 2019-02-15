@@ -27,11 +27,9 @@ def is_contour_bad(c):
 
 	# the contour is 'bad' if it is not a rectangle
 	return not len(approx) == 4
-=======
 
 
 # TODO: Fix if needed due to no reference video being passed will always be webcam (speed on startup concerns)
->>>>>>> 5260c724b530e764e63d99257073e48c24688c8e
 
 def setup():
   # construct the argument parse and parse the arguments
