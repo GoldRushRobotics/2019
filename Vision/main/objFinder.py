@@ -13,7 +13,6 @@ class foodFinder:
         self.cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
         #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
-        self.types = [('x',int),('y',int),('w',int),('h',int)]
     def findFood(self):
 
         ret, img = self.vs.read()

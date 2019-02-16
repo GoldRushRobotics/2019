@@ -7,22 +7,32 @@ This is the main function. EVERYTHING should be called from here. This should be
 
 import time
 import cv2
-import movement as mov
+from movement import mov
 import FindMyHome as home
 # import FindMeContours as cont
 from objFinder import foodFinder
 
 if __name__ == "__main__":
 
-  # real = cv2.VideoCapture(0)
-  trials = cv2.VideoCapture("all_Balls.JPG")
-  finder = foodFinder(trials)
+    # real = cv2.VideoCapture(0)
+    trials = cv2.VideoCapture(1)
 
-  x,y = finder.findFood()
+    finder = foodFinder(trials)
 
-  codes = mov.whereToGo(x,y,finder.width,finder.height)
+    mov = mov(finder.width, finder.height)
 
-  #homeColor = home.findHomeColor()
+    while 1:
+
+        x,y = finder.findFood()
+
+        mov.whereToGo(x,y)
+
+        print(mov.values)
+
+        #for i in codes:
+            #mov.writeArray(i)
+
+    #homeColor = home.findHomeColor()
 
 
 
