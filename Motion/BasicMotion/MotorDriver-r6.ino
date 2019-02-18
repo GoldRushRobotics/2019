@@ -9,10 +9,10 @@
                 //   Major restructuring of the move() function to be more efficient and more robust. Accounts for edge cases
                 //   Comprehensive documentation of move()
 
-#define rightSpd 2  // PWM Magnitude
-#define rightDir 3  // Digital direction
-#define leftSpd 4
-#define leftDir 5
+#define rightSpd 3  // PWM Magnitude
+#define rightDir 2  // Digital direction
+#define leftSpd 5
+#define leftDir 4
 #define feedGND 6
 #define feedHOT 7
 
@@ -75,6 +75,12 @@ void loop(void){
   
 }
 
+int sign(int val){
+  if (val > 0) return 1;
+  else if (val < 0) return -1;
+  else return 0;
+}
+
 void move(int velocity, int turn){  
   // This function translates the desired speed and direction into wheel motion
   // It takes the desired direction and velocity and translates it for the motor driver hardware
@@ -96,7 +102,7 @@ void move(int velocity, int turn){
 // This section adjusts the individual wheel velocities to account for turning
   if(turn > 0){                   //If we are turning right
     leftVelocity += turnChange;   //Adjust speed of left wheel so it turns right
-    rightVelocity -= turnChange;} //Also adjust the speed of the right wheel as well for more precise turning
+    rightVelocity -= turnChange; //Also adjust the speed of the right wheel as well for more precise turning
   }
   else if(turn < 0){              // Same on the other wheel
     
@@ -106,7 +112,7 @@ void move(int velocity, int turn){
 
 
     // This section limits the wheel values to the desired range
-    if(rightVelocity > 255 || (rightVelocity < -255){
+    if((rightVelocity > 255) || (rightVelocity < -255)){
       rightVelocity = 255 * sign(rightVelocity);
     }
     if(leftVelocity > 255 || leftVelocity < -255){
