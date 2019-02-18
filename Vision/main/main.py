@@ -22,12 +22,14 @@ if __name__ == "__main__":
     mov = mov(finder.width, finder.height)
 
     while 1:
+        try:
+            x,y = finder.findFood()
 
-        x,y = finder.findFood()
+            mov.whereToGo(x,y)
 
-        mov.whereToGo(x,y)
-
-        print(mov.values)
+            print(mov.values)
+        except:
+            print("blah")
 
         #for i in codes:
             #mov.writeArray(i)
