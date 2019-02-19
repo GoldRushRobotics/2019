@@ -15,7 +15,7 @@ from objFinder import foodFinder
 if __name__ == "__main__":
 
     # real = cv2.VideoCapture(0)
-    trials = cv2.VideoCapture(1)
+    trials = cv2.VideoCapture(0)
 
     finder = foodFinder(trials)
 
