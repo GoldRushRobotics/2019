@@ -12,22 +12,14 @@ Z0 = STOP
 
 '''
 
-
-#import smbus2
 import time
-
-
-# port ttyS0 is the first serial port over wire and not cable. Will change
-
-
+import serial
 
 
 class mov:
 
     def __init__(self, w, h):
-        #self.ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout=0)
-        #self.bus = smbus2.SMBus(1)
-        self.slave_address = 0x08
+        #self.ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
@@ -45,12 +37,13 @@ class mov:
         return int(rightMin + (valueScaled * rightSpan))
 
     def writeArray(self, value):
-        msg = []
-        for x in value:
-            msg.append(int(ord(x)))
-        print(msg)
-        self.bus.write_i2c_block_data(self.slave_address, 0, msg)
-            #bus.write_byte_data(slave_address, 0, ord(x))
+        #self.ser.isOpen()
+        #self.ser.write(value.encode())
+
+    def gotToWhere(self):
+        for i in self.values:
+            self.writeArray(i)
+            time.sleep(.001)
 
     def whereToGo(self, x, y):
 
@@ -69,4 +62,7 @@ class mov:
         ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,255))
 
         self.values = [ydirec,xdirec]
+
+    def __del__(self):
+        self.ser.close()
 

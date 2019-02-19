@@ -27,6 +27,8 @@ if __name__ == "__main__":
 
             mov.whereToGo(x,y)
 
+            mov.goToWhere()
+
             print(mov.values)
         except:
             print("blah")
