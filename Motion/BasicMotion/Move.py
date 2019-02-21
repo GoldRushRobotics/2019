@@ -1,9 +1,11 @@
 import time
 import serial
 
-ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
+ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
 ser.isOpen()
+
+time.sleep(2)
 
 ser.write("w50".encode())
 print('forward')
