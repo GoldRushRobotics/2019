@@ -19,7 +19,7 @@ import serial
 class mov:
 
     def __init__(self, w, h):
-        self.ser = None #serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+        self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
@@ -40,7 +40,7 @@ class mov:
         self.ser.isOpen()
         self.ser.write(value.encode())
 
-    def gotToWhere(self):
+    def goToWhere(self):
         for i in self.values:
              self.writeArray(i)
              time.sleep(.001)
@@ -48,7 +48,7 @@ class mov:
     def whereToGo(self, x, y):
 
         if x != -1 & y != -1:
-            #x direction and speed
+            #x direction
             xdirec = 'a0'
             if (x <= self.halfW):
                 m = self.mapVal(x,0,self.halfW,255,0)
@@ -58,15 +58,17 @@ class mov:
                 m = self.mapVal(x,self.halfW,self.w,0,255)
                 xdirec = 'd{0}'.format(m)
 
-            #y direction and speed
+            #y speed
             ydirec = 'w0'
-            ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,255))
+            ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,128))
 
             self.values = [ydirec,xdirec]
         else:
             self.values = ['w0','a0']
 
-
     def __del__(self):
+        self.writeArray('a0')
+        self.writeArray('w0')
         self.ser.close()
+	    
 

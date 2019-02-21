@@ -21,7 +21,8 @@ class foodFinder:
         ret, img = self.vs.read()
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
+        
+        # cv2.imshow("fram",gray)
         # add this
         # image, reject levels level weights.
         balls = self.ball_cascade.detectMultiScale(gray, 2, 5)
@@ -40,10 +41,10 @@ class foodFinder:
         # objs.sort(key=lambda, x: x[3])
 
         objs = sorted(objs, key=lambda x: x[3])
-
         # Biggest first
 
         objs.reverse()
+        print(objs)
         try:
             return objs[0][0],objs[0][1]
         except:
