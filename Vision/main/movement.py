@@ -13,7 +13,7 @@ Z0 = STOP
 '''
 
 import time
-import serial
+#import serial
 
 
 class mov:
@@ -36,32 +36,36 @@ class mov:
         # Convert the 0-1 range into a value in the right range.
         return int(rightMin + (valueScaled * rightSpan))
 
-    def writeArray(self, value):
+    #def writeArray(self, value):
         #self.ser.isOpen()
         #self.ser.write(value.encode())
 
-    def gotToWhere(self):
-        for i in self.values:
-            self.writeArray(i)
-            time.sleep(.001)
+    # def gotToWhere(self):
+    #     for i in self.values:
+    #         self.writeArray(i)
+    #         time.sleep(.001)
 
     def whereToGo(self, x, y):
 
-        #x direction and speed
-        xdirec = 'a0'
-        if (x <= self.halfW):
-            m = self.mapVal(x,0,self.halfW,255,0)
-            xdirec = 'a{0}'.format(m)
+        if x != -1 & y != -1:
+            #x direction and speed
+            xdirec = 'a0'
+            if (x <= self.halfW):
+                m = self.mapVal(x,0,self.halfW,255,0)
+                xdirec = 'a{0}'.format(m)
 
+            else:
+                m = self.mapVal(x,self.halfW,self.w,0,255)
+                xdirec = 'd{0}'.format(m)
+
+            #y direction and speed
+            ydirec = 'w0'
+            ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,255))
+
+            self.values = [ydirec,xdirec]
         else:
-            m = self.mapVal(x,self.halfW,self.w,0,255)
-            xdirec = 'd{0}'.format(m)
+            self.values = ['w0','a0']
 
-        #y direction and speed
-        ydirec = 'w0'
-        ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,255))
-
-        self.values = [ydirec,xdirec]
 
     def __del__(self):
         self.ser.close()
