@@ -66,9 +66,4 @@ class mov:
         else:
             self.values = ['w0','a0']
 
-    def __del__(self):
-        self.writeArray('a0')
-        self.writeArray('w0')
-        self.ser.close()
-	    
 

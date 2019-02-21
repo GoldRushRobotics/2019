@@ -21,14 +21,20 @@ if __name__ == "__main__":
 
     mov = mov(finder.width, finder.height)
 
-    while 1:
-            x,y = finder.findFood()
+    try:
+        while 1:
+                x,y = finder.findFood()
 
-            mov.whereToGo(x,y)
+                mov.whereToGo(x,y)
 
-            mov.goToWhere()
+                mov.goToWhere()
 
-            print(mov.values)
+                print(mov.values)
+    except KeyboardInterrupt:
+        mov.writeArray('a0')
+        mov.writeArray('w0')
+        mov.ser.close()
+        cv2.destroyAllWindows()
 
         #for i in codes:
             #mov.writeArray(i)
