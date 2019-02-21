@@ -15,23 +15,20 @@ from objFinder import foodFinder
 if __name__ == "__main__":
 
     # real = cv2.VideoCapture(0)
-    trials = cv2.VideoCapture(0)
+    trials = cv2.VideoCapture(1)
 
     finder = foodFinder(trials)
 
     mov = mov(finder.width, finder.height)
 
     while 1:
-        try:
             x,y = finder.findFood()
 
             mov.whereToGo(x,y)
 
-            mov.goToWhere()
+            #mov.goToWhere()
 
             print(mov.values)
-        except:
-            print("blah")
 
         #for i in codes:
             #mov.writeArray(i)

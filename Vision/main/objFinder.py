@@ -12,6 +12,8 @@ class foodFinder:
 
         self.cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
+
+        time.sleep(2)
         #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
 
     def findFood(self):
@@ -42,8 +44,10 @@ class foodFinder:
         # Biggest first
 
         objs.reverse()
-
-        return objs[0][0],objs[0][1]
+        try:
+            return objs[0][0],objs[0][1]
+        except:
+            return -1,-1
 
 
 
