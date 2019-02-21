@@ -9,7 +9,7 @@
                 //   Major restructuring of the move() function to be more efficient and more robust. Accounts for edge cases
                 //   Comprehensive documentation of move()
 
-#define rightSpd 3  // PWM Magnitude
+#define rightSpd 6  // PWM Magnitude
 #define rightDir 2  // Digital direction
 #define leftSpd 5
 #define leftDir 4
@@ -50,7 +50,7 @@ void loop(void){
 
   do {
     mode = Serial.read();
-  } while(mode != ('w' || 'f') && mode != ('a' || 'l') && mode != ('s' || 'b') && mode != ('d' || 'r') && mode != 'z');
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z');
 
   while(Serial.available() <= 0);
 
