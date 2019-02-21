@@ -19,7 +19,7 @@ import serial
 class mov:
 
     def __init__(self, w, h):
-        self.ser = None #serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
+        self.ser = None #serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
