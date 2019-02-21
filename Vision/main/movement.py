@@ -13,13 +13,13 @@ Z0 = STOP
 '''
 
 import time
-#import serial
+import serial
 
 
 class mov:
 
     def __init__(self, w, h):
-        #self.ser = serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
+        self.ser = None #serial.Serial(port='/dev/ttyS0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
@@ -36,14 +36,14 @@ class mov:
         # Convert the 0-1 range into a value in the right range.
         return int(rightMin + (valueScaled * rightSpan))
 
-    #def writeArray(self, value):
-        #self.ser.isOpen()
-        #self.ser.write(value.encode())
+    def writeArray(self, value):
+        self.ser.isOpen()
+        self.ser.write(value.encode())
 
-    # def gotToWhere(self):
-    #     for i in self.values:
-    #         self.writeArray(i)
-    #         time.sleep(.001)
+    def gotToWhere(self):
+        for i in self.values:
+             self.writeArray(i)
+             time.sleep(.001)
 
     def whereToGo(self, x, y):
 
