@@ -1,16 +1,20 @@
 #include <Servo.h>
 
-#define LEFT_SERVO_PIN A1
-#define RIGHT_SERVO_PIN A2
+#define LEFT_SERVO_PIN 9
+#define RIGHT_SERVO_PIN 10
 
-const int DUMP_VAL = 100;
-const int HOME_VAL = 0;
+const int DUMP_VAL_LEFT = 100;
+const int HOME_VAL_LEFT = 10;
+const int DUMP_VAL_RIGHT = 140;
+const int HOME_VAL_RIGHT = 50;
 
 Servo left, right;
 
 void setup() {
   left.attach(LEFT_SERVO_PIN);
+  left.write(HOME_VAL_LEFT);
   right.attach(RIGHT_SERVO_PIN);
+  right.write(HOME_VAL_RIGHT);
 
 }
 
@@ -33,14 +37,14 @@ void loop() {
 void dump(char side){
   switch(side){
     case 'l':
-      left.write(DUMP_VAL);
+      left.write(DUMP_VAL_LEFT);
       delay(2500);
-      left.write(HOME_VAL);
+      left.write(HOME_VAL_LEFT);
       break;
     case 'r':
-      right.write(DUMP_VAL);
+      right.write(DUMP_VAL_RIGHT);
       delay(2500);
-      right.write(HOME_VAL);
+      right.write(HOME_VAL_RIGHT);
       break;
   }
 }
