@@ -21,12 +21,12 @@ class foodFinder:
         ret, img = self.vs.read()
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
+
         # cv2.imshow("fram",gray)
         # add this
         # image, reject levels level weights.
-        balls = self.ball_cascade.detectMultiScale(gray, 2, 5)
-        cubes = self.cube_cascade.detectMultiScale(gray, 2, 5)
+        balls = self.ball_cascade.detectMultiScale(gray, 2.5, 5)
+        cubes = self.cube_cascade.detectMultiScale(gray, 2.5, 5)
 
 
         if len(balls) == 0:
@@ -50,22 +50,3 @@ class foodFinder:
         except:
             return -1,-1
 
-
-
-
-
-
-        # add this
-        # for (x,y,w,h) in cubes:
-        #     center = (x + w//2, y + h//2)
-        #     cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
-        #     print("Cube at x={0}, y={1}".format(x,y))
-
-        # for (x,y,w,h) in balls:
-        #     center = (x + w//2, y + h//2)
-        #     cv2.circle(img, center, int(h/2), (0,255,255),2)
-        #     #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-        #     print("Ball at x={0}, y={1}".format(x,y))
-
-
-        #cv2.imshow('img',img)
