@@ -4,11 +4,12 @@ import numpy as np
 import os
 import time
 import re
+import sys
 # from imutils.video import VideoCapture
 #vs = cv2.VideoCapture('training/IMG_0024.MOV')
 
-outPath = 'cubePos/'
-inPath = 'cubeColor/'
+outPath = sys.argv[2]
+inPath = sys.argv[1]
 #time.sleep(2)
 
 
@@ -78,7 +79,7 @@ def fromImgs(inPath,outPath):
     # gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.resize(gray, (64, 64))
     #cv2.imshow('preview',gray)
-    cv2.imwrite(outPath+str(num)+'.jpg',gray)
+    cv2.imwrite(outPath+str(num)+'.png',gray)
     num += 1
     # Display the resulting frame
 

@@ -14,10 +14,13 @@ from objFinder import foodFinder
 
 if __name__ == "__main__":
 
+
     # real = cv2.VideoCapture(0)
     trials = cv2.VideoCapture(0)
 
-    finder = foodFinder(trials)
+    food = foodFinder(trials)
+    tels = telsFinder(trials)
+    pill = pillFinder(trials)
 
     mov = mov(finder.width, finder.height)
 

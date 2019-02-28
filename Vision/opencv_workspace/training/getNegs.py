@@ -3,8 +3,9 @@ import cv2
 import numpy as np
 import os
 import subprocess
+import sys
 
-path = 'cubePos'
+path = sys.argv[1]
 
 def store_raw_images():
     neg_images_link = 'http://www.image-net.org/api/text/imagenet.synset.geturls?wnid=n00523513'
