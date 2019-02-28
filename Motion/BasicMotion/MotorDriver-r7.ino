@@ -13,8 +13,9 @@
 #define rightDir 2  // Digital direction
 #define leftSpd 5
 #define leftDir 4
-#define feedGND 6
-#define feedHOT 7
+#define feedGND 6  //FIXME
+#define feedHOT 7  //FIXME
+#define sendHomePin //FIXME
 
 int speed = 0;     //0 = velocity, 1 = turn
 int direction = 0;
@@ -50,7 +51,7 @@ void loop(void){
 
   do {
     mode = Serial.read();
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z');
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h');
 
   while(Serial.available() <= 0);
 
@@ -69,6 +70,7 @@ void loop(void){
     case 'r':
     case 'd': direction = val; break; //right
     case 'z': speed = 0; direction = 0; break; //stop
+    case 'h': digitalWrite(val, homeSendPin); break;
   }
   
   move(speed, direction);
@@ -138,3 +140,4 @@ void move(int velocity, int turn){
   analogWrite(rightSpd, abs(rightVelocity));
 
 }
+
