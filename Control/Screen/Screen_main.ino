@@ -157,6 +157,7 @@ void loop(void) {
       if(p.x < 242) { //green 
         if(!raised) {
           times = micros();
+          Serial.print("G\n");
           going = true;
           countdown = COUNTFROM;           
           tft.setCursor(200,275);
@@ -172,6 +173,7 @@ void loop(void) {
           tft.fillRect(0,160,180,160,MAGENTA);
         }
         else tft.fillRect(200,275,300,275,WHITE);
+        Serial.print("S\n");
          //new
         raised=false;
       
