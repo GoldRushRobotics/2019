@@ -15,7 +15,8 @@
 #define leftDir 4
 #define feedGND 6  //FIXME
 #define feedHOT 7  //FIXME
-#define sendHomePin //FIXME
+#define homeSendPin1 //FIXME
+#define homeSendPin2 //FIXME
 
 int speed = 0;     //0 = velocity, 1 = turn
 int direction = 0;
@@ -36,6 +37,8 @@ void setup(void)
   pinMode(leftDir, OUTPUT);
   pinMode(feedGND, OUTPUT);
   pinMode(feedHOT, OUTPUT);
+  pinMode(homeSendPin1, OUTPUT);
+  pinMode(homeSendPin2, OUTPUT);
   digitalWrite(feedHOT, HIGH);
   digitalWrite(feedGND, LOW);
 }
@@ -70,7 +73,10 @@ void loop(void){
     case 'r':
     case 'd': direction = val; break; //right
     case 'z': speed = 0; direction = 0; break; //stop
-    case 'h': digitalWrite(val, homeSendPin); break;
+    case 'h':
+      digitalWrite(val, homeSendPin1);
+      digitalWrite(!val, homeSendPin2); 
+      break;
   }
   
   move(speed, direction);

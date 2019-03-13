@@ -18,10 +18,10 @@
 
 #define debug 0
 
-volatile bool error = 0;
+volatile bool error = false;
 
 void setup() {
-  if(debug) Serial.begin(9600);
+  if(debug) Serial.begin(115200);
   if(debug) Serial.println("A> Starting...");
   pinMode(V1, INPUT);
   pinMode(V2, INPUT);
@@ -40,6 +40,9 @@ void setup() {
   pinMode(ERRORLED, OUTPUT);
   if(debug) Serial.println("A> Pins initialized.");
 
+  digitalWrite(ERRORLED, LOW);
+  digitalWrite(RESET, LOW);
+
   attachInterrupt(digitalPinToInterrupt(TRIGGER), checkPins, RISING);
   if(debug) Serial.println("A> Interrupt initialized.");
   
@@ -47,14 +50,20 @@ void setup() {
 }
 
 void loop() {
+  writeVoltages();
   if(debug){
     writeErrors(digitalRead(DLFF1), digitalRead(DLFF2), "Driver Left");
     writeErrors(digitalRead(DRFF1), digitalRead(DRFF2), "Driver Right");
     writeErrors(digitalRead(FRFF1), digitalRead(FRFF2), "Feeder Right");
     writeErrors(digitalRead(FLFF1), digitalRead(FLFF2), "Feeder Left");
   }
+  checkPins();
 }
 
+void writeVoltages(){
+  int voltages[] = { analogRead(V1), analogRead(V2), analogRead(V3), analogRead(V4) };
+  for (int i = 0; i < 4; i++) Serial.write(voltages[i]);
+}
 void writeErrors(int a, int b, String str){
   if (a == b){
     if (a == 1)
