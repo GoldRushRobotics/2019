@@ -9,28 +9,27 @@ import time
 import cv2
 from movement import mov
 import FindMyHome as home
-# import FindMeContours as cont
 from objFinder import foodFinder
 
 if __name__ == "__main__":
 
 
     # real = cv2.VideoCapture(0)
-    trials = cv2.VideoCapture(0)
+    trials = cv2.VideoCapture('vid_Test.MOV')
 
     food = foodFinder(trials)
-    tels = telsFinder(trials)
-    pill = pillFinder(trials)
+    #tels = telsFinder(trials)
+    #pill = pillFinder(trials)
 
-    mov = mov(finder.width, finder.height)
+    mov = mov(food.width, food.height)
 
     try:
         while 1:
-                x,y = finder.findFood()
+                x,y = food.findFood()
 
                 mov.whereToGo(x,y)
 
-                mov.goToWhere()
+                #mov.goToWhere()
 
                 print(mov.values)
     except KeyboardInterrupt:
