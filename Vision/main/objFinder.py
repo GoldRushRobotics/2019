@@ -21,11 +21,17 @@ class telsFinder:
 
         tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
 
+        # Ensure that output is a list
+        # list(tels)
+        # Sort em
+        #print(type(tels))
+
+        tels = sorted(tels, reverse=True, key=lambda x: x[3])
+        # Biggest first
+        # tels.reverse()
+
         try:
-            # Sort em
-            tels.sort(key=lambda x: x[3])
-            # Biggest first
-            tels.reverse()
+
             return tels[0][0],tels[0][1]
         except:
             return -1,-1
@@ -55,6 +61,9 @@ class foodFinder:
         balls = self.ball_cascade.detectMultiScale(gray, 2, 5)
         cubes = self.cube_cascade.detectMultiScale(gray, 2, 5)
 
+        # Ensure that output is a list
+
+
 
         if len(balls) == 0:
             objs = cubes
@@ -64,17 +73,19 @@ class foodFinder:
             # combine into a vStack
             objs = np.vstack((balls, cubes))
 
+        # list(objs)
         # Sort in place wasnt working, dont @ me
 
 
-        #objs = sorted(objs, key=lambda x: x[3])
+        objs = sorted(objs, reverse=True, key=lambda x: x[3])
         # Biggest first
 
 
-        #print(objs)
+        # print(type(objs))
+        # objs.sort(reverse=True, key=lambda x: x[3])
+        # objs.reverse()
         try:
-            objs.sort(key=lambda x: x[3])
-            objs.reverse()
+
             return objs[0][0],objs[0][1]
         except:
             return -1,-1
