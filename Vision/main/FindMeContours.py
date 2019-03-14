@@ -15,7 +15,6 @@ import argparse
 import cv2
 import imutils
 import time
-<<<<<<< HEAD
 import numpy
 
 

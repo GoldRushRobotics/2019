@@ -4,6 +4,8 @@ This is where the code for communicating to the movement arduino will go.
 
 WSAD + Z followed by an int 0 to 255
 
+h + {rgby} to set home color
+
 W255 = FASTEST FORWARD PLZ
 A255 = FASTEST LEFT PLZ (Turn on a dime)
 S

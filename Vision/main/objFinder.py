@@ -2,18 +2,48 @@ import numpy as np
 import cv2
 import time
 
-class foodFinder:
 
-    def __init__(self,vs):
+class telsFinder:
+
+    def __init__(self,vs,w,h):
 
         self.vs = vs
-        self.width = int(vs.get(3))
-        self.height = int(vs.get(4))
+        self.width = w
+        self.height = h
+
+        self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
+
+    def findFood(self):
+
+        ret, img = self.vs.read()
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
+
+        tels.sort(key=lambda x: x[3])
+
+        # objs = sorted(objs, key=lambda x: x[3])
+        # Biggest first
+
+        tels.reverse()
+
+        try:
+            return tels[0][0],tels[0][1]
+        except:
+            return -1,-1
+
+class foodFinder:
+
+    def __init__(self,vs,w,h):
+
+        self.vs = vs
+        self.width = w
+        self.height = h
 
         self.cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
 
-        time.sleep(2)
         #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
 
     def findFood(self):
@@ -21,7 +51,7 @@ class foodFinder:
         ret, img = self.vs.read()
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
+
         # cv2.imshow("fram",gray)
         # add this
         # image, reject levels level weights.
@@ -38,7 +68,7 @@ class foodFinder:
             objs = np.vstack((balls, cubes))
 
         # Sort in place wasnt working, dont @ me
-        # objs.sort(key=lambda, x: x[3])
+        # objs.sort(key=lambda x: x[3])
 
         objs = sorted(objs, key=lambda x: x[3])
         # Biggest first
@@ -49,6 +79,10 @@ class foodFinder:
             return objs[0][0],objs[0][1]
         except:
             return -1,-1
+
+
+
+
 
 
 
