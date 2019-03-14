@@ -13,7 +13,7 @@ class telsFinder:
 
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
 
-    def findFood(self):
+    def findTel(self):
 
         ret, img = self.vs.read()
 
@@ -21,14 +21,11 @@ class telsFinder:
 
         tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
 
-        tels.sort(key=lambda x: x[3])
-
-        # objs = sorted(objs, key=lambda x: x[3])
-        # Biggest first
-
-        tels.reverse()
-
         try:
+            # Sort em
+            tels.sort(key=lambda x: x[3])
+            # Biggest first
+            tels.reverse()
             return tels[0][0],tels[0][1]
         except:
             return -1,-1
@@ -68,14 +65,16 @@ class foodFinder:
             objs = np.vstack((balls, cubes))
 
         # Sort in place wasnt working, dont @ me
-        # objs.sort(key=lambda x: x[3])
 
-        objs = sorted(objs, key=lambda x: x[3])
+
+        #objs = sorted(objs, key=lambda x: x[3])
         # Biggest first
 
-        objs.reverse()
-        print(objs)
+
+        #print(objs)
         try:
+            objs.sort(key=lambda x: x[3])
+            objs.reverse()
             return objs[0][0],objs[0][1]
         except:
             return -1,-1

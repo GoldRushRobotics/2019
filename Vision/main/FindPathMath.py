@@ -23,7 +23,9 @@ def findTurn(x, y, maxY, maxX, objgrav):
 
 
 def findPow(turn):
-	bpow = (1-(turn*turn)**.5
+
+	bpow = (1-(turn*turn))**.5
 	#theta = math.asin(turn)
-	theta = (turn + (1/6 * turn**3) + (3/40 * turn**5) + (15/336 * turn**7)) * 180/math.pi #approximation of arcsin(runs quicker) probably?
+	theta = (turn + (1/6 * turn**3) + (3/40 * turn**5) + (15/336 * turn**7)) * 180/math.pi
+	#approximation of arcsin(runs quicker) probably?
 	return (bpow*255, theta)

@@ -10,8 +10,8 @@ import cv2
 
 
 from movement import mov
-import FindMyHome as home
-from objFinder import foodFinder
+from FindMyHome import home
+from objFinder import foodFinder, telsFinder
 
 if __name__ == "__main__":
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     capture = cv2.VideoCapture(0)
 
     # Get the width and height from the capture stream
-    w = int(captrue.get(3))
+    w = int(capture.get(3))
     h = int(capture.get(4))
 
     # Wait for camera to initialize
@@ -32,10 +32,11 @@ if __name__ == "__main__":
     # Calculate the home color from the first frame
     homeColor = home(firstFrame, w, h)
 
+
     # Create the object finders
-    food = foodFinder(capture, w, h)
-    tels = telsFinder(capture, w, h)
-    pill = pillFinder(capture, w, h)
+    foodFind = foodFinder(capture, w, h)
+    telsFind = telsFinder(capture, w, h)
+    #pillFind = pillFinder(capture, w, h)
 
     # Initialize Panduino communications
     mov = mov(w, h)
@@ -45,13 +46,11 @@ if __name__ == "__main__":
 
     try:
         while 1:
-                x,y = finder.findFood()
+            (food, tels) = (foodFind.findFood(), telsFind.findTel())
 
-                mov.whereToGo(x,y)
+            mov.whereToGo(food, tels)
 
-                mov.goToWhere()
-
-                print(mov.values)
+            mov.goToWhere()
 
     except KeyboardInterrupt:
 
