@@ -89,11 +89,11 @@ class mov:
         direction = foodDirection + telDirection
 
         if direction < 0:
-            mappedVal = (-255 * direction)/numObj
+            mappedVal = int((-255 * direction)/numObj)
 
             xdirec = "a{}".format(mappedVal)
         else:
-            mappedVal = (255 * direction)/numObj
+            mappedVal = int((255 * direction)/numObj)
 
             xdirec = "d{}".format(mappedVal)
 
