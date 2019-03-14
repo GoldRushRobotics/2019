@@ -11,7 +11,7 @@ class telsFinder:
         self.width = w
         self.height = h
 
-        self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
+        self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
 
     def findFood(self):
 
@@ -41,8 +41,8 @@ class foodFinder:
         self.width = w
         self.height = h
 
-        self.cube_cascade = cv2.CascadeClassifier('cubeCas16/cascade.xml')
-        self.ball_cascade = cv2.CascadeClassifier('ballCas16/cascade.xml')
+        self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
+        self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
 
         #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
 
