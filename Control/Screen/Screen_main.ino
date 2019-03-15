@@ -32,7 +32,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 #define LCD_RESET A4 //*** Can alternately just connect to Arduino's reset pin *** (seems like A5 is also not used)
 
 // Assign human-readable names to some common 16-bit color values:
-#define  BLACK   0x0000
+#define BLACK   0x0000
 #define BLUE    0x001F
 #define RED     0xF800
 #define GREEN   0x07E0
@@ -49,21 +49,25 @@ const uint16_t identifier = 0x9486; //We are only using this with one type of sc
 
 //Wibbly-wobbly Timey-wymey
 long int unsigned times = 0;
-bool going,raised,checki2c = false;
+bool going,raised = false;
 int countdown = 180;
 
-const int COUNTFROM = 30; //change this around to change where it counts down from
+const int COUNTFROM = 10; //change this around to change where it counts down from
 //
 
 //these are for the flag
 int x = 120;
 int y = 55;
 
+//these are for the memes
+String meme1 = "Sponsored";
+String meme2 = "by";
+String meme3 = "Walmart";
+String meme4 = "Robit";
+
+
 void drawFlag(int xOffset, int yOffset) { 
-  
-  //To do: change how the offsets work and how the coordinates are so that the flag can raise up from the bottom of the screen if this function is looped with decreasing offsets
-  //I think this will make the flag look like it is being raised up
-  
+   
   //x is distance from left, y is distance from top, max width appears to be around 480ish before it goes off the screen. The max y height is 320
   //width and height seem to make the rectangle go up? as in towards the origin. 3rd integer is for x width
   
@@ -104,7 +108,7 @@ void drawFlag(int xOffset, int yOffset) {
 void setup(void) {
   
   Serial.begin(9600);
-  Serial.println(("Screen starting up..."));
+  Serial.println("Screen starting up...");
 
   tft.reset();
   tft.begin(identifier);  
@@ -114,8 +118,31 @@ void setup(void) {
   tft.fillScreen(WHITE);//making the background
   tft.fillRect(0,0,180,160,GREEN); //tft.fillRect(300,160,180,160,GREEN); //1000>x>600 and 900>y>500
   tft.fillRect(0,160,180,160,MAGENTA); //tft.fillRect(300,0,180,160,MAGENTA); //940ish>x>620 (130 to 905 y total so 522 is the middle)
+  
+  //MEME TEXT//
+  //Limit memes to 12 characters per line (including spaces)
   tft.setTextSize(4);
+  tft.setTextColor(BLACK);
+  
+  //Line 1
+  tft.setCursor(200,25);
+  tft.print(meme1);
 
+  //Line 2
+  tft.setCursor(200,75);
+  tft.print(meme2);
+
+  //Line 3
+  tft.setTextColor(BLUE);
+  tft.setCursor(200,125);
+  tft.print(meme3);
+
+  //Line 4
+  tft.setTextColor(BLACK);
+  tft.setCursor(200,175);
+  tft.print(meme4);
+
+  
   //TOUCHSCREEN STUFF//  
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
@@ -126,9 +153,8 @@ void setup(void) {
 
 void loop(void) {
   
-  if((micros()-times) >= 980000) { //every second, adjusted to fit the arduino's clock (maybe need to readjust for the nano on the pcb)
+  if((micros()-times) >= 977777) { //every second, adjusted to fit the arduino's clock (maybe need to readjust for the nano on the pcb)
     if(going) {
-      checki2c = true;
       tft.setCursor(200,275);
       tft.setTextColor(WHITE);
       tft.print("Timer: ");
@@ -157,12 +183,32 @@ void loop(void) {
       if(p.x < 242) { //green 
         if(!raised) {
           times = micros();
-          Serial.print("G\n");
+          Serial.write("G\n");
           going = true;
           countdown = COUNTFROM;           
           tft.setCursor(200,275);
           tft.setTextColor(WHITE);
           tft.print("Timer: #:##");
+            tft.setTextSize(4);
+          tft.setTextColor(BLACK);
+          
+          //Line 1
+          tft.setCursor(200,25);
+          tft.print(meme1);
+        
+          //Line 2
+          tft.setCursor(200,75);
+          tft.print(meme2);
+        
+          //Line 3
+          tft.setTextColor(BLUE);
+          tft.setCursor(200,125);
+          tft.print(meme3);
+        
+          //Line 4
+          tft.setTextColor(BLACK);
+          tft.setCursor(200,175);
+          tft.print(meme4);
       }
     }
       else {
@@ -173,7 +219,7 @@ void loop(void) {
           tft.fillRect(0,160,180,160,MAGENTA);
         }
         else tft.fillRect(200,275,300,275,WHITE);
-        Serial.print("S\n");
+        Serial.write("S\n");
          //new
         raised=false;
       
@@ -186,10 +232,33 @@ void loop(void) {
   if(going) {
     tft.setTextColor(RED);
     if(countdown < 5) {
-      tft.fillScreen(WHITE);
-        drawFlag(x,y);
-        raised = true;
-        going = false;
+      tft.fillRect(0,0,180,320,WHITE); //all this stuff is here to make screen clearing faster--the micro seems to struggle writing lots of pixles
+      tft.setCursor(200,275);
+      tft.setTextColor(WHITE);
+      tft.print("Timer: 0: 5");
+
+      tft.setTextSize(4);
+      tft.setTextColor(WHITE);
+  
+      //Line 1
+      tft.setCursor(200,25);
+      tft.print(meme1);
+    
+      //Line 2
+      tft.setCursor(200,75);
+      tft.print(meme2);
+    
+      //Line 3
+      tft.setCursor(200,125);
+      tft.print(meme3);
+    
+      //Line 4
+      tft.setCursor(200,175);
+      tft.print(meme4);
+      
+      drawFlag(x,y);
+      raised = true;
+      going = false;
       
     }
     else {
@@ -207,29 +276,4 @@ void loop(void) {
     tft.print("Timer: #:##");
     }
   }
-
-  
-  if(checki2c && !raised){
-  tft.setTextSize(4); //12 is WAY too big for the screen. Seems to be a scale value for the text
-  tft.setTextColor(BLACK);
-  tft.setCursor(200,25);
-  
-  delay(100); //these delays are to simulate an i2c communication happening
-  tft.print("V1= ");tft.print(v1);tft.print("V"); //println will go down a line, but it will also go back to the origin x-wise which is very annoying
-  tft.setCursor(200,75); //you must therefore still update the cursor's position for each new line
-  
-  delay(100); //these delays are to simulate an i2c communication happening
-  tft.print("V2= ");tft.print(v2);tft.print("V");
-  tft.setCursor(200,125);
-  
-  delay(100); //these delays are to simulate an i2c communication happening
-  tft.print("V3= ");tft.print(v3);tft.print("V");
-  tft.setCursor(200,175);
-  
-  delay(100); //these delays are to simulate an i2c communication happening
-  tft.print("V4= ");tft.print(v4);tft.print("V");
-  
-  }
-  
-  checki2c = false;
 }
