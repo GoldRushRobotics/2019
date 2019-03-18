@@ -47,8 +47,6 @@ class foodFinder:
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
 
-        #self.tels_cascade = cv2.CascadeClassifier('telsCas16/cascade.xml')
-
     def findFood(self):
 
         ret, img = self.vs.read()
@@ -60,8 +58,8 @@ class foodFinder:
         # cv2.imshow("fram",gray)
         # add this
         # image, reject levels level weights.
-        balls = self.ball_cascade.detectMultiScale(gray, 2, 5)
-        cubes = self.cube_cascade.detectMultiScale(gray, 2, 5)
+        balls = self.ball_cascade.detectMultiScale(gray, 2, 2)
+        cubes = self.cube_cascade.detectMultiScale(gray, 2, 2)
 
         # Ensure that output is a list
 
@@ -84,16 +82,20 @@ class foodFinder:
         # print(type(objs))
         # objs.sort(reverse=True, key=lambda x: x[3])
         # objs.reverse()
-
-        for (x,y,w,h) in objs:
-            cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
+        img = cv2.resize(img, (int(self.width/4), int(self.height/4)))
+        for x,y,w,h in objs:
+            x,y,w,h = x/4,y/4,w/4,h/4
+            cv2.rectangle(img,(x, y), (x+w, y+h),(255,255,0),2)
 
         cv2.imshow('img',img)
 
-        if cv2.waitKey(0) == 27:
-            cv2.destroyAllWindows()
+        if cv2.waitKey(25) & 0xFF == ord('q'):
+            exit()
+
+
 
         try:
+
             return objs[0][0],objs[0][1]
         except:
             return -1,-1
