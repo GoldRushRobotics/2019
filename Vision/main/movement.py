@@ -15,7 +15,7 @@ Z0 = STOP
 '''
 
 import time
-#import serial
+import serial
 import math
 
 
@@ -56,29 +56,20 @@ class mov:
 
     def findTurn(self, objLoc, objgrav):
 
-        totalturn = 0
+        totalTurn = 0
         for obj in objLoc:
             x, y = obj
-
-
             if x == -1 or y == -1:
+
                 return 0, False
 
-#        if (x < self.halfW):
-#            xsqr = -((x-self.halfW)/self.halfW *(x-self.halfW)/self.halfW)
-#        else:
-#            xsqr = (x-self.halfW)/self.halfW * (x-self.halfW)/self.halfW
-#
-#        ysqr = y/self.h * y/self.h
-#
-#        turn = xsqr * ysqr * objgrav * self.gravConst
-
             turn = ((x-self.halfW)/self.halfW) * ((self.h-y)/self.h) * self.gravConst * objgrav
-            totalturn += turn
-        #return (turn, 1-abs(turn))
+            totalTurn += turn
+
         if(len(objLoc) == 0):
             return 0, True
-        return totalturn/len(objLoc), True
+
+        return totalTurn/len(objLoc), True
 
     def whereToGo(self, food, tels):
 
@@ -98,16 +89,16 @@ class mov:
         if direction < 0:
             mappedVal = int((-255 * direction)/numObj)
 
-            xdirec = "a{}".format(mappedVal)
+            xDirec = "a{}".format(mappedVal)
         else:
             mappedVal = int((255 * direction)/numObj)
 
-            xdirec = "d{}".format(mappedVal)
+            xDirec = "d{}".format(mappedVal)
 
-        ydirec = "w{0}".format(int(255*(1-abs(direction))))
+        yDirec = "w{0}".format(int(255*(1-abs(direction))))
 
-        self.values = [ydirec,xdirec]
-        return(ydirec, xdirec)
+        self.values = [yDirec,xDirec]
+        return(yDirec, xDirec)
 
 
 if __name__ == "__main__":
@@ -117,20 +108,20 @@ if __name__ == "__main__":
 
         # if x != -1 & y != -1:
         #     #x direction
-        #     xdirec = 'a0'
+        #     xDirec = 'a0'
         #     if (x <= self.halfW):
         #         m = self.mapVal(x,0,self.halfW,255,0)
-        #         xdirec = 'a{0}'.format(m)
+        #         xDirec = 'a{0}'.format(m)
 
         #     else:
         #         m = self.mapVal(x,self.halfW,self.w,0,255)
-        #         xdirec = 'd{0}'.format(m)
+        #         xDirec = 'd{0}'.format(m)
 
         #     #y speed
-        #     ydirec = 'w0'
-        #     ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,128))
+        #     yDirec = 'w0'
+        #     yDirec = "w{0}".format(self.mapVal(y,0,self.h,0,128))
 
-        #     self.values = [ydirec,xdirec]
+        #     self.values = [yDirec,xDirec]
         # else:
         #     self.values = ['w0','a0']
 #
