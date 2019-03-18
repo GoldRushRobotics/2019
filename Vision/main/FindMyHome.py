@@ -14,7 +14,7 @@ import time
 
 def home(image, width, height):
 
-    color = ' '
+    actColor = ' '
     H_Upper = 225
     H_Lower = 350
     W_Upper = 400
@@ -25,25 +25,62 @@ def home(image, width, height):
 
     cropped = image[W_Lower:W_Upper,H_Upper:H_Lower] #img[height_range, width_range]
 
+    #       lower bound , upper bound
+    b = ([102, 0, 0], [255, 204, 204])
+    g = ([0, 0, 0], [75, 255, 75])
+    y = ([0, 160, 170], [220, 255, 255])
+    r = ([0, 0, 118], [194, 194, 255])
+
+
     totalPix = (0, 0, 0)
 
     for h in range(0, hDiff - 1):
         for w in range(0, wDiff - 1):
             totalPix = totalPix + cropped[w][h]
-            print(totalPix)
 
     avgPix = totalPix / ((wDiff) * (hDiff))
 
-    print(avgPix)
+    # pix = [avgPix[0], avgPix[1], avgPix[2]]
 
-    colors = {"b" : (255, 0, 0),
-              "g" : (0, 255, 0),
-              "r" : (0, 0, 255),
-              "y" : (0, 255, 255)
-              }
+    col = []
+    colors = ['r', 'g', 'b', 'y']
 
-    manhattan = lambda x,y : abs(x[0] - y[0]) + abs(x[1] - y[1]) + abs(x[2] - y[2])
-    distances = {k: manhattan(v, avgPix) for k, v in colors.items()}
-    color = min(distances, key=distances.get)
 
-    return color
+    for color in (r, g, b, y):
+        low, up = color
+        isCol = True
+        for i, x in enumerate(avgPix):
+            if low[i] < x < up[i]:
+                isCol &= True
+            else:
+                isCol &= False
+
+        col.append(isCol)
+
+    for value in range(4):
+        if col[value] == True:
+            actColor = colors[value]
+            break
+
+    return actColor
+
+
+if __name__ == "__main__":
+
+
+    # Setup the video stream
+    capture = cv2.VideoCapture(1)
+
+    # Get the width and height from the capture stream
+    w = int(capture.get(3))
+    h = int(capture.get(4))
+
+    # Wait for camera to initialize
+    time.sleep(2)
+
+    # Grab the first frame
+    ret, firstFrame = capture.read()
+
+    # Calculate the home color from the first frame
+    homeColor = home(firstFrame, w, h)
+    print(homeColor)
