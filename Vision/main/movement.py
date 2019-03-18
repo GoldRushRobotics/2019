@@ -18,8 +18,6 @@ import time
 import serial
 import math
 
-
-
 class mov:
 
     def __init__(self, w, h):
@@ -78,6 +76,8 @@ class mov:
         foodDirection, foodEx = self.findTurn(food,1)
         telDirection, telEx = self.findTurn(tels,-1)
 
+        direction = foodDirection + telDirection
+
         if telEx and foodEx:
             numObj = 2
         elif telEx or foodEx:
@@ -85,8 +85,6 @@ class mov:
         else:
             self.values = ['w0','a0']
             return
-
-        direction = foodDirection + telDirection
 
         if direction < 0:
             mappedVal = int((-255 * direction)/numObj)
@@ -97,30 +95,8 @@ class mov:
 
             xdirec = "d{}".format(mappedVal)
 
+
+        # shut up, I know this is awful
         ydirec = "w{0}".format(self.mapVal(food[1],0,self.h,0,127))
 
-        self.values = [ydirec,xdirec]
-
-
-
-        # if x != -1 & y != -1:
-        #     #x direction
-        #     xdirec = 'a0'
-        #     if (x <= self.halfW):
-        #         m = self.mapVal(x,0,self.halfW,255,0)
-        #         xdirec = 'a{0}'.format(m)
-
-        #     else:
-        #         m = self.mapVal(x,self.halfW,self.w,0,255)
-        #         xdirec = 'd{0}'.format(m)
-
-        #     #y speed
-        #     ydirec = 'w0'
-        #     ydirec = "w{0}".format(self.mapVal(y,0,self.h,0,128))
-
-        #     self.values = [ydirec,xdirec]
-        # else:
-        #     self.values = ['w0','a0']
-
-
-
+        self.values = [ydirec, xdirec]

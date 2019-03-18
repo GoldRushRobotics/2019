@@ -58,11 +58,11 @@ if __name__ == "__main__":
         mov.writeArray('a0')
         mov.writeArray('w0')
 
-        # Close the serial connection
-        mov.ser.close()
-
         # Destroy all cv2 windows
         cv2.destroyAllWindows()
+
+        # Close the serial connection
+        mov.ser.close()
 
         # Exit python
         exit()
