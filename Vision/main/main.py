@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
 
     # Setup the video stream
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture('vid_test.MOV')
 
     # Get the width and height from the capture stream
     w = int(capture.get(3))
@@ -46,6 +46,7 @@ if __name__ == "__main__":
 
     try:
         while 1:
+
             (food, tels) = (foodFind.findFood(), telsFind.findTel())
 
             mov.whereToGo(food, tels)

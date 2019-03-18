@@ -53,6 +53,8 @@ class foodFinder:
 
         ret, img = self.vs.read()
 
+        # img = cv2.resize(img, (int(self.width/2), int(self.height/2))
+
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         # cv2.imshow("fram",gray)
@@ -62,8 +64,6 @@ class foodFinder:
         cubes = self.cube_cascade.detectMultiScale(gray, 2, 5)
 
         # Ensure that output is a list
-
-
 
         if len(balls) == 0:
             objs = cubes
@@ -84,32 +84,16 @@ class foodFinder:
         # print(type(objs))
         # objs.sort(reverse=True, key=lambda x: x[3])
         # objs.reverse()
-        try:
 
+        for (x,y,w,h) in objs:
+            cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
+
+        cv2.imshow('img',img)
+
+        if cv2.waitKey(0) == 27:
+            cv2.destroyAllWindows()
+
+        try:
             return objs[0][0],objs[0][1]
         except:
             return -1,-1
-
-
-
-
-
-
-
-
-
-
-        # add this
-        # for (x,y,w,h) in cubes:
-        #     center = (x + w//2, y + h//2)
-        #     cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
-        #     print("Cube at x={0}, y={1}".format(x,y))
-
-        # for (x,y,w,h) in balls:
-        #     center = (x + w//2, y + h//2)
-        #     cv2.circle(img, center, int(h/2), (0,255,255),2)
-        #     #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-        #     print("Ball at x={0}, y={1}".format(x,y))
-
-
-        #cv2.imshow('img',img)
