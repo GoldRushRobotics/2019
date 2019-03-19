@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
 
     # Setup the video stream
-    capture = cv2.VideoCapture('vid_test.MOV')
+    capture = cv2.VideoCapture(1)
 
     # Get the width and height from the capture stream
     w = int(capture.get(3))
@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
     # Calculate the home color from the first frame
     homeColor = home(firstFrame, w, h)
-
 
     # Create the object finders
     foodFind = foodFinder(capture, w, h)

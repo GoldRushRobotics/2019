@@ -25,12 +25,16 @@ def home(image, width, height):
 
     cropped = image[W_Lower:W_Upper,H_Upper:H_Lower] #img[height_range, width_range]
 
+    cv2.imshow('img',cropped)
+
+    if cv2.waitKey(25) & 0xFF == ord('q'):
+        exit()
+
     totalPix = (0, 0, 0)
 
     for h in range(0, hDiff - 1):
         for w in range(0, wDiff - 1):
             totalPix = totalPix + cropped[w][h]
-            print(totalPix)
 
     avgPix = totalPix / ((wDiff) * (hDiff))
 
@@ -39,7 +43,7 @@ def home(image, width, height):
     colors = {"b" : (255, 0, 0),
               "g" : (0, 255, 0),
               "r" : (0, 0, 255),
-              "y" : (0, 255, 255)
+              "y" : (0, 180, 255)
               }
 
     manhattan = lambda x,y : abs(x[0] - y[0]) + abs(x[1] - y[1]) + abs(x[2] - y[2])
