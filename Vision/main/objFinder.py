@@ -51,11 +51,8 @@ class foodFinder:
 
         ret, img = self.vs.read()
 
-        # img = cv2.resize(img, (int(self.width/2), int(self.height/2))
-
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # cv2.imshow("fram",gray)
         # add this
         # image, reject levels level weights.
         balls = self.ball_cascade.detectMultiScale(gray, 2, 2)
@@ -74,7 +71,6 @@ class foodFinder:
         # list(objs)
         # Sort in place wasnt working, dont @ me
 
-
         objs = sorted(objs, reverse=True, key=lambda x: x[3])
         # Biggest first
 
@@ -82,20 +78,17 @@ class foodFinder:
         # print(type(objs))
         # objs.sort(reverse=True, key=lambda x: x[3])
         # objs.reverse()
-        img = cv2.resize(img, (int(self.width/4), int(self.height/4)))
-        for x,y,w,h in objs:
-            x,y,w,h = x/4,y/4,w/4,h/4
-            cv2.rectangle(img,(x, y), (x+w, y+h),(255,255,0),2)
+        # img = cv2.resize(img, (int(self.width/4), int(self.height/4)))
+        # for x,y,w,h in objs:
+        #     x,y,w,h = x/4,y/4,w/4,h/4
+        #     cv2.rectangle(img,(x, y), (x+w, y+h),(255,255,0),2)
 
-        cv2.imshow('img',img)
+        # cv2.imshow('img',img)
 
-        if cv2.waitKey(25) & 0xFF == ord('q'):
-            exit()
-
-
+        # if cv2.waitKey(25) & 0xFF == ord('q'):
+        #     exit()
 
         try:
-
             return objs[0][0],objs[0][1]
         except:
             return -1,-1

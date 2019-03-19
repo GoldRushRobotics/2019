@@ -56,22 +56,23 @@ class mov:
 
     def findTurn(self, objLoc, objgrav):
 
+
         totalTurn = 0
-        for obj in objLoc:
-            x, y = obj
-            if x == -1 or y == -1:
+        #for obj in objLoc:
+        x, y = objLoc
+        if x == -1:
+            return 0, False
 
-                return 0, False
+        turn = ((x - self.halfW)/self.halfW) * ((self.h - y)/self.h) * self.gravConst * objgrav
+        #totalTurn += turn
 
-            turn = ((x-self.halfW)/self.halfW) * ((self.h-y)/self.h) * self.gravConst * objgrav
-            totalTurn += turn
+        #return totalTurn/len(objLoc), True
 
-        if(len(objLoc) == 0):
-            return 0, True
-
-        return totalTurn/len(objLoc), True
+        return turn, True
 
     def whereToGo(self, food, tels):
+
+        #print(food)
 
         foodDirection, foodEx = self.findTurn(food,1.0)
         telDirection, telEx = self.findTurn(tels,-.75)
