@@ -5,14 +5,13 @@ First code by: Jordan McConnell
  license: OSHW 1.0, http://freedomdefined.org/OSHW
  
 Heavily modified by William Daniels
-
 To Dew: Fix yellow
 */
 
 #include <Servo.h>
 #include <math.h>
 
-Servo myservo;
+Servo left,right;
 //Note that the servo motor must be externally powered, having the Arduino power the servo causes errors in the analog color sensor
 
 const int AVERAGE_AMOUNT=50; //number of times to average color
@@ -53,12 +52,18 @@ void setup()
 {
   Serial.begin(9600);
 
-  myservo.attach(9);
-  myservo.write(0);
+  left.attach(9);
+  right.attach(10);
+  left.write(0);
+  right.write(0);
 
   pinMode(REDLED,OUTPUT);
   pinMode(BLUELED,OUTPUT);
   pinMode(GREENLED,OUTPUT);
+  pinMode(13,OUTPUT);
+  digitalWrite(13,HIGH);
+  Serial.println("I'm working");
+  delay(5000);
  
 }
 
@@ -71,19 +76,20 @@ void loop()
   Baverage=analogRead(bluepin)*1.1+2;
   Raverage=analogRead(redpin);
   Gaverage=analogRead(greenpin)-5;
-  
+  /*
   Serial.print(analogRead(bluepin)*1.1+2); //Baverage
   Serial.print(",");
   Serial.print(analogRead(redpin)); //Raverage
   Serial.print(",");
   Serial.println(analogRead(greenpin)-5); //Gaverage
-
+*/
   if(Raverage > BASE_COLOR || Gaverage > BASE_COLOR || Baverage > BASE_COLOR) {
     if(Raverage > Gaverage && Raverage > Baverage) {
       if(abs(Baverage - Gaverage) <= 5) {
          if(reading != RED) 
         {
-          myservo.write(90);
+          left.write(90);
+          right.write(90);
           reading=RED;
           digitalWrite(REDLED,LOW);
           digitalWrite(BLUELED,HIGH);
@@ -95,7 +101,8 @@ void loop()
     else if(Gaverage > Raverage && Gaverage > Baverage) {
       if(reading != GREEN) 
       {
-        myservo.write(180);
+        left.write(180);
+        right.write(180);
         reading=GREEN;
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
@@ -106,7 +113,8 @@ void loop()
       //Serial.println("BLUE");
       if(reading != BLUE) 
       {
-        myservo.write(90);
+        left.write(-90);
+        right.write(90);
         reading=BLUE;
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,LOW);
@@ -116,7 +124,8 @@ void loop()
     else {
           if(reading != YELLOW)  //120
         {
-          myservo.write(0);
+          left.write(-180);
+          right.write(-180);
           reading=YELLOW;
           digitalWrite(REDLED,LOW);
           digitalWrite(BLUELED,HIGH);
@@ -128,7 +137,8 @@ void loop()
         //Serial.println("WHAT???");
         if(reading != NONE) 
         {
-        myservo.write(90);        
+        left.write(0);
+        right.write(0);        
         reading=NONE;
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
