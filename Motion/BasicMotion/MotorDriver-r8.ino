@@ -9,6 +9,8 @@
                 //   Major restructuring of the move() function to be more efficient and more robust. Accounts for edge cases
                 //   Comprehensive documentation of move()
 
+#include <Servo.h>
+
 #define rightSpd 6  // PWM Magnitude
 #define rightDir 2  // Digital direction
 #define leftSpd 5
@@ -17,7 +19,16 @@
 #define feedHOT 7  //FIXME
 #define homeSendPin1 8 //FIXME
 #define homeSendPin2 9 //FIXME
+#define LEFT_SERVO_PIN 9
+#define RIGHT_SERVO_PIN 10
 
+const int DUMP_VAL_LEFT = 10;
+const int HOME_VAL_LEFT = 100;
+const int DUMP_VAL_RIGHT = 140;
+const int HOME_VAL_RIGHT = 50;
+
+Servo left, right;
+char mode, servoSide;
 int speed = 0;     //0 = velocity, 1 = turn
 int direction = 0;
 int speedStep = 1;
@@ -27,6 +38,7 @@ int nullRange = 5;      // Lower threshold of when a wheel tries to turn
 
 void move(int velocity, int turn);  //Declare the main movement funtion
 void dl(void);
+void dump(char side);
 void setup(void)
 {
   Serial.begin(115200);
@@ -41,6 +53,10 @@ void setup(void)
   pinMode(homeSendPin2, OUTPUT);
   digitalWrite(feedHOT, HIGH);
   digitalWrite(feedGND, LOW);
+  left.attach(LEFT_SERVO_PIN);
+  left.write(HOME_VAL_LEFT);
+  right.attach(RIGHT_SERVO_PIN);
+  right.write(HOME_VAL_RIGHT);
 }
 
 
@@ -55,12 +71,16 @@ void loop(void){
   do {
     
     mode = Serial.read();
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h');
-
-  while(Serial.available() <= 0);
-
-  val = Serial.parseInt();
-
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p');
+  
+  if (mode == 'p'){
+    while(Serial.available() <= 0);
+    servoSide = Serial.read();
+  } else {
+    while(Serial.available() <= 0);
+    val = Serial.parseInt();
+  }
+  
   //Serial.println(mode);
   //Serial.println(val);
   
@@ -78,6 +98,7 @@ void loop(void){
       digitalWrite(val, homeSendPin1);
       digitalWrite(!val, homeSendPin2); 
       break;
+    case 'p': dump(servoSide);
   }
   
 /*
@@ -181,6 +202,21 @@ void move(int velocity, int turn){
   digitalWrite(rightDir, !sign(rightVelocity));  // Same on the other wheel
   analogWrite(rightSpd, abs(rightVelocity));
 
+}
+
+void dump(char side){
+  switch(side){
+    case 'l':
+      left.write(DUMP_VAL_LEFT);
+      delay(2500);
+      left.write(HOME_VAL_LEFT);
+      break;
+    case 'r':
+      right.write(DUMP_VAL_RIGHT);
+      delay(2500);
+      right.write(HOME_VAL_RIGHT);
+      break;
+  }
 }
 
 void dl(){
