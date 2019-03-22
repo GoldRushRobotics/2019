@@ -5,7 +5,7 @@ First code by: Jordan McConnell
  license: OSHW 1.0, http://freedomdefined.org/OSHW
  
 Heavily modified by William Daniels
-To Dew: Fix yellow
+To Do: fix the threshold value and add communication
 */
 
 #include <Servo.h>
@@ -25,9 +25,9 @@ int long Raverage;
 int long Gaverage;
 int long Baverage;
 
-int long redpin = A0;
+int long redpin = A2;
 int long greenpin = A1;
-int long bluepin = A2;
+int long bluepin = A0;
 
 // Sensor read values
 int vRed = 0;
@@ -52,8 +52,8 @@ void setup()
 {
   Serial.begin(9600);
 
-  left.attach(9);
-  right.attach(10);
+  left.attach(5);
+  right.attach(6);
   left.write(0);
   right.write(0);
 
@@ -62,8 +62,6 @@ void setup()
   pinMode(GREENLED,OUTPUT);
   pinMode(13,OUTPUT);
   digitalWrite(13,HIGH);
-  Serial.println("I'm working");
-  delay(5000);
  
 }
 
@@ -72,56 +70,78 @@ void loop()
   Raverage = 0;
   Gaverage = 0;
   Baverage = 0;
-
-  Baverage=analogRead(bluepin)*1.1+2;
-  Raverage=analogRead(redpin);
-  Gaverage=analogRead(greenpin)-5;
-  /*
-  Serial.print(analogRead(bluepin)*1.1+2); //Baverage
+ //blue has become red and red has become blue?
+  Baverage=analogRead(bluepin); //*1.1+2 //this is acting like red
+  Raverage=analogRead(redpin); //this is acting like blue
+  Gaverage=analogRead(greenpin); //-5
+  
+  Baverage=Baverage*2;
+  Raverage=Raverage*1.5;
+  Gaverage=Gaverage*1.3; 
+  
+  Serial.print(Baverage); //Raverage
+  Serial.print(","); 
+  Serial.print(Raverage); //Baverage
   Serial.print(",");
-  Serial.print(analogRead(redpin)); //Raverage
-  Serial.print(",");
-  Serial.println(analogRead(greenpin)-5); //Gaverage
-*/
+  Serial.println(Gaverage); //Gaverage
+  
   if(Raverage > BASE_COLOR || Gaverage > BASE_COLOR || Baverage > BASE_COLOR) {
     if(Raverage > Gaverage && Raverage > Baverage) {
-      if(abs(Baverage - Gaverage) <= 5) {
+      //if(abs(Baverage - Gaverage) <= 5) {
          if(reading != RED) 
         {
-          left.write(90);
-          right.write(90);
+          left.write(30);
+          right.write(30);
           reading=RED;
           digitalWrite(REDLED,LOW);
           digitalWrite(BLUELED,HIGH);
           digitalWrite(GREENLED,HIGH);
         }
-        }
+        //Serial.println(" RED");
+        //}
 
     }
     else if(Gaverage > Raverage && Gaverage > Baverage) {
+     if(Baverage > Raverage){
       if(reading != GREEN) 
-      {
-        left.write(180);
-        right.write(180);
-        reading=GREEN;
-        digitalWrite(REDLED,HIGH);
-        digitalWrite(BLUELED,HIGH);
-        digitalWrite(GREENLED,LOW);
+        {
+          left.write(40);
+          right.write(40);
+          reading=GREEN;
+          digitalWrite(REDLED,HIGH);
+          digitalWrite(BLUELED,HIGH);
+          digitalWrite(GREENLED,LOW);
       }
+      //Serial.println(" GREEN");
+     }
+      else {
+        if(reading != YELLOW)  //120
+        {
+          left.write(60);
+          right.write(60);
+          reading=YELLOW;
+          digitalWrite(REDLED,LOW);
+          digitalWrite(BLUELED,HIGH);
+          digitalWrite(GREENLED,LOW);
+        }
+        //Serial.println(" YELLOW"); 
       }
-    else if(Baverage > Raverage && Baverage > Gaverage){
+      
+    }
+    else /*if(Baverage > Raverage && Baverage > Gaverage)*/{
       //Serial.println("BLUE");
       if(reading != BLUE) 
       {
-        left.write(-90);
+        left.write(90);
         right.write(90);
         reading=BLUE;
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,LOW);
         digitalWrite(GREENLED,HIGH);
       }
+      //Serial.println(" BLUE");
       }
-    else {
+    /*else {
           if(reading != YELLOW)  //120
         {
           left.write(-180);
@@ -130,8 +150,9 @@ void loop()
           digitalWrite(REDLED,LOW);
           digitalWrite(BLUELED,HIGH);
           digitalWrite(GREENLED,LOW);
-        }    
-      }
+        }
+        //Serial.println(" YELLOW");    
+      }*/
   }  
       else {
         //Serial.println("WHAT???");
@@ -143,6 +164,7 @@ void loop()
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,HIGH);
+        //Serial.println(" NONE");   
       }
       } 
 }
