@@ -23,7 +23,7 @@ import math
 class mov:
 
     def __init__(self, w, h):
-        self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+        #self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
@@ -43,11 +43,11 @@ class mov:
 
     def writeArray(self, value):
 
-        #print(value)
+        print(value)
 
         # Uncomment below when actually running
-        self.ser.isOpen()
-        self.ser.write(value.encode())
+        #self.ser.isOpen()
+        #self.ser.write(value.encode())
 
     def goToWhere(self):
         for i in self.values:

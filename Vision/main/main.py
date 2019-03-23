@@ -39,7 +39,7 @@ if __name__ == "__main__":
     mov = mov(w, h)
 
     # Send home color to Panduino
-    mov.writeArray("h{0}".format(homeColor))
+    #mov.writeArray("h{0}".format(homeColor))
 
     try:
         while 1:
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
             mov.goToWhere()
 
-    except KeyboardInterrupt or ValueError:
+    except (KeyboardInterrupt, ValueError) as e:
 
         # If there is a keyboard interrupt, tell Panduino to stop
         mov.writeArray('a0')
