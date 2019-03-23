@@ -30,11 +30,11 @@ class objFind:
         img = cv2.flip(img, 0)
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        cv2.imshow('gray',gray)
-        k = cv2.waitKey(100) & 0xFF # large wait time to remove freezing
-        if k == 113 or k == 27:
-            raise ValueError('BREAK OUT')
+
+        # cv2.imshow('gray',gray)
+        # k = cv2.waitKey(100) & 0xFF # large wait time to remove freezing
+        # if k == 113 or k == 27:
+        #     raise ValueError('BREAK OUT')
 
         return (self.findFood(gray), self.findTels(gray))
 

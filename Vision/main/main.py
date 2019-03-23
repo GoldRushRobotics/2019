@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
             mov.goToWhere()
 
-    except KeyboardInterrupt or ValueError:
+    except (KeyboardInterrupt, ValueError) as e:
 
         # If there is a keyboard interrupt, tell Panduino to stop
         mov.writeArray('a0')
