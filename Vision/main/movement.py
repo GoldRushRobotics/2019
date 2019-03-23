@@ -28,18 +28,7 @@ class mov:
         self.w = w
         self.halfW = w/2
         self.h = h
-        self.gravConst = 1.0
-
-    def mapVal(self, value, leftMin, leftMax, rightMin, rightMax):
-        # Figure out how 'wide' each range is
-        leftSpan = leftMax - leftMin
-        rightSpan = rightMax - rightMin
-
-        # Convert the left range into a 0-1 range (float)
-        valueScaled = float(value - leftMin) / float(leftSpan)
-
-        # Convert the 0-1 range into a value in the right range.
-        return int(rightMin + (valueScaled * rightSpan))
+        self.gravConst = 1
 
     def writeArray(self, value):
 
@@ -83,47 +72,26 @@ class mov:
         elif telEx or foodEx:
             numObj = 1
         else:
-            self.values = ['w0','a0'] #TODO this cant do nothing
+            self.values = ['w0','a0'] #TODO this cant do nothing ##Cant it?
             return
 
-        direction = foodDirection + telDirection#to keep under 1.0 may need mods
+        direction = foodDirection + telDirection #to keep under 1.0 may need mods
 
         if direction < 0:
             mappedVal = int((-speedScale * direction)/numObj)
 
-            xDirec = "a{}".format(mappedVal)
+            xDirec = "a{0}".format(mappedVal)
         else:
             mappedVal = int((speedScale * direction)/numObj)
 
-            xDirec = "d{}".format(mappedVal)
+            xDirec = "d{0}".format(mappedVal)
 
-        yDirec = "w{0}".format(int(speedScale*(1-abs(direction))))
+        yDirec = "w{0}".format(int(speedScale * (1 - abs(direction))))
 
-        self.values = [yDirec,xDirec]
+        self.values = [yDirec, xDirec]
         return(yDirec, xDirec)
-
 
 if __name__ == "__main__":
     m = mov(600,600)
     #print(m.whereToGo([(100, 100), (300, 300)], [(100,100)])[0])
     print(m.whereToGo([(200, 200)], []))
-
-        # if x != -1 & y != -1:
-        #     #x direction
-        #     xDirec = 'a0'
-        #     if (x <= self.halfW):
-        #         m = self.mapVal(x,0,self.halfW,255,0)
-        #         xDirec = 'a{0}'.format(m)
-
-        #     else:
-        #         m = self.mapVal(x,self.halfW,self.w,0,255)
-        #         xDirec = 'd{0}'.format(m)
-
-        #     #y speed
-        #     yDirec = 'w0'
-        #     yDirec = "w{0}".format(self.mapVal(y,0,self.h,0,128))
-
-        #     self.values = [yDirec,xDirec]
-        # else:
-        #     self.values = ['w0','a0']
-#
