@@ -1,62 +1,41 @@
+'''
+This file contains the objFind class, which helps find objects. (food, tels, etc.)
+'''
+
 import numpy as np
 import cv2
 import time
 
+class objFind:
 
-class telsFinder:
+    '''
+    objFind class takes a cv2 video stream and will return the largest objects in a given frame
+    '''
 
-    def __init__(self,vs,w,h):
-
-        self.vs = vs
-        self.width = w
-        self.height = h
-
-        self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
-
-    def findTel(self):
-
-        ret, img = self.vs.read()
-
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-        tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
-
-        # Ensure that output is a list
-        # list(tels)
-        # Sort em
-        #print(type(tels))
-
-        tels = sorted(tels, reverse=True, key=lambda x: x[3])
-        # Biggest first
-        # tels.reverse()
-
-        try:
-
-            return tels[0][0],tels[0][1]
-        except:
-            return -1,-1
-
-class foodFinder:
-
-    def __init__(self,vs,w,h):
+    def __init__(self,vs):
 
         self.vs = vs
-        self.width = w
-        self.height = h
 
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
+        self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
 
-    def findFood(self):
 
+    def findObjs(self):
+        '''
+        Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
+        '''
         ret, img = self.vs.read()
+
+        img = cv2.flip(img, 0)
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # add this
-        # image, reject levels level weights.
-        #balls = self.ball_cascade.detectMultiScale(gray, 2, 2)
-        #cubes = self.cube_cascade.detectMultiScale(gray, 2, 2)
+        return (self.findFood(gray), self.findTels(gray))
+
+
+    def findFood(self, gray):
+
         balls = self.ball_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize = (25,25))
         cubes = self.cube_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize =  (25,25))
 
@@ -77,21 +56,21 @@ class foodFinder:
         objs = sorted(objs, reverse=True, key=lambda x: x[3])
         # Biggest first
 
-
-        # print(type(objs))
-        # objs.sort(reverse=True, key=lambda x: x[3])
-        # objs.reverse()
-        # img = cv2.resize(img, (int(self.width/4), int(self.height/4)))
-        # for x,y,w,h in objs:
-        #     x,y,w,h = x/4,y/4,w/4,h/4
-        #     cv2.rectangle(img,(x, y), (x+w, y+h),(255,255,0),2)
-
-        # cv2.imshow('img',img)
-
-        # if cv2.waitKey(25) & 0xFF == ord('q'):
-        #     exit()
-
         try:
             return objs[0][0],objs[0][1]
         except:
             return -1,-1
+
+    def findTels(self, gray):
+
+        tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
+
+        tels = sorted(tels, reverse=True, key=lambda x: x[3])
+        # Biggest first
+
+        try:
+
+            return tels[0][0],tels[0][1]
+        except:
+            return -1,-1
+
