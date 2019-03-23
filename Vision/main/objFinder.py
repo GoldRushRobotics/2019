@@ -5,6 +5,29 @@ This file contains the objFind class, which helps find objects. (food, tels, etc
 import numpy as np
 import cv2
 import time
+import threading
+
+
+class myThread(threading.Thread):
+    def __init__(self, threadID, name, gray, finder):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.gray = gray
+        self.finder = finder
+        self._return = None
+
+    def run(self):
+        print(self.threadID,self.name)
+        if self.threadID % 2 == 0:
+            self._return = self.finder.findFood(self.gray)
+        else:
+            self._return = self.finder.findTels(self.gray)
+
+    def join(self):
+        return self._return
+
+
 
 class objFind:
 
@@ -35,8 +58,17 @@ class objFind:
         # k = cv2.waitKey(100) & 0xFF # large wait time to remove freezing
         # if k == 113 or k == 27:
         #     raise ValueError('BREAK OUT')
+        thread1 = myThread(1, "Thread-1", gray, self)
+        thread2 = myThread(2, "Thread-2", gray, self)
 
-        return (self.findFood(gray), self.findTels(gray))
+        thread1.start()
+        thread2.start()
+
+        while 1:
+            if thread1.isAlive() or thread2.isAlive():
+                pass
+            else:
+                return (thread1.join(), thread2.join())
 
 
     def findFood(self, gray):
