@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
 
     # Setup the video stream
-    capture = cv2.VideoCapture(1)
+    capture = cv2.VideoCapture(0)
 
     # Get the width and height from the capture stream
     w = int(capture.get(3))
@@ -57,6 +57,7 @@ if __name__ == "__main__":
         # If there is a keyboard interrupt, tell Panduino to stop
         mov.writeArray('a0')
         mov.writeArray('w0')
+        mov.writeArray('z0')
 
         # Destroy all cv2 windows
         cv2.destroyAllWindows()

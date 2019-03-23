@@ -55,8 +55,11 @@ class foodFinder:
 
         # add this
         # image, reject levels level weights.
-        balls = self.ball_cascade.detectMultiScale(gray, 2, 2)
-        cubes = self.cube_cascade.detectMultiScale(gray, 2, 2)
+        #balls = self.ball_cascade.detectMultiScale(gray, 2, 2)
+        #cubes = self.cube_cascade.detectMultiScale(gray, 2, 2)
+        balls = self.ball_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize = (25,25))
+        cubes = self.cube_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize =  (25,25))
+
 
         # Ensure that output is a list
 

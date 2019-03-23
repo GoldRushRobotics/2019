@@ -23,7 +23,7 @@ import math
 class mov:
 
     def __init__(self, w, h):
-        #self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+        self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w/2
@@ -43,11 +43,11 @@ class mov:
 
     def writeArray(self, value):
 
-        print(value)
+        #print(value)
 
         # Uncomment below when actually running
-        #self.ser.isOpen()
-        #self.ser.write(value.encode())
+        self.ser.isOpen()
+        self.ser.write(value.encode())
 
     def goToWhere(self):
         for i in self.values:
@@ -71,6 +71,7 @@ class mov:
         return turn, True
 
     def whereToGo(self, food, tels):
+        speedScale = 60
 
         #print(food)
 
@@ -88,15 +89,15 @@ class mov:
         direction = foodDirection + telDirection#to keep under 1.0 may need mods
 
         if direction < 0:
-            mappedVal = int((-255 * direction)/numObj)
+            mappedVal = int((-speedScale * direction)/numObj)
 
             xDirec = "a{}".format(mappedVal)
         else:
-            mappedVal = int((255 * direction)/numObj)
+            mappedVal = int((speedScale * direction)/numObj)
 
             xDirec = "d{}".format(mappedVal)
 
-        yDirec = "w{0}".format(int(255*(1-abs(direction))))
+        yDirec = "w{0}".format(int(speedScale*(1-abs(direction))))
 
         self.values = [yDirec,xDirec]
         return(yDirec, xDirec)
