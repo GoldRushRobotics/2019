@@ -19,14 +19,13 @@ import serial
 import math
 
 
-
 class mov:
 
     def __init__(self, w, h):
         #self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
-        self.halfW = w/2
+        self.halfW = w / 2
         self.h = h
         self.gravConst = 1
 
@@ -35,54 +34,54 @@ class mov:
         print(value)
 
         # Uncomment below when actually running
-        #self.ser.isOpen()
-        #self.ser.write(value.encode())
+        # self.ser.isOpen()
+        # self.ser.write(value.encode())
 
     def goToWhere(self):
         for i in self.values:
-             self.writeArray(i)
-             time.sleep(.001)
+            self.writeArray(i)
+            time.sleep(.001)
 
     def findTurn(self, objLoc, objgrav):
 
-
         totalTurn = 0
-        #for obj in objLoc:
+        # for obj in objLoc:
         x, y = objLoc
         if x == -1:
             return 0, False
 
-        turn = ((x - self.halfW)/self.halfW) * ((self.h - y)/self.h) * self.gravConst * objgrav
+        turn = ((x - self.halfW) / self.halfW) * \
+            ((self.h - y) / self.h) * self.gravConst * objgrav
         #totalTurn += turn
 
-        #return totalTurn/len(objLoc), True
+        # return totalTurn/len(objLoc), True
 
         return turn, True
 
     def whereToGo(self, food, tels):
         speedScale = 60
 
-        #print(food)
+        # print(food)
 
-        foodDirection, foodEx = self.findTurn(food,1.0)
-        telDirection, telEx = self.findTurn(tels,-.75)
+        foodDirection, foodEx = self.findTurn(food, 1.0)
+        telDirection, telEx = self.findTurn(tels, -.75)
 
         if telEx and foodEx:
             numObj = 2
         elif telEx or foodEx:
             numObj = 1
         else:
-            self.values = ['w0','a0'] #TODO this cant do nothing ##Cant it?
+            self.values = ['w0', 'a0']  # TODO this cant do nothing ##Cant it?
             return
 
-        direction = foodDirection + telDirection #to keep under 1.0 may need mods
+        direction = foodDirection + telDirection  # to keep under 1.0 may need mods
 
         if direction < 0:
-            mappedVal = int((-speedScale * direction)/numObj)
+            mappedVal = int((-speedScale * direction) / numObj)
 
             xDirec = "a{0}".format(mappedVal)
         else:
-            mappedVal = int((speedScale * direction)/numObj)
+            mappedVal = int((speedScale * direction) / numObj)
 
             xDirec = "d{0}".format(mappedVal)
 
@@ -92,6 +91,6 @@ class mov:
         return(yDirec, xDirec)
 
 if __name__ == "__main__":
-    m = mov(600,600)
+    m = mov(600, 600)
     #print(m.whereToGo([(100, 100), (300, 300)], [(100,100)])[0])
     print(m.whereToGo([(200, 200)], []))

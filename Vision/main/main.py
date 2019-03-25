@@ -15,7 +15,6 @@ from objFinder import objFind
 
 if __name__ == "__main__":
 
-
     # Setup the video stream
     capture = cv2.VideoCapture(0)
 
@@ -39,7 +38,7 @@ if __name__ == "__main__":
     mov = mov(w, h)
 
     # Send home color to Panduino
-    #mov.writeArray("h{0}".format(homeColor))
+    # mov.writeArray("h{0}".format(homeColor))
 
     try:
         while 1:
@@ -65,7 +64,3 @@ if __name__ == "__main__":
 
         # Exit python
         exit()
-
-
-
-

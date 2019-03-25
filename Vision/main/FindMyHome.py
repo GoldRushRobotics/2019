@@ -12,6 +12,7 @@ import cv2
 import imutils
 import time
 
+
 def home(image, width, height):
 
     color = ' '
@@ -23,9 +24,10 @@ def home(image, width, height):
     hDiff = H_Lower - H_Upper
     wDiff = W_Upper - W_Lower
 
-    cropped = image[W_Lower:W_Upper,H_Upper:H_Lower] #img[height_range, width_range]
+    # img[height_range, width_range]
+    cropped = image[W_Lower:W_Upper, H_Upper:H_Lower]
 
-    #cv2.imshow('img',cropped)
+    # cv2.imshow('img',cropped)
 
     if cv2.waitKey(25) & 0xFF == ord('q'):
         exit()
@@ -38,15 +40,16 @@ def home(image, width, height):
 
     avgPix = totalPix / ((wDiff) * (hDiff))
 
-    #print(avgPix)
+    # print(avgPix)
 
-    colors = {"b" : (255, 0, 0),
-              "g" : (0, 255, 0),
-              "r" : (0, 0, 255),
-              "y" : (0, 180, 255)
+    colors = {"b": (255, 0, 0),
+              "g": (0, 255, 0),
+              "r": (0, 0, 255),
+              "y": (0, 180, 255)
               }
 
-    manhattan = lambda x,y : abs(x[0] - y[0]) + abs(x[1] - y[1]) + abs(x[2] - y[2])
+    manhattan = lambda x, y: abs(x[0] - y[0]) + \
+        abs(x[1] - y[1]) + abs(x[2] - y[2])
     distances = {k: manhattan(v, avgPix) for k, v in colors.items()}
     color = min(distances, key=distances.get)
 

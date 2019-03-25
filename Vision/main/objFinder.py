@@ -9,6 +9,7 @@ import threading
 
 
 class myThread(threading.Thread):
+
     def __init__(self, threadID, name, gray, finder):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -18,7 +19,7 @@ class myThread(threading.Thread):
         self._return = None
 
     def run(self):
-        print(self.threadID,self.name)
+        print(self.threadID, self.name)
         if self.threadID % 2 == 0:
             self._return = self.finder.findFood(self.gray)
         else:
@@ -28,21 +29,19 @@ class myThread(threading.Thread):
         return self._return
 
 
-
 class objFind:
 
     '''
     objFind class takes a cv2 video stream and will return the largest objects in a given frame
     '''
 
-    def __init__(self,vs):
+    def __init__(self, vs):
 
         self.vs = vs
 
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
-
 
     def findObjs(self):
         '''
@@ -70,12 +69,12 @@ class objFind:
             else:
                 return (thread1.join(), thread2.join())
 
-
     def findFood(self, gray):
 
-        balls = self.ball_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize = (25,25))
-        cubes = self.cube_cascade.detectMultiScale(gray, 2, minNeighbors = 1, minSize =  (25,25))
-
+        balls = self.ball_cascade.detectMultiScale(
+            gray, 2, minNeighbors=1, minSize=(25, 25))
+        cubes = self.cube_cascade.detectMultiScale(
+            gray, 2, minNeighbors=1, minSize=(25, 25))
 
         # Ensure that output is a list
 
@@ -94,9 +93,9 @@ class objFind:
         # Biggest first
 
         try:
-            return objs[0][0],objs[0][1]
+            return objs[0][0], objs[0][1]
         except:
-            return -1,-1
+            return -1, -1
 
     def findTels(self, gray):
 
@@ -107,7 +106,6 @@ class objFind:
 
         try:
 
-            return tels[0][0],tels[0][1]
+            return tels[0][0], tels[0][1]
         except:
-            return -1,-1
-
+            return -1, -1

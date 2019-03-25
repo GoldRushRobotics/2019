@@ -11,9 +11,9 @@ if __name__ == "__main__":
     time.sleep(2)
 
     while 1:
-      ret, firstFrame = capture.read()
+        ret, firstFrame = capture.read()
 
-      # Calculate the home color from the first frame
-      homeColor = home(firstFrame, w, h)
+        # Calculate the home color from the first frame
+        homeColor = home(firstFrame, w, h)
 
-      print("h{0}".format(homeColor))
+        print("h{0}".format(homeColor))
