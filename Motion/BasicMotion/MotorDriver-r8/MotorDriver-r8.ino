@@ -63,6 +63,8 @@ void loop(void){
   do {
     int killSwitchState = digitalRead(killSwitchPin1) && digitalRead(killSwitchPin2);
     if (killSwitchState == 0 && !killSwitchPressed){
+      move(-50,0);
+      delay(500);
       move(0,0);
       killSwitchPressed = true;
     } else {
@@ -199,8 +201,4 @@ void move(int velocity, int turn){
   digitalWrite(rightDir, !sign(rightVelocity));  // Same on the other wheel
   analogWrite(rightSpd, abs(rightVelocity));
 
-}
-
-void dl(){
-  delay(2000);
 }
