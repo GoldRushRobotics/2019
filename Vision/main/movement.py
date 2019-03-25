@@ -22,7 +22,7 @@ import math
 class mov:
 
     def __init__(self, w, h):
-        #self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+        self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w / 2
@@ -34,8 +34,8 @@ class mov:
         print(value)
 
         # Uncomment below when actually running
-        # self.ser.isOpen()
-        # self.ser.write(value.encode())
+        self.ser.isOpen()
+        self.ser.write(value.encode())
 
     def goToWhere(self):
         for i in self.values:
@@ -50,8 +50,7 @@ class mov:
         if x == -1:
             return 0, False
 
-        turn = ((x - self.halfW) / self.halfW) * \
-            ((self.h - y) / self.h) * self.gravConst * objgrav
+        turn = ((x - self.halfW) / self.halfW) * ((self.h - y) / self.h) * self.gravConst * objgrav
         #totalTurn += turn
 
         # return totalTurn/len(objLoc), True
@@ -59,7 +58,7 @@ class mov:
         return turn, True
 
     def whereToGo(self, food, tels):
-        speedScale = 60
+        speedScale = 127
 
         # print(food)
 
@@ -93,4 +92,6 @@ class mov:
 if __name__ == "__main__":
     m = mov(600, 600)
     #print(m.whereToGo([(100, 100), (300, 300)], [(100,100)])[0])
-    print(m.whereToGo([(200, 200)], []))
+    #print(m.whereToGo([(200, 200)], []))
+    print(m.whereToGo((200, 200), (-1,-1)))
+
