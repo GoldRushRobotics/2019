@@ -22,7 +22,7 @@ import math
 class mov:
 
     def __init__(self, w, h):
-        #self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
+        self.ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200, writeTimeout = 0)
 
         self.w = w
         self.halfW = w / 2
@@ -34,8 +34,8 @@ class mov:
         print(value)
 
         # Uncomment below when actually running
-        # self.ser.isOpen()
-        # self.ser.write(value.encode())
+        self.ser.isOpen()
+        self.ser.write(value.encode())
 
     def goToWhere(self):
         for i in self.values:
@@ -58,7 +58,7 @@ class mov:
         return turn, True
 
     def whereToGo(self, food, tels):
-        speedScale = 255
+        speedScale = 127
 
         # print(food)
 

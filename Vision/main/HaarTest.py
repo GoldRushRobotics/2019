@@ -21,9 +21,9 @@ while True:
     # add this
     # image, reject levels level weights.
     balls = ball_cascade.detectMultiScale(
-        gray, 2, minNeighbors=1, minSize=(25, 25))
+        gray, 2, minNeighbors=3, minSize=(25, 25))
     cubes = cube_cascade.detectMultiScale(
-        gray, 2, minNeighbors=1, minSize=(25, 25))
+        gray, 2, minNeighbors=3, minSize=(25, 25))
 
     # Ensure that output is a list
     if len(balls) == 0 and len(cubes) == 0:
