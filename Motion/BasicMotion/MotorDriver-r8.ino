@@ -8,17 +8,17 @@
                 //   Out of range detection. Motors don't rollover from of full on to off and vice versa
                 //   Major restructuring of the move() function to be more efficient and more robust. Accounts for edge cases
                 //   Comprehensive documentation of move()
+// R9: Mar 25, 2019:  Kill switches introduced
 
-#define rightSpd 6  // PWM Magnitude      //Complete
-#define rightDir 4  // Digital direction  //Unknown
-#define leftSpd 5                         //Unknown
-#define leftDir 7                         //Unknown
-#define feedleftSpd 10
-#define feedleftDir 8
-#define feedrightSpd 9
-#define feedrightDir 12
-#define homeSendPin1 18 //FIXME
-#define homeSendPin2 19 //FIXME
+#define rightSpd 6  // PWM Magnitude
+#define rightDir 2  // Digital direction
+#define leftSpd 5
+#define leftDir 4
+#define feedGND 6  //FIXME
+#define feedHOT 7  //FIXME
+#define homeSendPin1 8 //FIXME
+#define homeSendPin2 9 //FIXME
+#define killSwitchPin 13
 
 int speed = 0;     //0 = velocity, 1 = turn
 int direction = 0;
@@ -26,6 +26,7 @@ int speedStep = 1;
 int directionStep = 1;
 int nullRange = 5;      // Lower threshold of when a wheel tries to turn
                         //This is a power saving feature
+int variable = 0;
 
 void move(int velocity, int turn);  //Declare the main movement funtion
 void dl(void);
@@ -37,12 +38,15 @@ void setup(void)
   pinMode(rightDir, OUTPUT);
   pinMode(leftSpd, OUTPUT);
   pinMode(leftDir, OUTPUT);
-  //pinMode(feedGND, OUTPUT);
-  //pinMode(feedHOT, OUTPUT);
+  pinMode(feedGND, OUTPUT);
+  pinMode(feedHOT, OUTPUT);
   pinMode(homeSendPin1, OUTPUT);
   pinMode(homeSendPin2, OUTPUT);
-  //digitalWrite(feedHOT, HIGH);
-  //digitalWrite(feedGND, LOW);
+  pinMode(killSwitchPin, INPUT_PULLUP);
+
+  pinMode(13, OUTPUT);
+  digitalWrite(feedHOT, HIGH);
+  digitalWrite(feedGND, LOW);
 }
 
 
@@ -57,6 +61,10 @@ void loop(void){
   do {
     
     mode = Serial.read();
+    int killSwitchState = digitalRead(killSwitchPin);
+    if (killSwitchState == 0){
+      mode = z;
+    }
   } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h');
 
   while(Serial.available() <= 0);
@@ -81,7 +89,7 @@ void loop(void){
       digitalWrite(!val, homeSendPin2); 
       break;
   }
-  
+  */
 /*
   //Testing block
   move(50, 0);
@@ -101,24 +109,22 @@ void loop(void){
   
   for(int i = -255; i < 255; i++){
     move(i, 0);
-    delay(2);
+    delay(5);
   }
   move(0,0);
-  
+  Serial.println(variable);
+  digitalWrite(13, variable);
+  variable = !variable;
   
   for(int i = -255; i < 255; i++){
     move(0, i);
-    delay(2);
+    delay(5);
   }
-  for(int i = 255; i < -255; i++){
-    move(0, i);
-    delay(2);
-  }
-  
-  move(0,0);
-  
   */
-  move(speed, direction);
+  move(0,0);
+
+  
+  //move(speed, direction);
   
 }
 
@@ -176,25 +182,16 @@ void move(int velocity, int turn){
     }
 
   //The rightVelocity and leftVelocity ints now have a value from -255 to 255
-  /*
   Serial.print("LeftSpd: ");
   Serial.print(leftVelocity);
   Serial.print("\tRightSpd: ");
   Serial.println(rightVelocity);
-  */
   // Output the signals to the motor driver hardware  
-  
   digitalWrite(leftDir, sign(leftVelocity));    // Select the direction of the wheel based on whether the calculated wheel speed is positive or negative
   analogWrite(leftSpd, abs(leftVelocity));      // Set the PWM output, aka, set the speed
 
   digitalWrite(rightDir, !sign(rightVelocity));  // Same on the other wheel
   analogWrite(rightSpd, abs(rightVelocity));
-  
-
-  Serial.print(leftSpd); Serial.print("\t"); Serial.print(abs(leftVelocity)); Serial.print("\t");
-  Serial.print(leftDir); Serial.print("\t"); Serial.print(sign(leftVelocity)); Serial.print("\t");
-  Serial.print(rightSpd); Serial.print("\t"); Serial.print(abs(rightVelocity)); Serial.print("\t");
-  Serial.print(rightDir); Serial.print("\t"); Serial.print(!sign(rightVelocity)); Serial.println("\t");
 
 }
 
