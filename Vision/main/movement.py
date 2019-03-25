@@ -50,8 +50,7 @@ class mov:
         if x == -1:
             return 0, False
 
-        turn = ((x - self.halfW) / self.halfW) * \
-            ((self.h - y) / self.h) * self.gravConst * objgrav
+        turn = ((x - self.halfW) / self.halfW) * ((self.h - y) / self.h) * self.gravConst * objgrav
         #totalTurn += turn
 
         # return totalTurn/len(objLoc), True
@@ -59,7 +58,7 @@ class mov:
         return turn, True
 
     def whereToGo(self, food, tels):
-        speedScale = 60
+        speedScale = 255
 
         # print(food)
 
@@ -93,4 +92,6 @@ class mov:
 if __name__ == "__main__":
     m = mov(600, 600)
     #print(m.whereToGo([(100, 100), (300, 300)], [(100,100)])[0])
-    print(m.whereToGo([(200, 200)], []))
+    #print(m.whereToGo([(200, 200)], []))
+    print(m.whereToGo((200, 200), (-1,-1)))
+
