@@ -1,5 +1,5 @@
 /*
-First code by: Jordan McConnell (not really anymore)
+First code by: Jordan McConnell
  SparkFun Electronics
  created on: 1/24/12
  license: OSHW 1.0, http://freedomdefined.org/OSHW
@@ -15,7 +15,7 @@ Servo left,right;
 //Note that the servo motor must be externally powered, having the Arduino power the servo causes errors in the analog color sensor
 
 //const int AVERAGE_AMOUNT=50; //number of times to average color
-const int BASE_COLOR=9;
+const int BASE_COLOR=11;
 //add ball base color
 
 enum Color { RED, BLUE, GREEN, YELLOW, NONE };
@@ -109,9 +109,9 @@ void loop()
     else reading=BLUE;
     }  
     else reading=NONE;  
-  }
+
   switch(reading) {
-    case RED {
+    case RED:
         //max 175, 170 advised
         //min value 25, 30 advised
         if(isRG) {
@@ -128,8 +128,9 @@ void loop()
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,HIGH);
         //Serial.println("RED");    
-          }
-    case GREEN {
+        break;
+
+    case GREEN:
         if(isRG) {
           left.write(RIGHT); 
           right.write(RIGHT);           
@@ -143,8 +144,8 @@ void loop()
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,LOW);
         //Serial.println("GREEN");
-    }
-    case YELLOW {
+        break;
+    case YELLOW:
         if(isRG) {
           left.write(LEFT); 
           right.write(LEFT);           
@@ -157,9 +158,10 @@ void loop()
         digitalWrite(REDLED,LOW);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,LOW);
-        //Serial.println("YELLOW"); 
-    }
-    case BLUE {
+        //Serial.println("YELLOW");
+        break; 
+
+    case BLUE:
         if(isRG) {
           left.write(LEFT); 
           right.write(LEFT);           
@@ -173,14 +175,15 @@ void loop()
         digitalWrite(BLUELED,LOW);
         digitalWrite(GREENLED,HIGH);
         //Serial.println("BLUE");
-    }
-    case NONE {
+        break;
+    default:
+    case NONE:
         left.write(90); 
         right.write(90);        
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,HIGH);
-        //Serial.println("NONE");   
-    }
+        //Serial.println("NONE");
+        break;   
   }
 }
