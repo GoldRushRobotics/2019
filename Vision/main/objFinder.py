@@ -7,6 +7,9 @@ import cv2
 import time
 import threading
 
+# Create a my thread object class that can be used to multithread image
+# analysis
+
 
 class myThread(threading.Thread):
 
@@ -25,7 +28,7 @@ class myThread(threading.Thread):
         else:
             self._return = self.finder.findTels(self.gray)
 
-    def join(self):
+    def getVals(self):
         return self._return
 
 
@@ -57,17 +60,19 @@ class objFind:
         # k = cv2.waitKey(100) & 0xFF # large wait time to remove freezing
         # if k == 113 or k == 27:
         #     raise ValueError('BREAK OUT')
+
         thread1 = myThread(1, "Thread-1", gray, self)
         thread2 = myThread(2, "Thread-2", gray, self)
 
         thread1.start()
         thread2.start()
 
+        # wait until both threads complete to return vals
         while 1:
             if thread1.isAlive() or thread2.isAlive():
                 pass
             else:
-                return (thread1.join(), thread2.join())
+                return (thread1.getVals(), thread2.getVals())
 
     def findFood(self, gray):
 

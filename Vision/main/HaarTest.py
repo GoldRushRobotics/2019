@@ -36,7 +36,7 @@ while True:
         objs = balls
         # cv2.circle(img, (objs[0][0], objs[0][1]), 50, (255, 255, 255), 2)
     else:
-                # combine into a vStack
+        # combine into a vStack
         objs = np.vstack((balls, cubes))
 
         # list(objs)
