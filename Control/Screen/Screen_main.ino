@@ -52,7 +52,7 @@ long int unsigned times = 0;
 bool going,raised = false;
 int countdown = 180;
 
-const int COUNTFROM = 10; //change this around to change where it counts down from
+const int COUNTFROM = 180; //change this around to change where it counts down from
 //
 
 //these are for the flag
@@ -107,8 +107,8 @@ void drawFlag(int xOffset, int yOffset) {
 
 void setup(void) {
   
-  Serial.begin(9600);
-  Serial.println("Screen starting up...");
+  Serial1.begin(9600);
+  Serial1.println("Screen starting up...");
 
   tft.reset();
   tft.begin(identifier);  
@@ -153,7 +153,7 @@ void setup(void) {
 
 void loop(void) {
   
-  if((micros()-times) >= 977777) { //every second, adjusted to fit the arduino's clock (maybe need to readjust for the nano on the pcb)
+  if((micros()-times) >= 955500) { //every second, adjusted to fit the arduino's clock (maybe need to readjust for the nano on the pcb) //955000
     if(going) {
       tft.setCursor(200,275);
       tft.setTextColor(WHITE);
@@ -164,8 +164,8 @@ void loop(void) {
       countdown--;
       times=micros();
     }
-    //Serial.println(micros());
-    //Serial.println(times);
+    //Serial1.println(micros());
+    //Serial1.println(times);
     }
   
   TSPoint p = ts.getPoint();
@@ -183,7 +183,7 @@ void loop(void) {
       if(p.x < 242) { //green 
         if(!raised) {
           times = micros();
-          Serial.write("G\n");
+          Serial1.write("G\n");
           going = true;
           countdown = COUNTFROM;           
           tft.setCursor(200,275);
@@ -219,11 +219,11 @@ void loop(void) {
           tft.fillRect(0,160,180,160,MAGENTA);
         }
         else tft.fillRect(200,275,300,275,WHITE);
-        Serial.write("S\n");
+        Serial1.write("S\n");
          //new
         raised=false;
       
-        /*Serial.print("Magenta");*/
+        /*Serial1.print("Magenta");*/
         } //magenta
   }
   }
