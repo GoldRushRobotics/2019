@@ -1,13 +1,3 @@
-/*
-First code by: Jordan McConnell
- SparkFun Electronics
- created on: 1/24/12
- license: OSHW 1.0, http://freedomdefined.org/OSHW
- 
-Heavily modified by William Daniels
-To Dew: Fix yellow
-*/
-
 #include <Servo.h>
 #include <math.h>
 
@@ -31,8 +21,8 @@ const int bluepin = A0;
 
 const int ledPin = 13;
 
-const int commPinLeft = 0;
-const int commPinRight = 1;
+const int commPinLeft = 8;
+const int commPinRight = 9;
 
 const int RIGHT = 170;
 const int LEFT = 30;
@@ -57,8 +47,8 @@ void setup()
 
   left.attach(5);
   right.attach(6);
-  left.write(0);
-  right.write(0);
+  left.write(90);
+  right.write(90);
 
   //initialize sensor pins
   pinMode(REDLED,OUTPUT);
@@ -67,15 +57,20 @@ void setup()
 
   //turn on sensor LED
   pinMode(ledPin,OUTPUT);
-  digitalWrite(ledPin,HIGH);
+  
 
   pinMode(commPinLeft,INPUT);
   pinMode(commPinRight,INPUT);
 
-  /*while(!(isRG || isBY)) { //wait until we get an affirming signal
+  while(!(isRG || isBY)) { //wait until we get an affirming signal
     isRG=digitalRead(commPinRight);
-    isRG=digitalRead(commPinLeft);  
-  }*/
+    isBY=digitalRead(commPinLeft);
+    delay(100);
+  }
+  Serial.print("Panda communication says that isRG is ");
+  value = isRG ? 1 : 0;
+  Serial.println(value);
+  digitalWrite(ledPin,HIGH);
 }
 
 void loop() 
@@ -176,6 +171,7 @@ void loop()
         digitalWrite(GREENLED,HIGH);
         //Serial.println("BLUE");
         break;
+        
     default:
     case NONE:
         left.write(90); 
