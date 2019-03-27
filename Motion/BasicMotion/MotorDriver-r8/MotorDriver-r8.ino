@@ -94,12 +94,10 @@ void loop(void){
   while(Serial.available() <= 0);
 
   if (mode == 'p'){
-    while(Serial.available() <= 0);
     servoSide = Serial.read();
   } else if (mode == 'h'){
     base = Serial.read();
   } else {
-    while(Serial.available() <= 0);
     val = Serial.parseInt();
   }
 
