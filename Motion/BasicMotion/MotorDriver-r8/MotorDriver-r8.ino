@@ -10,6 +10,8 @@
                 //   Comprehensive documentation of move()
 // R9: Mar 25, 2019:  Kill switches introduced
 
+#include <Servo.h>
+
 #define rightSpd 6  // PWM Magnitude
 #define rightDir 4  // Digital direction
 #define leftSpd 5
@@ -20,6 +22,16 @@
 #define homeSendPin2 19 //FIXME
 #define killSwitchPin1 22
 #define killSwitchPin2 23
+#define LEFT_SERVO_PIN 9
+#define RIGHT_SERVO_PIN 10
+
+const int DUMP_VAL_LEFT = 10;
+const int HOME_VAL_LEFT = 100;
+const int DUMP_VAL_RIGHT = 140;
+const int HOME_VAL_RIGHT = 50;
+
+Servo left, right;
+char mode, servoSide;
 
 int speed = 0;     //0 = velocity, 1 = turn
 int direction = 0;
@@ -31,6 +43,7 @@ int variable = 0;
 
 void move(int velocity, int turn);  //Declare the main movement funtion
 void dl(void);
+void dump(char);
 void setup(void)
 {
   Serial.begin(115200);
@@ -46,6 +59,11 @@ void setup(void)
   pinMode(killSwitchPin1, INPUT_PULLUP);
   pinMode(killSwitchPin2, INPUT_PULLUP);
 
+  left.attach(LEFT_SERVO_PIN);
+  left.write(HOME_VAL_LEFT);
+  right.attach(RIGHT_SERVO_PIN);
+  right.write(HOME_VAL_RIGHT);
+
   pinMode(13, OUTPUT);
   digitalWrite(feedHOT, HIGH);
   digitalWrite(feedGND, LOW);
@@ -56,24 +74,32 @@ bool killSwitchPressed = false;
 void loop(void){
   
   int val = 0;
-  char mode = 0;
+  char mode = 0, base;
   
   while(Serial.available() <= 0);
 
   do {
     int killSwitchState = digitalRead(killSwitchPin1) && digitalRead(killSwitchPin2);
     if (killSwitchState == 0 && !killSwitchPressed){
+      move(-50,0);
+      delay(500);
       move(0,0);
       killSwitchPressed = true;
     } else {
       mode = Serial.read();
     }
     
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h');
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p');
 
   while(Serial.available() <= 0);
 
-  val = Serial.parseInt();
+  if (mode == 'p'){
+    servoSide = Serial.read();
+  } else if (mode == 'h'){
+    base = Serial.read();
+  } else {
+    val = Serial.parseInt();
+  }
 
    killSwitchPressed = false;
 
@@ -91,45 +117,22 @@ void loop(void){
     case 'd': direction = val; break; //right
     case 'z': speed = 0; direction = 0; break; //stop
     case 'h':
+      switch(base){
+        case 'r': 
+        case 'b':
+                val = 1;
+                break;
+        case 'g':
+        case 'y':
+                val = 0;
+                break;
+      }
       digitalWrite(val, homeSendPin1);
       digitalWrite(!val, homeSendPin2); 
       break;
+    case 'p': dump(servoSide); break;
   }
- 
-/*
-  //Testing block
-  move(50, 0);
-  dl();
-  move(50, 250);
-  dl();
-
-  move(0, 0);
-  dl();
-
-  move(0, -250);
-  dl();
-  move(0, 0);
-  dl();
-  dl();
-  
-  
-  for(int i = -255; i < 255; i++){
-    move(i, 0);
-    delay(5);
-  }
-  move(0,0);
-  Serial.println(variable);
-  digitalWrite(13, variable);
-  variable = !variable;
-  
-  for(int i = -255; i < 255; i++){
-    move(0, i);
-    delay(5);
-  }
-  */
-  //move(0,0);
-
-  
+    
   move(speed, direction);
   
 }
@@ -201,6 +204,17 @@ void move(int velocity, int turn){
 
 }
 
-void dl(){
-  delay(2000);
+void dump(char side){
+  switch(side){
+    case 'l':
+      left.write(DUMP_VAL_LEFT);
+      delay(2500);
+      left.write(HOME_VAL_LEFT);
+      break;
+    case 'r':
+      right.write(DUMP_VAL_RIGHT);
+      delay(2500);
+      right.write(HOME_VAL_RIGHT);
+      break;
+  }
 }
