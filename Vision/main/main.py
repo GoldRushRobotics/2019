@@ -38,7 +38,7 @@ if __name__ == "__main__":
     mov = mov(w, h)
 
     # Send home color to Panduino
-    # mov.writeArray("h{0}".format(homeColor))
+    mov.writeArray("h{0}".format(homeColor))
 
     try:
         while 1:

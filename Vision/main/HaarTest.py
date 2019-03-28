@@ -9,35 +9,39 @@ vs = cv2.VideoCapture(0)
 time.sleep(2)
 
 
-cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
-ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
+cube_cascade = cv2.CascadeClassifier('Cube/cascade.xml')
+ball_cascade = cv2.CascadeClassifier('Ball/cascade.xml')
 while True:
     ret, img = vs.read()
-    img = cv2.flip(img, 0)
-    img = cv2.resize(img, (int(vs.get(3) / 2), int(vs.get(4) / 2)))
+    #img = cv2.GaussianBlur(img, (3, 3), 2)
+    #img = cv2.flip(img, 0)
+    img = cv2.resize(img, (512, 512))
     # cv2.imshow('1', img)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # add this
     # image, reject levels level weights.
     balls = ball_cascade.detectMultiScale(
-        gray, 2, minNeighbors=3, minSize=(25, 25))
+        gray, 2, minNeighbors=1, minSize=(16, 16))
     cubes = cube_cascade.detectMultiScale(
-        gray, 2, minNeighbors=3, minSize=(25, 25))
+        gray, 2, minNeighbors=1, minSize=(16, 16))
 
     # Ensure that output is a list
     if len(balls) == 0 and len(cubes) == 0:
-        objs = [[1, 1, 1, 1]]
-        # print("")
+        objs = []
+        print("None")
     elif len(balls) == 0:
         objs = cubes
+        print("Cubes")
         # cv2.circle(img, (objs[0][0], objs[0][1]), 50, (255, 255, 255), 2)
     elif len(cubes) == 0:
         objs = balls
+        print("Balls")
         # cv2.circle(img, (objs[0][0], objs[0][1]), 50, (255, 255, 255), 2)
     else:
         # combine into a vStack
         objs = np.vstack((balls, cubes))
+        print("Boths")
 
         # list(objs)
         # Sort in place wasnt working, dont @ me
