@@ -12,18 +12,25 @@
 
 #include <Servo.h>
 
-#define rightSpd 6  // PWM Magnitude
+//DRIVE MOTORS//
+#define rightSpd 5  // PWM Magnitude
 #define rightDir 4  // Digital direction
-#define leftSpd 5
+#define leftSpd 6
 #define leftDir 7
-#define feedGND 8
-#define feedHOT 9
-#define homeSendPin1 18 //FIXME
-#define homeSendPin2 19 //FIXME
+//FEED MOTORS//
+#define frontFeedSpd 9
+#define frontFeedDir 12
+#define rampFeedSpd 10
+#define rampFeedDir 8
+//COLORUINO COMM//
+#define homeSendPin1 18
+#define homeSendPin2 19
+//KILL SWITCH//
 #define killSwitchPin1 22
 #define killSwitchPin2 23
-#define LEFT_SERVO_PIN 9
-#define RIGHT_SERVO_PIN 10
+//SERVOS//
+#define LEFT_SERVO_PIN 11
+#define RIGHT_SERVO_PIN 13
 
 const int DUMP_VAL_LEFT = 10;
 const int HOME_VAL_LEFT = 100;
@@ -42,7 +49,6 @@ int nullRange = 5;      // Lower threshold of when a wheel tries to turn
 int variable = 0;
 
 void move(int velocity, int turn);  //Declare the main movement funtion
-void dl(void);
 void dump(char);
 void setup(void)
 {
@@ -52,8 +58,8 @@ void setup(void)
   pinMode(rightDir, OUTPUT);
   pinMode(leftSpd, OUTPUT);
   pinMode(leftDir, OUTPUT);
-  pinMode(feedGND, OUTPUT);
-  pinMode(feedHOT, OUTPUT);
+  //pinMode(feedGND, OUTPUT);
+  //pinMode(feedHOT, OUTPUT);
   pinMode(homeSendPin1, OUTPUT);
   pinMode(homeSendPin2, OUTPUT);
   pinMode(killSwitchPin1, INPUT_PULLUP);
@@ -65,8 +71,8 @@ void setup(void)
   right.write(HOME_VAL_RIGHT);
 
   pinMode(13, OUTPUT);
-  digitalWrite(feedHOT, HIGH);
-  digitalWrite(feedGND, LOW);
+  //digitalWrite(feedHOT, HIGH);
+  //digitalWrite(feedGND, LOW);
 }
 
 bool killSwitchPressed = false;
@@ -192,9 +198,9 @@ void move(int velocity, int turn){
 
   //The rightVelocity and leftVelocity ints now have a value from -255 to 255
   Serial.print("LeftSpd: ");
-  Serial.print(leftVelocity);
+  Serial.print(abs(leftVelocity));
   Serial.print("\tRightSpd: ");
-  Serial.println(rightVelocity);
+  Serial.println(abs(rightVelocity));
   // Output the signals to the motor driver hardware  
   digitalWrite(leftDir, sign(leftVelocity));    // Select the direction of the wheel based on whether the calculated wheel speed is positive or negative
   analogWrite(leftSpd, abs(leftVelocity));      // Set the PWM output, aka, set the speed
