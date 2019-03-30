@@ -29,13 +29,13 @@
 #define killSwitchPin1 22
 #define killSwitchPin2 23
 //SERVOS//
-#define LEFT_SERVO_PIN 11
-#define RIGHT_SERVO_PIN 13
+#define LEFT_SERVO_PIN 13
+#define RIGHT_SERVO_PIN 11
 
 const int DUMP_VAL_LEFT = 10;
-const int HOME_VAL_LEFT = 100;
+const int HOME_VAL_LEFT = 101;
 const int DUMP_VAL_RIGHT = 140;
-const int HOME_VAL_RIGHT = 50;
+const int HOME_VAL_RIGHT = 53;
 
 Servo left, right;
 char mode, servoSide;
@@ -46,7 +46,6 @@ int speedStep = 1;
 int directionStep = 1;
 int nullRange = 5;      // Lower threshold of when a wheel tries to turn
                         //This is a power saving feature
-int variable = 0;
 
 void move(int velocity, int turn);  //Declare the main movement funtion
 void dump(char);
@@ -58,8 +57,8 @@ void setup(void)
   pinMode(rightDir, OUTPUT);
   pinMode(leftSpd, OUTPUT);
   pinMode(leftDir, OUTPUT);
-  //pinMode(feedGND, OUTPUT);
-  //pinMode(feedHOT, OUTPUT);
+  pinMode(frontFeedSpd, OUTPUT);
+  pinMode(frontFeedDir, OUTPUT);
   pinMode(homeSendPin1, OUTPUT);
   pinMode(homeSendPin2, OUTPUT);
   pinMode(killSwitchPin1, INPUT_PULLUP);
@@ -70,9 +69,8 @@ void setup(void)
   right.attach(RIGHT_SERVO_PIN);
   right.write(HOME_VAL_RIGHT);
 
-  pinMode(13, OUTPUT);
-  //digitalWrite(feedHOT, HIGH);
-  //digitalWrite(feedGND, LOW);
+  digitalWrite(frontFeedSpd, HIGH);
+  digitalWrite(frontFeedDir, LOW);
 }
 
 bool killSwitchPressed = false;
@@ -95,7 +93,7 @@ void loop(void){
       mode = Serial.read();
     }
     
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p');
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f');
 
   while(Serial.available() <= 0);
 
@@ -113,7 +111,6 @@ void loop(void){
   //Serial.println(val);
   
   switch(mode){
-    case 'f':
     case 'w': speed = val; break; //straight
     case 'l':
     case 'a': direction = -val; break; //left
@@ -137,6 +134,15 @@ void loop(void){
       digitalWrite(!val, homeSendPin2); 
       break;
     case 'p': dump(servoSide); break;
+    case 'f':
+      if (val == 1 || val == 0){
+        digitalWrite(frontFeedSpd, val);
+        digitalWrite(frontFeedDir, LOW);
+      } else {
+        digitalWrite(frontFeedSpd, HIGH);
+        digitalWrite(frontFeedDir, HIGH);
+      }
+      break;
   }
     
   move(speed, direction);
