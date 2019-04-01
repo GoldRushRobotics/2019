@@ -12,23 +12,30 @@
 
 #include <Servo.h>
 
-#define rightSpd 6  // PWM Magnitude
+//DRIVE MOTORS//
+#define rightSpd 5  // PWM Magnitude
 #define rightDir 4  // Digital direction
-#define leftSpd 5
+#define leftSpd 6
 #define leftDir 7
-#define feedGND 8
-#define feedHOT 9
-#define homeSendPin1 18 //FIXME
-#define homeSendPin2 19 //FIXME
+//FEED MOTORS//
+#define frontFeedSpd 9
+#define frontFeedDir 12
+#define rampFeedSpd 10
+#define rampFeedDir 8
+//COLORUINO COMM//
+#define homeSendPin1 18
+#define homeSendPin2 19
+//KILL SWITCH//
 #define killSwitchPin1 22
 #define killSwitchPin2 23
-#define LEFT_SERVO_PIN 9
-#define RIGHT_SERVO_PIN 10
+//SERVOS//
+#define LEFT_SERVO_PIN 13
+#define RIGHT_SERVO_PIN 11
 
 const int DUMP_VAL_LEFT = 10;
-const int HOME_VAL_LEFT = 100;
+const int HOME_VAL_LEFT = 101;
 const int DUMP_VAL_RIGHT = 140;
-const int HOME_VAL_RIGHT = 50;
+const int HOME_VAL_RIGHT = 53;
 
 Servo left, right;
 char mode, servoSide;
@@ -39,10 +46,8 @@ int speedStep = 1;
 int directionStep = 1;
 int nullRange = 5;      // Lower threshold of when a wheel tries to turn
                         //This is a power saving feature
-int variable = 0;
 
 void move(int velocity, int turn);  //Declare the main movement funtion
-void dl(void);
 void dump(char);
 void setup(void)
 {
@@ -52,8 +57,8 @@ void setup(void)
   pinMode(rightDir, OUTPUT);
   pinMode(leftSpd, OUTPUT);
   pinMode(leftDir, OUTPUT);
-  pinMode(feedGND, OUTPUT);
-  pinMode(feedHOT, OUTPUT);
+  pinMode(frontFeedSpd, OUTPUT);
+  pinMode(frontFeedDir, OUTPUT);
   pinMode(homeSendPin1, OUTPUT);
   pinMode(homeSendPin2, OUTPUT);
   pinMode(killSwitchPin1, INPUT_PULLUP);
@@ -64,9 +69,8 @@ void setup(void)
   right.attach(RIGHT_SERVO_PIN);
   right.write(HOME_VAL_RIGHT);
 
-  pinMode(13, OUTPUT);
-  digitalWrite(feedHOT, HIGH);
-  digitalWrite(feedGND, LOW);
+  digitalWrite(frontFeedSpd, HIGH);
+  digitalWrite(frontFeedDir, LOW);
 }
 
 bool killSwitchPressed = false;
@@ -89,7 +93,7 @@ void loop(void){
       mode = Serial.read();
     }
     
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p');
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f');
 
   while(Serial.available() <= 0);
 
@@ -107,7 +111,6 @@ void loop(void){
   //Serial.println(val);
   
   switch(mode){
-    case 'f':
     case 'w': speed = val; break; //straight
     case 'l':
     case 'a': direction = -val; break; //left
@@ -131,6 +134,15 @@ void loop(void){
       digitalWrite(!val, homeSendPin2); 
       break;
     case 'p': dump(servoSide); break;
+    case 'f':
+      if (val == 1 || val == 0){
+        digitalWrite(frontFeedSpd, val);
+        digitalWrite(frontFeedDir, LOW);
+      } else {
+        digitalWrite(frontFeedSpd, HIGH);
+        digitalWrite(frontFeedDir, HIGH);
+      }
+      break;
   }
     
   move(speed, direction);
@@ -192,9 +204,9 @@ void move(int velocity, int turn){
 
   //The rightVelocity and leftVelocity ints now have a value from -255 to 255
   Serial.print("LeftSpd: ");
-  Serial.print(leftVelocity);
+  Serial.print(abs(leftVelocity));
   Serial.print("\tRightSpd: ");
-  Serial.println(rightVelocity);
+  Serial.println(abs(rightVelocity));
   // Output the signals to the motor driver hardware  
   digitalWrite(leftDir, sign(leftVelocity));    // Select the direction of the wheel based on whether the calculated wheel speed is positive or negative
   analogWrite(leftSpd, abs(leftVelocity));      // Set the PWM output, aka, set the speed

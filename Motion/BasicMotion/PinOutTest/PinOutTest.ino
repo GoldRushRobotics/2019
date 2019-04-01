@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  for (int i = 18; i <= 19; i++){
+  for (int i = 4; i <= 7; i++){
     pinMode(i, OUTPUT);
     Serial.println(i);
     analogWrite(i, 0);
