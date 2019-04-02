@@ -32,9 +32,9 @@ const int LEFT = 30;
 //GSX0 and GSX 1 ground: large gain
 //Nothing needs to be tied to ground for our robot, though
 
-const int REDLED=2;
-const int BLUELED=3;
-const int GREENLED=4;
+const int REDLED=12;
+const int GREENLED=11;
+const int BLUELED=10;
 
 int value = 0;
 bool isRG = false;
