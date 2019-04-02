@@ -59,6 +59,27 @@ class mov:
 
         return turn, True
 
+    def search(SpaceTels=False):
+        '''
+        Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.foo.
+
+        This bypasses all space tel finder code, so be careful. If you want to try and incorporate tel finder go for it.
+
+        I've passed the SpaceTels boolean so you can try to do something with that.
+
+        Good luck,
+        if you need help lemme know
+        G
+        '''
+
+        print("MATT")
+
+        # yDirec = a or d
+        # xDirec = w or s
+
+        self.values = [yDirec, xDirec]
+        return (yDirec, xDirec)
+
     def whereToGo(self, food, tels):
         speedScale = 127
 
@@ -69,11 +90,13 @@ class mov:
 
         if telEx and foodEx:
             numObj = 2
-        elif telEx or foodEx:
+        elif foodEx:
+            numObj = 1
+        elif telEx:
+            return self.search(True)
             numObj = 1
         else:
-            self.values = ['w0', 'a0']  # TODO this cant do nothing ##Cant it?
-            return
+            return self.search(False)  # TODO this cant do nothing ##Cant it?
 
         direction = foodDirection + telDirection  # to keep under 1.0 may need mods
 
