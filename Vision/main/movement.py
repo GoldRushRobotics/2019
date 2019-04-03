@@ -29,6 +29,7 @@ class mov:
         self.halfW = w / 2
         self.h = h
         self.gravConst = 1
+        self.foo = 1 #Matt's variable for search
 
     def writeArray(self, value):
 
@@ -62,17 +63,23 @@ class mov:
     def search(SpaceTels=False):
         '''
         Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.foo.
-
-        This bypasses all space tel finder code, so be careful. If you want to try and incorporate tel finder go for it.
-
-        I've passed the SpaceTels boolean so you can try to do something with that.
-
-        Good luck,
-        if you need help lemme know
-        G
         '''
 
-        print("MATT")
+        if (self.foo == 1):
+        	#move back
+        	xDirec = "s50"
+        	yDirec = "a0"
+        elif (self.foo == 2):
+        	#look left
+        	xDirec = "z0"
+        	yDirec = "a50"
+        else:
+        	#look right
+        	xDirec = "z0"
+        	yDirec = "d50"
+        	self.foo = 0
+        	
+        self.foo += 1
 
         # yDirec = a or d
         # xDirec = w or s

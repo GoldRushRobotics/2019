@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 
-vs = cv2.VideoCapture('vid_test.MOV')
+vs = cv2.VideoCapture(1)
 # width = 600
 # height = 600
 
@@ -14,8 +14,8 @@ h = int(vs.get(4))
 print("{0} {1}".format(w, h))
 
 
-cube_cascade = cv2.CascadeClassifier('Cube/cascade.xml')
-ball_cascade = cv2.CascadeClassifier('Ball/cascade.xml')
+cube_cascade = cv2.CascadeClassifier('/home/matt19/Documents/Github/2019/Vision/main/cube/cascade.xml')
+ball_cascade = cv2.CascadeClassifier('/home/matt19/Documents/Github/2019/Vision/main/ball/cascade.xml')
 
 while True:
     ret, img = vs.read()
