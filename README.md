@@ -7,3 +7,5 @@ Motion is for Pi communicating to Arduino which drives the mechanical bits of th
 Vision is for the Python people who are making the robot see. Unless your code helps the robot see, it doesn't belong.
 
 Control is for everything doesn't involve robot movement or computer vision. Such as, color sensor, touch screen, raising the flag, diagnostics, etc.
+
+TUPLE! TUPLE! TUPLE!
