@@ -70,7 +70,7 @@ void setup(void)
   right.write(HOME_VAL_RIGHT);
 
   digitalWrite(frontFeedSpd, HIGH);
-  digitalWrite(frontFeedDir, LOW);
+  digitalWrite(frontFeedDir, HIGH);
 }
 
 bool killSwitchPressed = false;
@@ -137,10 +137,10 @@ void loop(void){
     case 'f':
       if (val == 1 || val == 0){
         digitalWrite(frontFeedSpd, val);
-        digitalWrite(frontFeedDir, LOW);
+        digitalWrite(frontFeedDir, HIGH);
       } else {
         digitalWrite(frontFeedSpd, HIGH);
-        digitalWrite(frontFeedDir, HIGH);
+        digitalWrite(frontFeedDir, LOW);
       }
       break;
   }
