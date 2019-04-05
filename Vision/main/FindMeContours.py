@@ -46,7 +46,8 @@ def death(vs, args):
 #   # the contour is 'bad' if it is not a rectangle
 #   return not len(approx) == 4
 
-
+def isWhite(rgb):
+    return True
 
 def loop(vs, ret):
     sections = 4
@@ -75,26 +76,31 @@ def loop(vs, ret):
         blurred = cv2.GaussianBlur(frame, (15, 15), 0)
         gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
         mask = cv2.Canny(gray, 25, 40)
-
-        for y in range(4):
-            for x in range(math.floor(mask.shape[1]/kernel_width)):
-                #crop = mask[x*kernel_width:(x+1)*kernel_width][y*kernel_height:(y+1)*kernel_height]
-                #crop = mask[0:112][0:6] # gives 6x600 for some reason
-                crop  = [[100,100,100,0,0,0]]  * kernel_height
-                #print(numpy.shape(kernel))
-                #print(numpy.shape(crop))
-                #print(crop * kernel)
-                val = 0;
-                for j in range(kernel_height-1):
-                    for k in range(kernel_width-1):
-                        val = val + crop[j][k] * kernel[j][k]
-                val = val / (kernel_width * kernel_height)
-                if abs(val) >= 50:
-                    shifted[y][x] = 255
-                else:
-                    shifted[y][x] = 0
-        #cv2.imshow("shifted", shifted)
-        print(shifted)
+        for y in range(0, mask.shape[0]):
+            for x in range(0, mask.shape[1]):
+                if mask[y][x] == 255:
+                    if not isWhite(frame[y][x-3]):
+                        mask[y][x] = 0 #there is a pillar or center here
+#kernel thought of better idea using white as reference
+#        for y in range(4):
+#            for x in range(math.floor(mask.shape[1]/kernel_width)):
+#                #crop = mask[x*kernel_width:(x+1)*kernel_width][y*kernel_height:(y+1)*kernel_height]
+#                #crop = mask[0:112][0:6] # gives 6x600 for some reason
+#                crop  = [[100,100,100,0,0,0]]  * kernel_height
+#                #print(numpy.shape(kernel))
+#                #print(numpy.shape(crop))
+#                #print(crop * kernel)
+#                val = 0;
+#                for j in range(kernel_height-1):
+#                    for k in range(kernel_width-1):
+#                        val = val + crop[j][k] * kernel[j][k]
+#                val = val / (kernel_width * kernel_height)
+#                if abs(val) >= 50:
+#                    shifted[y][x] = 255
+#                else:
+#                    shifted[y][x] = 0
+#        #cv2.imshow("shifted", shifted)
+#        print(shifted)
 
 # slow and clunky
 #        for y in range(0, mask.shape[0]-2):
