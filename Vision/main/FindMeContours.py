@@ -52,9 +52,8 @@ def loop(vs, ret):
     sections = 4
     kernel_height = math.floor(450/sections)
     kernel_width = 6
-    kernel = [[-1,-1,-1,1,1,1]]  * kernel_height
-    print(kernel)
-    shifted = [sections][600 / kernel_width]
+    kernel = [numpy.array([-1,-1,-1,1,1,1])]  * kernel_height
+    shifted = [[x for x in range(0,100)]] * sections
     while True:
         # grab the current frame
         ret, frame = vs.read()
@@ -80,19 +79,22 @@ def loop(vs, ret):
         for y in range(4):
             for x in range(math.floor(mask.shape[1]/kernel_width)):
                 #crop = mask[x*kernel_width:(x+1)*kernel_width][y*kernel_height:(y+1)*kernel_height]
-                crop = mask[0:112][0:6] # gives 6x600 for some reason
-                
-                print(numpy.shape(kernel))
-                print(numpy.shape(crop))
-                print(crop * kernel)
+                #crop = mask[0:112][0:6] # gives 6x600 for some reason
+                crop  = [[100,100,100,0,0,0]]  * kernel_height
+                #print(numpy.shape(kernel))
+                #print(numpy.shape(crop))
+                #print(crop * kernel)
                 val = 0;
-                for y in range(kernel_height):
-                    for x in range(kernel_width):
-                        val = val + final[y][x]
+                for j in range(kernel_height-1):
+                    for k in range(kernel_width-1):
+                        val = val + crop[j][k] * kernel[j][k]
                 val = val / (kernel_width * kernel_height)
-                if math.abs(val) >= 50:
+                if abs(val) >= 50:
                     shifted[y][x] = 255
-        cv2.imshow("shifted", shifted)
+                else:
+                    shifted[y][x] = 0
+        #cv2.imshow("shifted", shifted)
+        print(shifted)
 
 # slow and clunky
 #        for y in range(0, mask.shape[0]-2):
