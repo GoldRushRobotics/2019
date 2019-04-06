@@ -14,8 +14,10 @@ h = int(vs.get(4))
 print("{0} {1}".format(w, h))
 
 
-cube_cascade = cv2.CascadeClassifier('/home/matt19/Documents/Github/2019/Vision/main/cube/cascade.xml')
-ball_cascade = cv2.CascadeClassifier('/home/matt19/Documents/Github/2019/Vision/main/ball/cascade.xml')
+cube_cascade = cv2.CascadeClassifier(
+    '/home/matt19/Documents/Github/2019/Vision/main/cube/cascade.xml')
+ball_cascade = cv2.CascadeClassifier(
+    '/home/matt19/Documents/Github/2019/Vision/main/ball/cascade.xml')
 
 while True:
     ret, img = vs.read()

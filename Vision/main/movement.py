@@ -29,7 +29,7 @@ class mov:
         self.halfW = w / 2
         self.h = h
         self.gravConst = 1
-        self.foo = 1 #Matt's variable for search
+        self.foo = 1  # Matt's variable for search
 
     def writeArray(self, value):
 
@@ -60,25 +60,25 @@ class mov:
 
         return turn, True
 
-    def search(SpaceTels=False):
+    def search(self, SpaceTels=False):
         '''
         Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.foo.
         '''
 
         if (self.foo == 1):
-        	#move back
-        	xDirec = "s50"
-        	yDirec = "a0"
+            # move back
+            xDirec = "s50"
+            yDirec = "a0"
         elif (self.foo == 2):
-        	#look left
-        	xDirec = "z0"
-        	yDirec = "a50"
+            # look left
+            xDirec = "z0"
+            yDirec = "a50"
         else:
-        	#look right
-        	xDirec = "z0"
-        	yDirec = "d50"
-        	self.foo = 0
-        	
+            # look right
+            xDirec = "z0"
+            yDirec = "d50"
+            self.foo = 0
+
         self.foo += 1
 
         # yDirec = a or d

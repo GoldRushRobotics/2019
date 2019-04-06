@@ -32,11 +32,9 @@ def findPillarColor(x, y, width, height, image):
               }
 
     manhattan = lambda x, y: abs(x[0] - y[0]) + \
-                             abs(x[1] - y[1]) + abs(x[2] - y[2])
+        abs(x[1] - y[1]) + abs(x[2] - y[2])
     distances = {k: manhattan(v, avgPix) for k, v in colors.items()}
     color = min(distances, key=distances.get)
-    #print(color)
+    # print(color)
 
-    return color 
-
-
+    return color

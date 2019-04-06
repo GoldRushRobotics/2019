@@ -19,10 +19,8 @@ import math
 #from cython import threshold_fast
 
 
-
 def setup():
     # construct the argument parse and parse the arguments
-
 
     # if a video path was not supplied, grab the reference
     # to the webcam
@@ -46,15 +44,17 @@ def death(vs, args):
 #   # the contour is 'bad' if it is not a rectangle
 #   return not len(approx) == 4
 
+
 def isWhite(rgb):
     return True
 
+
 def loop(vs, ret):
     sections = 4
-    kernel_height = math.floor(450/sections)
+    kernel_height = math.floor(450 / sections)
     kernel_width = 6
-    kernel = [numpy.array([-1,-1,-1,1,1,1])]  * kernel_height
-    shifted = [[x for x in range(0,100)]] * sections
+    kernel = [numpy.array([-1, -1, -1, 1, 1, 1])] * kernel_height
+    shifted = [[x for x in range(0, 100)]] * sections
     while True:
         # grab the current frame
         ret, frame = vs.read()
@@ -79,9 +79,9 @@ def loop(vs, ret):
         for y in range(0, mask.shape[0]):
             for x in range(0, mask.shape[1]):
                 if mask[y][x] == 255:
-                    if not isWhite(frame[y][x-3]):
-                        mask[y][x] = 0 #there is a pillar or center here
-#kernel thought of better idea using white as reference
+                    if not isWhite(frame[y][x - 3]):
+                        mask[y][x] = 0  # there is a pillar or center here
+# kernel thought of better idea using white as reference
 #        for y in range(4):
 #            for x in range(math.floor(mask.shape[1]/kernel_width)):
 #                #crop = mask[x*kernel_width:(x+1)*kernel_width][y*kernel_height:(y+1)*kernel_height]
@@ -112,7 +112,6 @@ def loop(vs, ret):
 #                            mask[y+1][x] = 0
 #        mask = threshold_fast(mask)
 
-        
         # TODO: Remove center initialization code(No point to waste memory here) also again with the videostream
         # find contours in the mask and initialize the current
         # (x, y) center of the ball
@@ -131,8 +130,6 @@ def loop(vs, ret):
 #    ctrs = numpy.array(cnts).reshape((-1,1,2)).astype(numpy.int32)
 #    img = cv2.drawContours(mask, ctrs, -1, (0,255,0), 3)
 
-
-
         # TODO: Make dict for contour arrays and loop
         # only proceed if at least one contour was found
 #        if len(ctrs) > 0:
@@ -148,7 +145,6 @@ def loop(vs, ret):
         # if the 'q' key is pressed, stop the loop
         if (cv2.waitKey(1) & 0xFF) == ord("q"):
             break
-
 
 
 if __name__ == '__main__':
