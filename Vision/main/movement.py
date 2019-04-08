@@ -60,7 +60,7 @@ class mov:
 
         return turn, True
 
-    def search(self, SpaceTels=False):
+    def search(self):
         '''
         Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.search.
         '''
@@ -100,10 +100,10 @@ class mov:
         elif foodEx:
             numObj = 1
         elif telEx:
-            return self.search(True)
             numObj = 1
+            return self.search(True)
         else:
-            return self.search(False)  # TODO this cant do nothing ##Cant it?
+            return self.search(False)
 
         direction = foodDirection + telDirection  # to keep under 1.0 may need mods
 

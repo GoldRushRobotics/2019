@@ -13,7 +13,14 @@ from movement import mov
 from ColorFinder import findColor
 from objFinder import objFind
 
-if __name__ == "__main__":
+times = None
+mov = None
+finder = None
+
+
+def setup():
+
+    global times, mov, finder
 
     startTime = time.time()
 
@@ -22,6 +29,8 @@ if __name__ == "__main__":
     dumpEnd = pickupEnd + 30  # 30 seconds to dump
 
     homeEnd = startTime + 60 * 3  # 3 minutes
+
+    times = (startTime, pickupEnd, dumpEnd, homeEnd)
 
     # Setup the video stream
     capture = cv2.VideoCapture(0)
@@ -39,8 +48,11 @@ if __name__ == "__main__":
     # Calculate the home color from the first frame
     homeColor = findColor(firstFrame, 30, 30, (w / 2 + 30), h - 20)
 
+    # Explicitly remove first frame to increase free space
+    firstFrame.__del__()
+
     # Create the object finder
-    objFind = objFind(capture)
+    finder = objFind(capture)
 
     # Initialize Panduino communications
     mov = mov(w, h)
@@ -48,26 +60,32 @@ if __name__ == "__main__":
     # Send home color to Panduino
     mov.writeArray("h{0}".format(homeColor))
 
-    try:
-        while time.time() < pickupEnd:
+if __name__ == "__main__":
 
-            (food, tels) = objFind.findObjs()
+    try:
+
+        # Pickup foodstuffs
+        while time.time() < times[1]:
+
+            (food, tels) = finder.findObjs(food=True)
 
             mov.whereToGo(food, tels)
 
             mov.goToWhere()
+        # Dump foodstuffs at  location
+        while time.time() < dumpEnd[2]:
 
-        while time.time() < dumpEnd:
-
-            (pill, tels) = objFind.findObjs(food=False)
+            (pill, tels) = finder.findObjs(food=False)
 
             mov.whereToGo(pill, tels)
 
             mov.gotToWhere()
+        # Go home quickly
+        while time.time() < homeEnd[3]:
 
-        while time.time() < homeEnd:
+            (pill, tels) = finder.findObjs(food=False, goHome=True)
 
-            (pill, tels) = objFind.findObjs(food=False)
+            mov.whereToGo(pill, tels)
 
     except (KeyboardInterrupt, ValueError) as e:
 

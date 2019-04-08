@@ -24,23 +24,27 @@ class objFind:
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
         self.homeColor = homeColor
 
-    def findObjs(self, food=True):
+        self.colorImg = None
+        self.grayImg = None
+
+    def findObjs(self, food=True, goHome=False):
         '''
         Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
         '''
         ret, img = self.vs.read()
 
-        img = cv2.flip(img, 0)
+        self.img = cv2.flip(img, 0)
 
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        avoidThread = threadedFind(2, "TelsThread", gray, self)
+        avoidThread = threadedFind(2, "TelsThread", self)
         avoidThread.start()
 
         if food:
-            gotToThread = threadedFind(1, "FoodThread", gray, self)
+            gotToThread = threadedFind(1, "FoodThread", self)
         else:
-            gotToThread = threadedFind(3, "PillThread", gray, self, color=img)
+            gotToThread = threadedFind(
+                3, "PillThread", self, goHome=goHome)
 
         gotToThread.start()
 
@@ -51,12 +55,12 @@ class objFind:
             else:
                 return (gotToThread.getVals(), avoidThread.getVals())
 
-    def findFood(self, gray):
+    def findFood(self):
 
         balls = self.ball_cascade.detectMultiScale(
-            gray, 2, minNeighbors=1, minSize=(25, 25))
+            self.grayImg, 2, minNeighbors=1, minSize=(25, 25))
         cubes = self.cube_cascade.detectMultiScale(
-            gray, 2, minNeighbors=1, minSize=(25, 25))
+            self.grayImg, 2, minNeighbors=1, minSize=(25, 25))
 
         # Ensure that output is a list
 
@@ -68,23 +72,20 @@ class objFind:
             # combine into a vStack
             objs = np.vstack((balls, cubes))
 
-        # list(objs)
-        # Sort in place wasnt working, dont @ me
-
+        # Sort from largest to smallest
         objs = sorted(objs, reverse=True, key=lambda x: x[3])
-        # Biggest first
 
         try:
             return objs[0][0], objs[0][1]
         except:
             return -1, -1
 
-    def findTels(self, gray):
+    def findTels(self):
 
-        tels = self.tels_cascade.detectMultiScale(gray, 2, 5)
+        tels = self.tels_cascade.detectMultiScale(self.grayImg, 2, 5)
 
+        # Sort from largest to smallest
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
-        # Biggest first
 
         try:
 
@@ -92,7 +93,13 @@ class objFind:
         except:
             return -1, -1
 
-    def findPill(self, gray, colorImg):
+    def findPill(self, goHome):
+
+        # v This stuff exists v
+        #   gray = self.grayImg
+        # colorImg = self.colorImg
+        # homeColor = self.homeColor
+
         ##### TODO #####
         '''
         Nathan please put the pillar detector in here. Also, you can call the colorFinder code that is imported... Just pass in the location of the top left (x,y) as well as the width and height of the area and image.
