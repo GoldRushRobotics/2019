@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 import time
 import threading
+from ColorFinder import findColor
 
 # Create a my thread object class that can be used to multithread image
 # analysis
@@ -13,20 +14,23 @@ import threading
 
 class myThread(threading.Thread):
 
-    def __init__(self, threadID, name, gray, finder):
+    def __init__(self, threadID, name, gray, finder, color=None):
         threading.Thread.__init__(self)
         self.threadID = threadID
         self.name = name
         self.gray = gray
+        self.color = color
         self.finder = finder
         self._return = None
 
     def run(self):
         print(self.threadID, self.name)
-        if self.threadID % 2 == 0:
+        if self.threadID == 1:
             self._return = self.finder.findFood(self.gray)
-        else:
+        elif self.threadID == 2:
             self._return = self.finder.findTels(self.gray)
+        else:
+            self._return = self.finder.findPill(self.gray, self.color)
 
     def getVals(self):
         return self._return
@@ -38,15 +42,16 @@ class objFind:
     objFind class takes a cv2 video stream and will return the largest objects in a given frame
     '''
 
-    def __init__(self, vs):
+    def __init__(self, vs, homeColor):
 
         self.vs = vs
 
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
+        self.homeColor = homeColor
 
-    def findObjs(self):
+    def findObjs(self, food=True):
         '''
         Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
         '''
@@ -56,23 +61,22 @@ class objFind:
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        # cv2.imshow('gray',gray)
-        # k = cv2.waitKey(100) & 0xFF # large wait time to remove freezing
-        # if k == 113 or k == 27:
-        #     raise ValueError('BREAK OUT')
+        avoidThread = myThread(2, "SpaceTelsThread", gray, self)
+        avoidThread.start()
 
-        thread1 = myThread(1, "Thread-1", gray, self)
-        thread2 = myThread(2, "Thread-2", gray, self)
+        if food:
+            gotToThread = myThread(1, "FoodThread", gray, self)
+        else:
+            gotToThread = myThread(3, "PillThread", gray, self, color=img)
 
-        thread1.start()
-        thread2.start()
+        gotToThread.start()
 
         # wait until both threads complete to return vals
         while 1:
-            if thread1.isAlive() or thread2.isAlive():
+            if gotToThread.isAlive() or avoidThread.isAlive():
                 pass
             else:
-                return (thread1.getVals(), thread2.getVals())
+                return (gotToThread.getVals(), avoidThread.getVals())
 
     def findFood(self, gray):
 
@@ -114,3 +118,16 @@ class objFind:
             return tels[0][0], tels[0][1]
         except:
             return -1, -1
+
+    def findPill(self, gray, colorImg):
+        ##### TODO #####
+        '''
+        Nathan please put the pillar detector in here. Also, you can call the colorFinder code that is imported... Just pass in the location of the top left (x,y) as well as the width and height of the area and image.
+        '''
+
+        if findColor(colorImg, wRegion, hRegion, xRegion, yRegion) == self.homeColor:
+            print("This pillar is our home color!")
+        else:
+            print("BLEH")
+
+        return -1, -1
