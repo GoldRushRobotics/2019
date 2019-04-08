@@ -5,35 +5,8 @@ This file contains the objFind class, which helps find objects. (food, tels, etc
 import numpy as np
 import cv2
 import time
-import threading
+from MultiThreading import threadedFind
 from ColorFinder import findColor
-
-# Create a my thread object class that can be used to multithread image
-# analysis
-
-
-class myThread(threading.Thread):
-
-    def __init__(self, threadID, name, gray, finder, color=None):
-        threading.Thread.__init__(self)
-        self.threadID = threadID
-        self.name = name
-        self.gray = gray
-        self.color = color
-        self.finder = finder
-        self._return = None
-
-    def run(self):
-        print(self.threadID, self.name)
-        if self.threadID == 1:
-            self._return = self.finder.findFood(self.gray)
-        elif self.threadID == 2:
-            self._return = self.finder.findTels(self.gray)
-        else:
-            self._return = self.finder.findPill(self.gray, self.color)
-
-    def getVals(self):
-        return self._return
 
 
 class objFind:
@@ -61,13 +34,13 @@ class objFind:
 
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        avoidThread = myThread(2, "SpaceTelsThread", gray, self)
+        avoidThread = threadedFind(2, "TelsThread", gray, self)
         avoidThread.start()
 
         if food:
-            gotToThread = myThread(1, "FoodThread", gray, self)
+            gotToThread = threadedFind(1, "FoodThread", gray, self)
         else:
-            gotToThread = myThread(3, "PillThread", gray, self, color=img)
+            gotToThread = threadedFind(3, "PillThread", gray, self, color=img)
 
         gotToThread.start()
 
