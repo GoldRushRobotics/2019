@@ -1,0 +1,190 @@
+#include <Servo.h>
+#include <math.h>
+
+Servo left,right;
+//Note that the servo motor must be externally powered, having the Arduino power the servo causes errors in the analog color sensor
+
+//const int AVERAGE_AMOUNT=50; //number of times to average color
+const int BASE_COLOR=11;
+//add ball base color
+
+enum Color { RED, BLUE, GREEN, YELLOW, NONE };
+Color reading = NONE;
+
+int Raverage;
+int Gaverage;
+int Baverage;
+
+const int redpin = A2;
+const int greenpin = A1;
+const int bluepin = A0;
+
+const int ledPin = 13;
+
+const int commPinLeft = 8;
+const int commPinRight = 9;
+
+const int RIGHT = 170;
+const int LEFT = 30;
+const int CENTER = 90;
+
+//GSX0 ground: Large drop
+//GSX1 ground: Small drop
+//GSX0 and GSX 1 ground: large gain
+//Nothing needs to be tied to ground for our robot, though
+
+const int REDLED=12;
+const int GREENLED=11;
+const int BLUELED=10;
+
+int value = 0;
+bool isRB = false;
+bool isGY = false; //this isn't used in the conditional motor code but it does get used for input checking
+//If we are red and blue, we will want to sort green and yellow into the dumping bins
+
+void setup() 
+{
+  Serial.begin(9600);
+
+  left.attach(5);
+  right.attach(6);
+  left.write(90);
+  right.write(90);
+
+  //initialize sensor pins
+  pinMode(REDLED,OUTPUT);
+  pinMode(BLUELED,OUTPUT);
+  pinMode(GREENLED,OUTPUT);
+
+  //turn on sensor LED
+  pinMode(ledPin,OUTPUT);
+  
+
+  pinMode(commPinLeft,INPUT);
+  pinMode(commPinRight,INPUT);
+
+  while(!(isRB || isGY)) { //wait until we get an affirming signal
+    isRB=digitalRead(commPinRight);
+    isGY=digitalRead(commPinLeft);
+    delay(100);
+  }
+  Serial.print("Panda communication says that isRB is ");
+  value = isRB ? 1 : 0;
+  Serial.println(value);
+  digitalWrite(ledPin,HIGH);
+}
+
+void loop() 
+{
+  delay(100);
+  Raverage = 0;
+  Gaverage = 0;
+  Baverage = 0;
+  
+ //blue has become red and red has become blue?
+  Baverage=analogRead(bluepin); //*1.1+2 //this is acting like red
+  Raverage=analogRead(redpin); //this is acting like blue
+  Gaverage=analogRead(greenpin); //-5
+  
+  Baverage=Baverage*2;
+  Raverage=Raverage*1.5;
+  Gaverage=Gaverage*1.3; 
+  
+  Serial.print(Baverage); //Raverage
+  Serial.print(","); 
+  Serial.print(Raverage); //Baverage
+  Serial.print(",");
+  Serial.println(Gaverage); //Gaverage
+  
+  if(Raverage > BASE_COLOR || Gaverage > BASE_COLOR || Baverage > BASE_COLOR) {
+    if(Raverage > Gaverage && Raverage > Baverage) reading=RED;
+    else if(Gaverage > Raverage && Gaverage > Baverage) {
+      if(Baverage > Raverage) reading=GREEN;
+      else {if(reading != YELLOW) reading=YELLOW;}    
+    }
+    else reading=BLUE;
+    }  
+    else reading=NONE;  
+
+  switch(reading) {
+    case RED:
+        //max 175, 170 advised
+        //min value 25, 30 advised
+        if(isRB) {
+          left.write(CENTER); 
+          right.write(CENTER);           
+        }
+        else {
+          left.write(LEFT); 
+          right.write(LEFT);           
+        }
+        
+        
+        digitalWrite(REDLED,LOW);
+        digitalWrite(BLUELED,HIGH);
+        digitalWrite(GREENLED,HIGH);
+        delay(500);
+        //Serial.println("RED");    
+        break;
+
+    case GREEN:
+        if(isRB) {
+          left.write(RIGHT); 
+          right.write(RIGHT);           
+        }
+        else {
+          left.write(CENTER); 
+          right.write(CENTER);           
+        }
+        
+        digitalWrite(REDLED,HIGH);
+        digitalWrite(BLUELED,HIGH);
+        digitalWrite(GREENLED,LOW);
+        delay(500);
+        //Serial.println("GREEN");
+        break;
+    case YELLOW:
+        if(isRB) {
+          left.write(LEFT); 
+          right.write(LEFT);           
+        }
+        else {
+          left.write(CENTER); 
+          right.write(CENTER);           
+        }
+        
+        digitalWrite(REDLED,LOW);
+        digitalWrite(BLUELED,HIGH);
+        digitalWrite(GREENLED,LOW);
+        delay(500);
+        //Serial.println("YELLOW");
+        break; 
+
+    case BLUE:
+        if(isRB) {
+          left.write(CENTER); 
+          right.write(CENTER);           
+        }
+        else {
+          left.write(RIGHT); 
+          right.write(RIGHT);           
+        }
+        
+        digitalWrite(REDLED,HIGH);
+        digitalWrite(BLUELED,LOW);
+        digitalWrite(GREENLED,HIGH);
+        delay(500);
+        //Serial.println("BLUE");
+        break;
+        
+    default:
+    case NONE:
+        left.write(CENTER); 
+        right.write(CENTER);        
+        digitalWrite(REDLED,HIGH);
+        digitalWrite(BLUELED,HIGH);
+        digitalWrite(GREENLED,HIGH);
+        //Serial.println("NONE");
+        break;   
+  }
+}
