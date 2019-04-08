@@ -1,7 +1,5 @@
 '''
-
-This function is called at the beginning of main to determine what color/position our home is. Basically a big boi setup script.
-
+Finds the color of a specified image when passed a color image
 '''
 
 # import the necessary packages
@@ -13,13 +11,24 @@ import imutils
 import time
 
 
-def home(image, width, height):
+def findColor(image, width, height, x, y):
+    '''
+    Finds the color of a given image region.
+    This function takes an image, the width and height of the region, as well as the x,y location of the top left of the region.
+    '''
 
     color = ' '
-    H_Upper = 225
-    H_Lower = 350
-    W_Upper = 400
-    W_Lower = 250
+    H_Upper = y - height
+    H_Lower = y
+    W_Upper = x + width
+    W_Lower = x
+
+    # Old values
+
+    # H_Upper = 225
+    # H_Lower = 350
+    # W_Upper = 400
+    # W_Lower = 250
 
     hDiff = H_Lower - H_Upper
     wDiff = W_Upper - W_Lower
@@ -53,6 +62,6 @@ def home(image, width, height):
     distances = {k: manhattan(v, avgPix) for k, v in colors.items()}
     color = min(distances, key=distances.get)
 
-    print(color)
+   # print(color)
 
     return color

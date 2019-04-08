@@ -10,10 +10,18 @@ import cv2
 
 
 from movement import mov
-from FindMyHome import home
+from ColorFinder import findColor
 from objFinder import objFind
 
 if __name__ == "__main__":
+
+    startTime = time.time()
+
+    pickupEnd = startTime + 60 * 2  # 2 minutes
+
+    dumpEnd = pickupEnd + 30  # 30 seconds to dump
+
+    homeEnd = startTime + 60 * 3  # 3 minutes
 
     # Setup the video stream
     capture = cv2.VideoCapture(0)
@@ -29,7 +37,7 @@ if __name__ == "__main__":
     ret, firstFrame = capture.read()
 
     # Calculate the home color from the first frame
-    homeColor = home(firstFrame, w, h)
+    homeColor = findColor(firstFrame, 30, 30, (w / 2 + 30), h - 20)
 
     # Create the object finder
     objFind = objFind(capture)
@@ -41,13 +49,25 @@ if __name__ == "__main__":
     mov.writeArray("h{0}".format(homeColor))
 
     try:
-        while 1:
+        while time.time() < pickupEnd:
 
             (food, tels) = objFind.findObjs()
 
             mov.whereToGo(food, tels)
 
             mov.goToWhere()
+
+        while time.time() < dumpEnd:
+
+            (pill, tels) = objFind.findObjs(food=False)
+
+            mov.whereToGo(pill, tels)
+
+            mov.gotToWhere()
+
+        while time.time() < homeEnd:
+
+            (pill, tels) = objFind.findObjs(food=False)
 
     except (KeyboardInterrupt, ValueError) as e:
 
