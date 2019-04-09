@@ -1,51 +1,58 @@
-#include <Servo.h>
-#include <math.h>
+//Servo motors:
+#include <Servo.h> //We need the servo library for the sorting arms
+Servo left,right; //Even though the servos will both go in the same direction, I have defined both of them here just in case
 
-Servo left,right;
-//Note that the servo motor must be externally powered, having the Arduino power the servo causes errors in the analog color sensor
+//Color enumeration
+enum Color { RED, BLUE, GREEN, YELLOW, NONE }; //Enumerations are cool
+Color reading = NONE; //This enumeration is used to store which color we see
 
-//const int AVERAGE_AMOUNT=50; //number of times to average color
-const int BASE_COLOR=11;
-//add ball base color
+//Defining constants
+const int MINIMUM_VALUE=11; //A color must be detected over this analog value for an object to be counted
 
-enum Color { RED, BLUE, GREEN, YELLOW, NONE };
-Color reading = NONE;
+const int RED_PIN = A2; //These are where the color sensor's 3 output pins for color values should go
+const int GREEN_PIN = A1;
+const int BLUE_PIN = A0;
 
-int Raverage;
-int Gaverage;
-int Baverage;
+const int LED_PIN = 13; //Pin 13 goes to the sensor's LED
 
-const int redpin = A2;
-const int greenpin = A1;
-const int bluepin = A0;
+const int COMMUNICATION_LEFT = 8; //These two pins are used for "talking" with the Late Panda
+const int COMMUNICATION_RIGHT = 9; //They are not serial, they simply receive digital values
 
-const int ledPin = 13;
+const int CENTER = 90; //These constants are for positioning the motors
+const int RIGHT = 170; //max 175, 170 advised
+const int LEFT = 30; //min value 25, 30 advised
 
-const int commPinLeft = 8;
-const int commPinRight = 9;
+const int REDLED = 12; //These are for controling the RGB LED
+const int GREENLED = 11; //The digitalWrite() values associated with these pins are active low
+const int BLUELED = 10; //since we had common annode LEDs
 
-const int RIGHT = 170;
-const int LEFT = 30;
-const int CENTER = 90;
+const int MOTOR_DELAY = 500; //This determines how long the motor stays on a certain color, and is also used to determine the length of the DELAY case
+const int NONE_DELAY = 500; //This determines how long a NONE case lasts
 
 //GSX0 ground: Large drop
 //GSX1 ground: Small drop
 //GSX0 and GSX 1 ground: large gain
 //Nothing needs to be tied to ground for our robot, though
 
-const int REDLED=12;
-const int GREENLED=11;
-const int BLUELED=10;
+Color nextColor = NONE; //these are used to pad out the input, add more of these variables to pad out how long the delay is
+//Color nextColor1 = NONE; //I didn't want to fiddle around with arrays, so just keep adding nextColor#'s if somehow this delay isn't long enough (tested with NONE_DELAY = 500 and it worked pretty well pre-mount
 
-int value = 0;
-bool isRB = false;
-bool isGY = false; //this isn't used in the conditional motor code but it does get used for input checking
+int redValue; //These are the values that will store the color values read from the sensor
+int greenValue; //They will also store the scaled values, which will be compared against each other to decide color
+int blueValue;
+
+bool isRB = false; //This is for storing which team we are on, in the conditional motor code
+bool isGY = false; //This variable isn't used in the conditional motor code but it does get used for input checking
 //If we are red and blue, we will want to sort green and yellow into the dumping bins
 
 void setup() 
 {
+  //Initialize the inputBuffer array
+  //for(int i=0;i<=(BUFFER_LENGTH-1);i++) inputBuffer[i] = NONE;
+  
   Serial.begin(9600);
 
+  //Set up motors
   left.attach(5);
   right.attach(6);
   left.write(90);
@@ -56,60 +63,85 @@ void setup()
   pinMode(BLUELED,OUTPUT);
   pinMode(GREENLED,OUTPUT);
 
-  //turn on sensor LED
-  pinMode(ledPin,OUTPUT);
-  
+  //Configure the sensor's LED but don't turn it on yet
+  pinMode(LED_PIN,OUTPUT);
 
-  pinMode(commPinLeft,INPUT);
-  pinMode(commPinRight,INPUT);
+  //Set up the communication pins
+  pinMode(COMMUNICATION_LEFT,INPUT);
+  pinMode(COMMUNICATION_RIGHT,INPUT);
 
+  //Receive team state based on communication pins
   while(!(isRB || isGY)) { //wait until we get an affirming signal
-    isRB=digitalRead(commPinRight);
-    isGY=digitalRead(commPinLeft);
+    isRB = digitalRead(COMMUNICATION_RIGHT);
+    isGY = digitalRead(COMMUNICATION_LEFT);
     delay(100);
   }
+  
+  //DEBUG: used for checking communication
+  /*
   Serial.print("Panda communication says that isRB is ");
-  value = isRB ? 1 : 0;
-  Serial.println(value);
-  digitalWrite(ledPin,HIGH);
+  if(isRB) Serial.println("1");
+  else Serial.println("0");
+  */
+  
+  //Turn on sensor's LED to signify that we're ready to sort
+  digitalWrite(LED_PIN,HIGH); 
+  
 }
 
 void loop() 
 {
-  delay(100);
-  Raverage = 0;
-  Gaverage = 0;
-  Baverage = 0;
-  
- //blue has become red and red has become blue?
-  Baverage=analogRead(bluepin); //*1.1+2 //this is acting like red
-  Raverage=analogRead(redpin); //this is acting like blue
-  Gaverage=analogRead(greenpin); //-5
-  
-  Baverage=Baverage*2;
-  Raverage=Raverage*1.5;
-  Gaverage=Gaverage*1.3; 
-  
-  Serial.print(Baverage); //Raverage
-  Serial.print(","); 
-  Serial.print(Raverage); //Baverage
-  Serial.print(",");
-  Serial.println(Gaverage); //Gaverage
-  
-  if(Raverage > BASE_COLOR || Gaverage > BASE_COLOR || Baverage > BASE_COLOR) {
-    if(Raverage > Gaverage && Raverage > Baverage) reading=RED;
-    else if(Gaverage > Raverage && Gaverage > Baverage) {
-      if(Baverage > Raverage) reading=GREEN;
-      else {if(reading != YELLOW) reading=YELLOW;}    
-    }
-    else reading=BLUE;
-    }  
-    else reading=NONE;  
+  //Read in colors
+  blueValue = analogRead(BLUE_PIN);
+  redValue = analogRead(RED_PIN);
+  greenValue = analogRead(GREEN_PIN);
 
-  switch(reading) {
+  //Scale values
+  blueValue *= 2;
+  redValue *= 1.5;
+  greenValue *= 1.3; 
+
+  //DEBUG: Serial plotter code
+  //The order is blue, red, green because of the serial plotter's weirdness
+  /*
+  Serial.print(blueValue);
+  Serial.print(","); 
+  Serial.print(redValue);
+  Serial.print(",");
+  Serial.println(greenValue);
+  */
+  
+  //inputBuffer[arrayIndexCount] = determineColor;
+  sortColor(nextColor);
+  //nextColor = nextColor1;
+  nextColor = determineColor(redValue,greenValue,blueValue) ;  
+}
+
+
+Color determineColor(int red, int green, int blue) { //rgb
+  if(redValue > MINIMUM_VALUE || greenValue > MINIMUM_VALUE || blueValue > MINIMUM_VALUE) {
+  //If any of the readings are above the minimum detection threshold (MINIMUM_VALUE)...
+    if(redValue > greenValue && redValue > blueValue) return RED;
+    //...then see if red is the most reflected color, and if not...
+    else if(greenValue > redValue && greenValue > blueValue) {
+    //...then see if green is the most reflected color.  
+      if(blueValue > redValue) return GREEN;
+      //If there is more blue reflected than red (green > blue > red) then the object is green.
+      else return YELLOW; //{if(reading != YELLOW)   }
+      //Otherwise, the object is a mix of green and red and thus is yellow.
+    }
+    else return BLUE;
+    //If the object isn't reflecting mostly red or mostly green, then it must be blue.
+    }  
+  else return NONE;  
+  //Otherwise, there must not be any object in front of the sensor because there isn't enough color being reflected.
+}
+
+
+//Motor and LED control switch statement method
+void sortColor(Color food) { //Takes in the enumeration type Color
+    switch(food) {
     case RED:
-        //max 175, 170 advised
-        //min value 25, 30 advised
         if(isRB) {
           left.write(CENTER); 
           right.write(CENTER);           
@@ -117,14 +149,13 @@ void loop()
         else {
           left.write(LEFT); 
           right.write(LEFT);           
-        }
+        }       
         
-        
-        digitalWrite(REDLED,LOW);
+        digitalWrite(REDLED,LOW); //Remember: active low for common annode LEDs
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,HIGH);
-        delay(500);
-        //Serial.println("RED");    
+        delay(MOTOR_DELAY); //hang out on this motor setting for a while so that the motor's don't freak out
+        Serial.println("RED");    
         break;
 
     case GREEN:
@@ -140,9 +171,10 @@ void loop()
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,LOW);
-        delay(500);
-        //Serial.println("GREEN");
+        delay(MOTOR_DELAY);
+        Serial.println("GREEN");
         break;
+        
     case YELLOW:
         if(isRB) {
           left.write(LEFT); 
@@ -156,8 +188,8 @@ void loop()
         digitalWrite(REDLED,LOW);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,LOW);
-        delay(500);
-        //Serial.println("YELLOW");
+        delay(MOTOR_DELAY);
+        Serial.println("YELLOW");
         break; 
 
     case BLUE:
@@ -173,18 +205,39 @@ void loop()
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,LOW);
         digitalWrite(GREENLED,HIGH);
-        delay(500);
-        //Serial.println("BLUE");
+        delay(MOTOR_DELAY);
+        Serial.println("BLUE");
         break;
-        
-    default:
+
+    default:        
     case NONE:
         left.write(CENTER); 
         right.write(CENTER);        
         digitalWrite(REDLED,HIGH);
         digitalWrite(BLUELED,HIGH);
         digitalWrite(GREENLED,HIGH);
-        //Serial.println("NONE");
+        Serial.println("NONE");
+        delay(NONE_DELAY); //Having a little delay increases accuracy for detecting yellow/green correctly, but this can be removed if need be
         break;   
   }
 }
+
+
+
+//Prototype code for queueing shapes
+
+//int arrayIndexCount = 0; //This will repeatedly count from 0 to 9 and will point to where we should put the next color object. 
+
+//Buffer space options (DELAY time amount is further down (DELAY_DELAY))
+//Color inputBuffer[BUFFER_LENGTH];
+//int const BUFFER_LENGTH = 5; //Total number of elements in the buffer array
+//const int COLOR_SPACING = 1; //Experimental
+
+/*case DELAY;
+    
+        //Delay and Default are the only cases which do not alter the motor's previous state
+        digitalWrite(REDLED,LOW); //We also set the LED to white to indicate that we are waiting/are in big trouble (default case=bad)
+        digitalWrite(BLUELED,LOW);
+        digitalWrite(GREENLED,LOW);
+        delay(MOTOR_DELAY);
+    break;*/
