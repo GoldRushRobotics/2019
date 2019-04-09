@@ -88,6 +88,7 @@ void loop(void){
       move(-50,0);
       delay(500);
       move(0,0);
+      speed = 0; direction = 0;
       killSwitchPressed = true;
     } else {
       mode = Serial.read();
