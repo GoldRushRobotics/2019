@@ -26,13 +26,14 @@ class objFind:
 
         self.colorImg = None
         self.grayImg = None
+        self.colorDict = {"b":("r","g", "y"), "r":("b","g", "y"), "y":("g","b","r"), "g":("y","b","r")}
 
     def findObjs(self, food=True, goHome=False):
         '''
         Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
         '''
         ret, img = self.vs.read()
-
+        img = cv2.resize(img, (64,36))
         self.img = cv2.flip(img, 0)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -94,11 +95,32 @@ class objFind:
             return -1, -1
 
     def findPill(self, goHome):
-
+        WIDTH_CHECK = 2
         # v This stuff exists v
         #   gray = self.grayImg
         # colorImg = self.colorImg
         # homeColor = self.homeColor
+        gray = cv2.GaussianBlur(self.grayImg, (15, 15), 0)
+        mask = cv2.Canny(gray, 25, 40)
+        for y in range(0, mask.shape[0]):
+            for x in range(0, mask.shape[1]-WIDTH_CHECK):
+                if mask[y][x] == 255:
+                    if not isWhite(frame[y][x - WIDTH_CHECK]):
+                    else if not isWhite(frame[y][x + WIDTH_CHECK]):
+                        mask[y][x] = 0
+                    else:
+                        color = findColor(self.colorImg, WIDTH_CHECK*2+1, 5, x, y)
+                        if(goHome):
+                            if(self.colorDict[self.homeColor](0) == color):
+                                return x, y, color
+                            else:
+                                return -1, -1
+                        else if(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
+                            return x, y, color
+                        else:
+                            return -1, -1
+
+
 
         ##### TODO #####
         '''
