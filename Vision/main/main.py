@@ -44,7 +44,7 @@ def setup():
     movmt = mov(w, h)
 
     # Move forward initially
-    movmt.writeArray('w32')
+    movmt.writeArray('w64')
 
     # Wait for camera to initialize
     time.sleep(2)
@@ -56,7 +56,7 @@ def setup():
     ret, firstFrame = capture.read()
 
     # Calculate the home color from the first frame
-    homeColor = findColor(firstFrame, 30, 30, (int(w / 2) + 30), h - 20)
+    homeColor = findColor(firstFrame, 10, 10, (int(w / 2) - 5), h)
 
     # Explicitly remove first frame to increase free space
     del(firstFrame)
