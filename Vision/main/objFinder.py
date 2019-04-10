@@ -59,13 +59,14 @@ class objFind:
     def findFood(self):
 
         balls = self.ball_cascade.detectMultiScale(
-            self.grayImg, 2, minNeighbors=1, minSize=(25, 25))
+            self.grayImg, 3.5, minNeighbors=5, maxSize=(128, 128))
         cubes = self.cube_cascade.detectMultiScale(
-            self.grayImg, 2, minNeighbors=1, minSize=(25, 25))
+            self.grayImg, 3, minNeighbors=5, maxSize=(128, 128))
 
         # Ensure that output is a list
-
-        if len(balls) == 0:
+	if len(balls) == 0 and len(cubes) == 0:
+            return -1, -1
+        elif len(balls) == 0:
             objs = cubes
         elif len(cubes) == 0:
             objs = balls
@@ -76,14 +77,11 @@ class objFind:
         # Sort from largest to smallest
         objs = sorted(objs, reverse=True, key=lambda x: x[3])
 
-        try:
-            return objs[0][0], objs[0][1]
-        except:
-            return -1, -1
+        return objs[0][0], objs[0][1]
 
     def findTels(self):
 
-        tels = self.tels_cascade.detectMultiScale(self.grayImg, 2, 5)
+        tels = self.tels_cascade.detectMultiScale(self.grayImg, 3.5, minNeighbors=4, maxSize=(128,128))
 
         # Sort from largest to smallest
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
@@ -107,8 +105,9 @@ class objFind:
             for x in range(0, mask.shape[1]-WIDTH_CHECK):
                 if mask[y][x] == 255:
                     if not isWhite(frame[y][x - WIDTH_CHECK]):
-                    else if not isWhite(frame[y][x + WIDTH_CHECK]):
-                        mask[y][x] = 0
+                        print("Whoops")
+                    elif not isWhite(frame[y][x + WIDTH_CHECK]):
+                       	mask[y][x] = 0
                     else:
                         count = 0
                         while(mask[y-count][x] == 255):
@@ -120,9 +119,9 @@ class objFind:
                             if(goHome):
                                if(self.colorDict[self.homeColor](0) == color):
                                     return x, y, color
-                                else:
+                               else:
                                     return -1, -1
-                            else if(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
+                            elif(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
                                 return x, y, color
                             else:
                                 return -1, -1

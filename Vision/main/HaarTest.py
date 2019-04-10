@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import time
 
-vs = cv2.VideoCapture(1)
+vs = cv2.VideoCapture(0)
 # width = 600
 # height = 600
 
@@ -15,9 +15,9 @@ print("{0} {1}".format(w, h))
 
 
 cube_cascade = cv2.CascadeClassifier(
-    '/home/matt19/Documents/Github/2019/Vision/main/cube/cascade.xml')
+    'cube/cascade.xml')
 ball_cascade = cv2.CascadeClassifier(
-    '/home/matt19/Documents/Github/2019/Vision/main/ball/cascade.xml')
+    'ball/cascade.xml')
 
 while True:
     ret, img = vs.read()
@@ -31,9 +31,9 @@ while True:
     # add this
     # image, reject levels level weights.
     balls = ball_cascade.detectMultiScale(
-        gray, 2.5, minNeighbors=5, minSize=(64, 64), maxSize=(128, 128))
+        gray, 2.5, minNeighbors=5, maxSize=(128, 128))
     cubes = cube_cascade.detectMultiScale(
-        gray, 3.5, minNeighbors=5, minSize=(64, 64), maxSize=(128, 128))
+        gray, 3.5, minNeighbors=5, maxSize=(128, 128))
 
     # Ensure that output is a list
     if len(balls) == 0 and len(cubes) == 0:

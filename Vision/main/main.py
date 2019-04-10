@@ -14,13 +14,13 @@ from ColorFinder import findColor
 from objFinder import objFind
 
 times = None
-mov = None
+movmt = None
 finder = None
 
 
 def setup():
 
-    global times, mov, finder
+    global times, movmt, finder
 
     startTime = time.time()
 
@@ -46,22 +46,22 @@ def setup():
     ret, firstFrame = capture.read()
 
     # Calculate the home color from the first frame
-    homeColor = findColor(firstFrame, 30, 30, (w / 2 + 30), h - 20)
+    homeColor = findColor(firstFrame, 30, 30, (int(w / 2) + 30), h - 20)
 
     # Explicitly remove first frame to increase free space
-    firstFrame.__del__()
+    del(firstFrame)
 
     # Create the object finder
-    finder = objFind(capture)
+    finder = objFind(capture,homeColor)
 
     # Initialize Panduino communications
-    mov = mov(w, h)
+    movmt = mov(w, h)
 
     # Send home color to Panduino
-    mov.writeArray("h{0}".format(homeColor))
+    movmt.writeArray("h{0}".format(homeColor))
 
 if __name__ == "__main__":
-
+    setup()
     try:
 
         # Pickup foodstuffs
@@ -69,36 +69,36 @@ if __name__ == "__main__":
 
             (food, tels) = finder.findObjs(food=True)
 
-            mov.whereToGo(food, tels)
+            movmt.whereToGo(food, tels)
 
-            mov.goToWhere()
+            movmt.goToWhere()
         # Dump foodstuffs at  location
         while time.time() < dumpEnd[2]:
 
             (pill, tels) = finder.findObjs(food=False)
 
-            mov.whereToGo(pill, tels)
+            movmt.whereToGo(pill, tels)
 
-            mov.gotToWhere()
+            movmt.gotToWhere()
         # Go home quickly
         while time.time() < homeEnd[3]:
 
             (pill, tels) = finder.findObjs(food=False, goHome=True)
 
-            mov.whereToGo(pill, tels)
+            movmt.whereToGo(pill, tels)
 
     except (KeyboardInterrupt, ValueError) as e:
 
         # If there is a keyboard interrupt, tell Panduino to stop
-        mov.writeArray('a0')
-        mov.writeArray('w0')
-        mov.writeArray('z0')
+        movmt.writeArray('a0')
+        movmt.writeArray('w0')
+        movmt.writeArray('z0')
 
         # Destroy all cv2 windows
         cv2.destroyAllWindows()
 
         # Close the serial connection
-        mov.ser.close()
+        movmt.ser.close()
 
         # Exit python
         exit()

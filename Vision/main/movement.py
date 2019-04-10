@@ -29,7 +29,7 @@ class mov:
         self.halfW = w / 2
         self.h = h
         self.gravConst = 1
-        self.search = 1  # Matt's variable for search
+        self.surch = 1  # Matt's variable for search
 
     def writeArray(self, value):
 
@@ -62,14 +62,14 @@ class mov:
 
     def search(self):
         '''
-        Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.search.
+        Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.surch.
         '''
 
-        if (self.search == 1):
+        if (self.surch == 1):
             # move back
             xDirec = "s50"
             yDirec = "a0"
-        elif (self.search == 2):
+        elif (self.surch == 2):
             # look left
             xDirec = "z0"
             yDirec = "a50"
@@ -77,9 +77,9 @@ class mov:
             # look right
             xDirec = "z0"
             yDirec = "d50"
-            self.search = 0
+            self.surch = 0
 
-        self.search += 1
+        self.surch += 1
 
         # yDirec = a or d
         # xDirec = w or s
@@ -88,7 +88,7 @@ class mov:
         return (yDirec, xDirec)
 
     def whereToGo(self, food, tels):
-        speedScale = 127
+        speedScale = 255
 
         # print(food)
 
@@ -101,9 +101,9 @@ class mov:
             numObj = 1
         elif telEx:
             numObj = 1
-            return self.search(True)
+            return self.search()
         else:
-            return self.search(False)
+            return self.search()
 
         direction = foodDirection + telDirection  # to keep under 1.0 may need mods
 

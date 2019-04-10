@@ -32,10 +32,10 @@
 #define LEFT_SERVO_PIN 13
 #define RIGHT_SERVO_PIN 11
 
-const int DUMP_VAL_LEFT = 10;
-const int HOME_VAL_LEFT = 101;
-const int DUMP_VAL_RIGHT = 140;
-const int HOME_VAL_RIGHT = 53;
+int dumpValLeft = 10;
+int homeValLeft = 97;
+int dumpValRight = 140;
+int homeValRight = 53;
 
 Servo left, right;
 char mode, servoSide;
@@ -67,9 +67,9 @@ void setup(void)
   pinMode(killSwitchPin2, INPUT_PULLUP);
 
   left.attach(LEFT_SERVO_PIN);
-  left.write(HOME_VAL_LEFT);
+  left.write(homeValLeft);
   right.attach(RIGHT_SERVO_PIN);
-  right.write(HOME_VAL_RIGHT);
+  right.write(homeValRight);
 
   digitalWrite(frontFeedSpd, HIGH);
   digitalWrite(frontFeedDir, LOW);
@@ -98,8 +98,15 @@ void loop(void){
       mode = Serial.read();
     }
     
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f');
-
+  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f' && mode != 'l' && mode != 'k');
+   
+    /* 
+     *  Commands and accompanying paramters:
+     *  w[0:255] - drives forward ; a[0:255] - turns left ; s[0:255] - drives backwards ; d[0:255] - turns right ; z[0] - stops the vehicle (0) required ; 
+     *  h[r,g,b,y] - sends home value to coloruino ; p[l,r] - poops left or right ; f[0,1,2] - controls feeders (1 go, 2 throwup, 0 stop) ; 
+     *  l[0:255] - controls left servo position ; k[0:255] - controls right servo position
+    */
+    
   while(Serial.available() <= 0);
 
   if (mode == 'p'){
@@ -117,11 +124,11 @@ void loop(void){
   
   switch(mode){
     case 'w': speed = val; break; //straight
-    case 'l':
+    //case 'l':
     case 'a': direction = -val; break; //left
-    case 'b':
+    //case 'b':
     case 's': speed = -val; break; //backwards
-    case 'r':
+    //case 'r':
     case 'd': direction = val; break; //right
     case 'z': speed = 0; direction = 0; break; //stop
     case 'h':
@@ -140,17 +147,23 @@ void loop(void){
       break;
     case 'p': dump(servoSide); break;
     case 'f':
-      if (val == 1 || val == 0){
+      if (val == 1 || val == 0){ //suck in if 1, stop if 0
         digitalWrite(frontFeedSpd, val);
-        digitalWrite(frontFeedDir, HIGH);
-        digitalWrite(rampFeedSpd, val);
-        digitalWrite(rampFeedDir, HIGH);
-      } else {
-        digitalWrite(frontFeedSpd, HIGH);
         digitalWrite(frontFeedDir, LOW);
-        digitalWrite(rampFeedSpd, HIGH);
+        digitalWrite(rampFeedSpd, val);
         digitalWrite(rampFeedDir, LOW);
+      } else { //throw up
+        digitalWrite(frontFeedSpd, HIGH);
+        digitalWrite(frontFeedDir, HIGH);
+        digitalWrite(rampFeedSpd, HIGH);
+        digitalWrite(rampFeedDir, HIGH);
       }
+      break;
+    case 'l':
+      left.write(val);
+      break;
+    case 'k':
+      right.write(val);
       break;
   }
     
@@ -228,14 +241,14 @@ void move(int velocity, int turn){
 void dump(char side){
   switch(side){
     case 'l':
-      left.write(DUMP_VAL_LEFT);
+      left.write(dumpValLeft);
       delay(2500);
-      left.write(HOME_VAL_LEFT);
+      left.write(homeValLeft);
       break;
     case 'r':
-      right.write(DUMP_VAL_RIGHT);
+      right.write(dumpValRight);
       delay(2500);
-      right.write(HOME_VAL_RIGHT);
+      right.write(homeValRight);
       break;
   }
 }
