@@ -35,12 +35,22 @@ def setup():
     # Setup the video stream
     capture = cv2.VideoCapture(0)
 
-    # Get the width and height from the capture stream
-    w = int(capture.get(3))
-    h = int(capture.get(4))
+    (w, h) = (64, 36)
+
+    capture.set(cv2.CAP_PROP_FRAME_WIDTH, 64)
+    capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 36)
+
+    # Initialize Panduino communications
+    movmt = mov(w, h)
+
+    # Move forward initially
+    movmt.writeArray('w32')
 
     # Wait for camera to initialize
     time.sleep(2)
+
+    # Stop moving <3
+    movmt.writeArray('z0')
 
     # Grab the first frame
     ret, firstFrame = capture.read()
@@ -54,14 +64,12 @@ def setup():
     # Create the object finder
     finder = objFind(capture, homeColor)
 
-    # Initialize Panduino communications
-    movmt = mov(w, h)
-
     # Send home color to Panduino
     movmt.writeArray("h{0}".format(homeColor))
 
 if __name__ == "__main__":
     setup()
+
     try:
 
         # Pickup foodstuffs
