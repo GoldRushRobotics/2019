@@ -96,6 +96,7 @@ class objFind:
 
     def findPill(self, goHome):
         WIDTH_CHECK = 2
+        LEAST_HEIGHT = 5
         # v This stuff exists v
         #   gray = self.grayImg
         # colorImg = self.colorImg
@@ -114,27 +115,17 @@ class objFind:
                             count = count + 1
                             if y-count < 0:
                                 break
-                        color = findColor(self.colorImg, WIDTH_CHECK*2+1, count, x, y)
-                        if(goHome):
-                            if(self.colorDict[self.homeColor](0) == color):
+                        if(count > LEAST_HEIGHT):
+                            color = findColor(self.colorImg, WIDTH_CHECK*2+1, count, x, y)
+                            if(goHome):
+                               if(self.colorDict[self.homeColor](0) == color):
+                                    return x, y, color
+                                else:
+                                    return -1, -1
+                            else if(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
                                 return x, y, color
                             else:
                                 return -1, -1
-                        else if(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
-                            return x, y, color
-                        else:
-                            return -1, -1
 
-
-
-        ##### TODO #####
-        '''
-        Nathan please put the pillar detector in here. Also, you can call the colorFinder code that is imported... Just pass in the location of the top left (x,y) as well as the width and height of the area and image.
-        '''
-
-        if findColor(colorImg, wRegion, hRegion, xRegion, yRegion) == self.homeColor:
-            print("This pillar is our home color!")
-        else:
-            print("BLEH")
-
-        return -1, -1
+#function prototype        findColor(colorImg, wRegion, hRegion, xRegion, yRegion)
+        return -1, -1 #final return error catch
