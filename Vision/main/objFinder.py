@@ -109,7 +109,12 @@ class objFind:
                     else if not isWhite(frame[y][x + WIDTH_CHECK]):
                         mask[y][x] = 0
                     else:
-                        color = findColor(self.colorImg, WIDTH_CHECK*2+1, 5, x, y)
+                        count = 0
+                        while(mask[y-count][x] == 255):
+                            count = count + 1
+                            if y-count < 0:
+                                break
+                        color = findColor(self.colorImg, WIDTH_CHECK*2+1, count, x, y)
                         if(goHome):
                             if(self.colorDict[self.homeColor](0) == color):
                                 return x, y, color
