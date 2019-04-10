@@ -61,6 +61,8 @@ void setup(void)
   pinMode(frontFeedDir, OUTPUT);
   pinMode(homeSendPin1, OUTPUT);
   pinMode(homeSendPin2, OUTPUT);
+  pinMode(rampFeedDir, OUTPUT);
+  pinMode(rampFeedSpd, OUTPUT);
   pinMode(killSwitchPin1, INPUT_PULLUP);
   pinMode(killSwitchPin2, INPUT_PULLUP);
 
@@ -70,7 +72,9 @@ void setup(void)
   right.write(HOME_VAL_RIGHT);
 
   digitalWrite(frontFeedSpd, HIGH);
-  digitalWrite(frontFeedDir, HIGH);
+  digitalWrite(frontFeedDir, LOW);
+  digitalWrite(rampFeedSpd, HIGH);
+  digitalWrite(rampFeedDir, LOW);
 }
 
 bool killSwitchPressed = false;
@@ -139,9 +143,13 @@ void loop(void){
       if (val == 1 || val == 0){
         digitalWrite(frontFeedSpd, val);
         digitalWrite(frontFeedDir, HIGH);
+        digitalWrite(rampFeedSpd, val);
+        digitalWrite(rampFeedDir, HIGH);
       } else {
         digitalWrite(frontFeedSpd, HIGH);
         digitalWrite(frontFeedDir, LOW);
+        digitalWrite(rampFeedSpd, HIGH);
+        digitalWrite(rampFeedDir, LOW);
       }
       break;
   }
