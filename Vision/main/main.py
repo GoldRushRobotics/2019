@@ -52,7 +52,7 @@ def setup():
     del(firstFrame)
 
     # Create the object finder
-    finder = objFind(capture,homeColor)
+    finder = objFind(capture, homeColor)
 
     # Initialize Panduino communications
     movmt = mov(w, h)

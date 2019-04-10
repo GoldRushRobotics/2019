@@ -26,14 +26,15 @@ class objFind:
 
         self.colorImg = None
         self.grayImg = None
-        self.colorDict = {"b":("r","g", "y"), "r":("b","g", "y"), "y":("g","b","r"), "g":("y","b","r")}
+        self.colorDict = {"b": ("r", "g", "y"), "r": (
+            "b", "g", "y"), "y": ("g", "b", "r"), "g": ("y", "b", "r")}
 
     def findObjs(self, food=True, goHome=False):
         '''
         Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
         '''
         ret, img = self.vs.read()
-        img = cv2.resize(img, (64,36))
+        img = cv2.resize(img, (64, 36))
         self.img = cv2.flip(img, 0)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -64,7 +65,7 @@ class objFind:
             self.grayImg, 3, minNeighbors=5, maxSize=(128, 128))
 
         # Ensure that output is a list
-	if len(balls) == 0 and len(cubes) == 0:
+        if len(balls) == 0 and len(cubes) == 0:
             return -1, -1
         elif len(balls) == 0:
             objs = cubes
@@ -81,7 +82,8 @@ class objFind:
 
     def findTels(self):
 
-        tels = self.tels_cascade.detectMultiScale(self.grayImg, 3.5, minNeighbors=4, maxSize=(128,128))
+        tels = self.tels_cascade.detectMultiScale(
+            self.grayImg, 3.5, minNeighbors=4, maxSize=(128, 128))
 
         # Sort from largest to smallest
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
@@ -99,32 +101,34 @@ class objFind:
         #   gray = self.grayImg
         # colorImg = self.colorImg
         # homeColor = self.homeColor
-        gray = cv2.GaussianBlur(self.grayImg, (15, 15), 0)
+        gray = cv2.GaussianBlur(self.grayImg, (3, 3), 0)
         mask = cv2.Canny(gray, 25, 40)
         for y in range(0, mask.shape[0]):
-            for x in range(0, mask.shape[1]-WIDTH_CHECK):
+            for x in range(0, mask.shape[1] - WIDTH_CHECK):
                 if mask[y][x] == 255:
                     if not isWhite(frame[y][x - WIDTH_CHECK]):
-                        print("Whoops")
+                        mask[y][x] = 0
                     elif not isWhite(frame[y][x + WIDTH_CHECK]):
-                       	mask[y][x] = 0
+                        mask[y][x] = 0
                     else:
                         count = 0
-                        while(mask[y-count][x] == 255):
+                        while(mask[y - count][x] == 255):
                             count = count + 1
-                            if y-count < 0:
+                            if y - count < 0:
                                 break
                         if(count > LEAST_HEIGHT):
-                            color = findColor(self.colorImg, WIDTH_CHECK*2+1, count, x, y)
+                            color = findColor(
+                                self.colorImg, WIDTH_CHECK * 2 + 1, count, x, y)
                             if(goHome):
-                               if(self.colorDict[self.homeColor](0) == color):
+                                if(self.colorDict[self.homeColor](0) == color):
                                     return x, y, color
-                               else:
+                                else:
                                     return -1, -1
                             elif(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
                                 return x, y, color
                             else:
                                 return -1, -1
 
-#function prototype        findColor(colorImg, wRegion, hRegion, xRegion, yRegion)
-        return -1, -1 #final return error catch
+# function prototype        findColor(colorImg, wRegion, hRegion, xRegion,
+# yRegion)
+        return -1, -1  # final return error catch
