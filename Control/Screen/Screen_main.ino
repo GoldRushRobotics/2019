@@ -52,22 +52,27 @@ long int unsigned times = 0;
 bool going,raised = false;
 int countdown = 180;
 
-const int COUNTFROM = 180; //change this around to change where it counts down from
+const int COUNTFROM = 6; //change this around to change where it counts down from
 //
 
 //these are for the flag
-int x = 120;
-int y = 55;
+int x = -120; //120
+int y = 252; //55 480 max
 
-//these are for the memes
-String meme1 = "Sponsored";
-String meme2 = "by";
-String meme3 = "Walmart";
-String meme4 = "Robit";
+//Meme section, Limit memes to 12 characters per line (including spaces)
+const String meme1 = "Presenting:"; 
+const String meme2 = "'Chalotte'";
+const String meme3 = "the robot";
+const String meme4 = "By CAR 2019";
+const uint16_t memeColor1 = BLACK;
+const uint16_t memeColor2 = BLACK;
+const uint16_t memeColor3 = GREEN;
+const uint16_t memeColor4 = YELLOW;
 
 
 void drawFlag(int xOffset, int yOffset) { 
-   
+  tft.fillRect(0,0,20,480,0x7BEF); //flagpole dark grey
+  
   //x is distance from left, y is distance from top, max width appears to be around 480ish before it goes off the screen. The max y height is 320
   //width and height seem to make the rectangle go up? as in towards the origin. 3rd integer is for x width
   
@@ -97,12 +102,12 @@ void drawFlag(int xOffset, int yOffset) {
   tft.fillTriangle(239+xOffset, 126+yOffset, 229+xOffset, 126+yOffset, 241+xOffset, 113+yOffset, GREEN); //parallelogramish thing 2
   tft.fillTriangle(232+xOffset, 129+yOffset, 223+xOffset, 138+yOffset, 223+xOffset, 129+yOffset, YELLOW); //gold trapezoid point
 
-  tft.fillRect(0,0,480,75,GREEN); //the top green rectangle
-  tft.fillRect(0,245,480,75,GREEN); //the bottom green rectangle
-  tft.fillRect(405,0,75,320,YELLOW); //the gold bar on the right
+  tft.fillRect(0,252,320,25,GREEN); //the top green rectangle, 3rd value 480 for horizontal (3 or 1) and same for below, 4th 25
+  tft.fillRect(0,430,320,25,GREEN); //the bottom green rectangle 254 1st
+  tft.fillRect(0,252,25,203,YELLOW); //the gold bar on the right, 1st value 405 for horizontal
 
-  tft.fillTriangle(405,0,405,75,480,0,GREEN); //top green triangle
-  tft.fillTriangle(405,320,405,245,480,320,GREEN); //bottom green triangle
+  tft.fillTriangle(0,252,25,277,25,252,GREEN); //top green triangle
+  tft.fillTriangle(0,455,25,430,25,455,GREEN); //bottom green triangle
 }
 
 void setup(void) {
@@ -118,27 +123,29 @@ void setup(void) {
   tft.fillScreen(WHITE);//making the background
   tft.fillRect(0,0,180,160,GREEN); //tft.fillRect(300,160,180,160,GREEN); //1000>x>600 and 900>y>500
   tft.fillRect(0,160,180,160,MAGENTA); //tft.fillRect(300,0,180,160,MAGENTA); //940ish>x>620 (130 to 905 y total so 522 is the middle)
+
   
   //MEME TEXT//
-  //Limit memes to 12 characters per line (including spaces)
   tft.setTextSize(4);
   tft.setTextColor(BLACK);
   
   //Line 1
+  tft.setTextColor(memeColor1);
   tft.setCursor(200,25);
   tft.print(meme1);
 
   //Line 2
+  tft.setTextColor(memeColor2);
   tft.setCursor(200,75);
   tft.print(meme2);
 
   //Line 3
-  tft.setTextColor(BLUE);
+  tft.setTextColor(memeColor3);
   tft.setCursor(200,125);
   tft.print(meme3);
 
   //Line 4
-  tft.setTextColor(BLACK);
+  tft.setTextColor(memeColor4);
   tft.setCursor(200,175);
   tft.print(meme4);
 
@@ -192,28 +199,37 @@ void loop(void) {
             tft.setTextSize(4);
           tft.setTextColor(BLACK);
           
+          //MEME TEXT//
+          //Limit memes to 12 characters per line (including spaces)
+          tft.setTextSize(4);
+          tft.setTextColor(BLACK);
+          
           //Line 1
+          tft.setTextColor(memeColor1);
           tft.setCursor(200,25);
           tft.print(meme1);
         
           //Line 2
+          tft.setTextColor(memeColor2);
           tft.setCursor(200,75);
           tft.print(meme2);
         
           //Line 3
-          tft.setTextColor(BLUE);
+          tft.setTextColor(memeColor3);
           tft.setCursor(200,125);
           tft.print(meme3);
         
           //Line 4
-          tft.setTextColor(BLACK);
+          tft.setTextColor(memeColor4);
           tft.setCursor(200,175);
           tft.print(meme4);
+
       }
     }
       else {
         going = false; 
         if(raised) {
+          tft.setRotation(3);
           tft.fillScreen(WHITE);
           tft.fillRect(0,0,180,160,GREEN);
           tft.fillRect(0,160,180,160,MAGENTA);
@@ -255,8 +271,16 @@ void loop(void) {
       //Line 4
       tft.setCursor(200,175);
       tft.print(meme4);
-      
+
+      tft.setRotation(4);
       drawFlag(x,y);
+      tft.setRotation(3);
+
+      for(int scroll=0;scroll<9;scroll++) {
+        tft.vertScroll(0,480,(scroll)*-30); 
+        delay(100);
+      }
+      
       raised = true;
       going = false;
       
