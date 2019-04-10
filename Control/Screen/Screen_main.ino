@@ -59,15 +59,15 @@ const int COUNTFROM = 6; //change this around to change where it counts down fro
 int x = -120; //120
 int y = 252; //55 480 max
 
-//Meme section, Limit memes to 12 characters per line (including spaces)
-const String meme1 = "Presenting:"; 
-const String meme2 = "'Chalotte'";
-const String meme3 = "the robot";
-const String meme4 = "By CAR 2019";
+//Meme section, Limit memes to 11 characters per line (including spaces)
+const String meme1 = "Sponsors:"; 
+const String meme2 = "CtCharlotte";
+const String meme3 = "Solidworks";
+const String meme4 = "and Walmart";
 const uint16_t memeColor1 = BLACK;
-const uint16_t memeColor2 = BLACK;
-const uint16_t memeColor3 = GREEN;
-const uint16_t memeColor4 = YELLOW;
+const uint16_t memeColor2 = PURPLE;
+const uint16_t memeColor3 = RED;
+const uint16_t memeColor4 = BLUE;
 
 
 void drawFlag(int xOffset, int yOffset) { 
