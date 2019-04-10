@@ -40,6 +40,8 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
+#define DARK_GREY 0x7BEF
+#define PURPLE 0x780F 
 
 MCUFRIEND_kbv tft;
 
@@ -56,12 +58,12 @@ const int COUNTFROM = 6; //change this around to change where it counts down fro
 //
 
 //these are for the flag
-int x = -120; //120
+int x = -115; //-120
 int y = 252; //55 480 max
 
 //Meme section, Limit memes to 11 characters per line (including spaces)
 const String meme1 = "Sponsors:"; 
-const String meme2 = "CtCharlotte";
+const String meme2 = "C.T.Charlotte";
 const String meme3 = "Solidworks";
 const String meme4 = "and Walmart";
 const uint16_t memeColor1 = BLACK;
@@ -71,7 +73,7 @@ const uint16_t memeColor4 = BLUE;
 
 
 void drawFlag(int xOffset, int yOffset) { 
-  tft.fillRect(0,0,20,480,0x7BEF); //flagpole dark grey
+  tft.fillRect(5,0,20,480,DARK_GREY); //flagpole dark grey
   
   //x is distance from left, y is distance from top, max width appears to be around 480ish before it goes off the screen. The max y height is 320
   //width and height seem to make the rectangle go up? as in towards the origin. 3rd integer is for x width
@@ -102,12 +104,13 @@ void drawFlag(int xOffset, int yOffset) {
   tft.fillTriangle(239+xOffset, 126+yOffset, 229+xOffset, 126+yOffset, 241+xOffset, 113+yOffset, GREEN); //parallelogramish thing 2
   tft.fillTriangle(232+xOffset, 129+yOffset, 223+xOffset, 138+yOffset, 223+xOffset, 129+yOffset, YELLOW); //gold trapezoid point
 
-  tft.fillRect(0,252,320,25,GREEN); //the top green rectangle, 3rd value 480 for horizontal (3 or 1) and same for below, 4th 25
-  tft.fillRect(0,430,320,25,GREEN); //the bottom green rectangle 254 1st
-  tft.fillRect(0,252,25,203,YELLOW); //the gold bar on the right, 1st value 405 for horizontal
+  tft.fillRect(5,252,320,25,GREEN); //the top green rectangle, 3rd value 480 for horizontal (3 or 1) and same for below, 4th 25
+  tft.fillRect(5,430,320,25,GREEN); //the bottom green rectangle 254 1st
+  tft.fillRect(5,252,25,203,YELLOW); //the gold bar on the right, 1st value 405 for horizontal
+  tft.fillRect(295,252,25,203,GREEN); //green rectangle on the right to make a full rectangle
 
-  tft.fillTriangle(0,252,25,277,25,252,GREEN); //top green triangle
-  tft.fillTriangle(0,455,25,430,25,455,GREEN); //bottom green triangle
+  tft.fillTriangle(5,252,30,277,30,252,GREEN); //top green triangle
+  tft.fillTriangle(5,455,30,430,30,455,GREEN); //bottom green triangle
 }
 
 void setup(void) {
@@ -122,31 +125,32 @@ void setup(void) {
   tft.setRotation(3);
   tft.fillScreen(WHITE);//making the background
   tft.fillRect(0,0,180,160,GREEN); //tft.fillRect(300,160,180,160,GREEN); //1000>x>600 and 900>y>500
-  tft.fillRect(0,160,180,160,MAGENTA); //tft.fillRect(300,0,180,160,MAGENTA); //940ish>x>620 (130 to 905 y total so 522 is the middle)
+  tft.fillRect(0,160,180,160,RED); //tft.fillRect(300,0,180,160,MAGENTA); //940ish>x>620 (130 to 905 y total so 522 is the middle)
 
-  
+  tft.setRotation(4);
+    
   //MEME TEXT//
   tft.setTextSize(4);
   tft.setTextColor(BLACK);
   
   //Line 1
   tft.setTextColor(memeColor1);
-  tft.setCursor(200,25);
+  tft.setCursor(0,25);
   tft.print(meme1);
 
   //Line 2
   tft.setTextColor(memeColor2);
-  tft.setCursor(200,75);
+  tft.setCursor(0,75);
   tft.print(meme2);
 
   //Line 3
   tft.setTextColor(memeColor3);
-  tft.setCursor(200,125);
+  tft.setCursor(0,125);
   tft.print(meme3);
 
   //Line 4
   tft.setTextColor(memeColor4);
-  tft.setCursor(200,175);
+  tft.setCursor(0,175);
   tft.print(meme4);
 
   
@@ -162,7 +166,7 @@ void loop(void) {
   
   if((micros()-times) >= 955500) { //every second, adjusted to fit the arduino's clock (maybe need to readjust for the nano on the pcb) //955000
     if(going) {
-      tft.setCursor(200,275);
+      tft.setCursor(0,265);
       tft.setTextColor(WHITE);
       tft.print("Timer: ");
       tft.print(countdown/60);
@@ -193,48 +197,49 @@ void loop(void) {
           Serial1.write("G\n");
           going = true;
           countdown = COUNTFROM;           
-          tft.setCursor(200,275);
+          tft.setCursor(0,265);
           tft.setTextColor(WHITE);
           tft.print("Timer: #:##");
-            tft.setTextSize(4);
-          tft.setTextColor(BLACK);
           
           //MEME TEXT//
           //Limit memes to 12 characters per line (including spaces)
           tft.setTextSize(4);
-          tft.setTextColor(BLACK);
           
           //Line 1
           tft.setTextColor(memeColor1);
-          tft.setCursor(200,25);
+          tft.setCursor(0,25);
           tft.print(meme1);
         
           //Line 2
           tft.setTextColor(memeColor2);
-          tft.setCursor(200,75);
+          tft.setCursor(0,75);
           tft.print(meme2);
         
           //Line 3
           tft.setTextColor(memeColor3);
-          tft.setCursor(200,125);
+          tft.setCursor(0,125);
           tft.print(meme3);
         
           //Line 4
           tft.setTextColor(memeColor4);
-          tft.setCursor(200,175);
+          tft.setCursor(0,175);
           tft.print(meme4);
 
       }
     }
-      else {
+      else { //RED
         going = false; 
         if(raised) {
           tft.setRotation(3);
           tft.fillScreen(WHITE);
           tft.fillRect(0,0,180,160,GREEN);
-          tft.fillRect(0,160,180,160,MAGENTA);
+          tft.fillRect(0,160,180,160,RED);
+          tft.setRotation(4);
         }
-        else tft.fillRect(200,275,300,275,WHITE);
+        else {
+          tft.setRotation(4);//UGH SPAGETTI CODE AND LAST MINUTE CHANGES;
+          tft.fillRect(0,265,320,35,WHITE);
+        }
         Serial1.write("S\n");
          //new
         raised=false;
@@ -244,35 +249,36 @@ void loop(void) {
   }
   }
   //the time is printed and checked up here for the sake of the flag, since the time must be on time while the i2c does not need to be
-  tft.setCursor(200,275);
+  tft.setCursor(0,265);
   if(going) {
     tft.setTextColor(RED);
     if(countdown < 5) {
+      tft.setRotation(3);
       tft.fillRect(0,0,180,320,WHITE); //all this stuff is here to make screen clearing faster--the micro seems to struggle writing lots of pixles
-      tft.setCursor(200,275);
+      tft.setCursor(0,265);
       tft.setTextColor(WHITE);
       tft.print("Timer: 0: 5");
 
+      tft.setRotation(4);
       tft.setTextSize(4);
       tft.setTextColor(WHITE);
   
       //Line 1
-      tft.setCursor(200,25);
+      tft.setCursor(0,25);
       tft.print(meme1);
     
       //Line 2
-      tft.setCursor(200,75);
+      tft.setCursor(0,75);
       tft.print(meme2);
     
       //Line 3
-      tft.setCursor(200,125);
+      tft.setCursor(0,125);
       tft.print(meme3);
     
       //Line 4
-      tft.setCursor(200,175);
+      tft.setCursor(0,175);
       tft.print(meme4);
 
-      tft.setRotation(4);
       drawFlag(x,y);
       tft.setRotation(3);
 
