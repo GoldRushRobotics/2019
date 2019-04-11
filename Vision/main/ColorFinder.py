@@ -23,7 +23,7 @@ def findColor(image, width, height, x, y):
     color = ' '
 
     # img[height_range, width_range]
-    cropped = image[pt1[0]:pt2[0], pt1[1]:pt2[1]]
+    cropped = image[pt1[1]:pt2[1], pt1[0]:pt2[0]]
 
     totalPix = (0, 0, 0)
 
@@ -37,9 +37,9 @@ def findColor(image, width, height, x, y):
 
     # print(avgPix)
 
-    colors = {"b": (0, 0, 255),
+    colors = {"b": (255, 0, 0),
               "g": (0, 255, 0),
-              "r": (255, 0, 0),
+              "r": (0, 0, 255),
               "y": (255, 180, 0)
               }
 
