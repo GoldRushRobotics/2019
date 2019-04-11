@@ -68,7 +68,7 @@ def setup():
     del(firstFrame)
 
     # Create the object finder
-    finder = objFind(capture, homeColor)
+    finder = objFind(capture, homeColor, movmt)
 
     # Send home color to Panduino
     movmt.writeArray("h{0}".format(homeColor))
