@@ -37,10 +37,10 @@ def findColor(image, width, height, x, y):
 
     # print(avgPix)
 
-    colors = {"b": (255, 0, 0),
+    colors = {"b": (0, 0, 255),
               "g": (0, 255, 0),
-              "r": (0, 0, 255),
-              "y": (0, 180, 255)
+              "r": (255, 0, 0),
+              "y": (255, 180, 0)
               }
 
     manhattan = lambda x, y: abs(x[0] - y[0]) + \
