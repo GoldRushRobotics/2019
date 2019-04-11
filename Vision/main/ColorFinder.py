@@ -18,8 +18,8 @@ def findColor(image, width, height, x, y):
     '''
 
     color = ' '
-    H_Upper = y - height
-    H_Lower = y
+    H_Upper = y
+    H_Lower = y + height
     W_Upper = x + width
     W_Lower = x
 
