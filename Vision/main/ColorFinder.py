@@ -47,6 +47,6 @@ def findColor(image, width, height, x, y):
         abs(x[1] - y[1]) + abs(x[2] - y[2])
     distances = {k: manhattan(v, avgPix) for k, v in colors.items()}
     color = min(distances, key=distances.get)
-    cv2.imwrite("cropped.jpg", cropped)
+    # cv2.imwrite("cropped.jpg", cropped)
 
     return color
