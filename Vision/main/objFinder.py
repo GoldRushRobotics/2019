@@ -7,6 +7,8 @@ import cv2
 import time
 from MultiThreading import threadedFind
 from ColorFinder import findColor
+from Poop import objPoop
+from movement import 
 
 
 class objFind:
@@ -23,6 +25,7 @@ class objFind:
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
         self.homeColor = homeColor
+        self.recentPil = 0
 
         self.colorImg = None
         self.grayImg = None
@@ -97,11 +100,12 @@ class objFind:
     def findPill(self, goHome):
         WIDTH_CHECK = 2
         LEAST_HEIGHT = 5
+        NUMBER_OF_FRAMES = 20
         # v This stuff exists v
         #   gray = self.grayImg
         # colorImg = self.colorImg
         # homeColor = self.homeColor
-        gray = cv2.GaussianBlur(self.grayImg, (3, 3), 0)
+        gray = cv2.GaussianBlur(self.grayImg, (5, 5, 0)
         mask = cv2.Canny(gray, 25, 40)
         for y in range(0, mask.shape[0]):
             for x in range(0, mask.shape[1] - WIDTH_CHECK):
@@ -119,16 +123,28 @@ class objFind:
                         if(count > LEAST_HEIGHT):
                             color = findColor(
                                 self.colorImg, WIDTH_CHECK * 2 + 1, count, x, y)
-                            if(goHome):
+                            if(self.recentPil == 2):
+                                countF = 0
+                                objPoop(count, WIDTH_CHECK*2+1, color, x, y)
+                            elif(goHome):
                                 if(self.colorDict[self.homeColor](0) == color):
                                     return x, y, color
                                 else:
-                                    return -1, -1
+                                    return -1, -1, color
                             elif(self.colorDict[self.homeColor](1) == color or self.colorDict[self.homeColor](2) == color):
                                 return x, y, color
                             else:
-                                return -1, -1
+                                return -1, -1, color
+                            self.recentPil = 1
+                        elif(self.recentPil == 1):
+                            #move back
+                            countF = countF + 1
+                            if(countF > NUMBER_OF_FRAMES):
+                                self.recentPil = 2
+
+
+
 
 # function prototype        findColor(colorImg, wRegion, hRegion, xRegion,
 # yRegion)
-        return -1, -1  # final return error catch
+        return -1, -1, None  # final return error catch
