@@ -40,7 +40,7 @@ def findColor(image, width, height, x, y):
     colors = {"b": (255, 0, 0),
               "g": (0, 255, 0),
               "r": (0, 0, 255),
-              "y": (0, 180, 255)
+              "y": (0, 255, 255)
               }
 
     manhattan = lambda x, y: abs(x[0] - y[0]) + \
