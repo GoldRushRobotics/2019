@@ -59,7 +59,7 @@ def setup():
     homeColor = findColor(firstFrame, 10, 10, (int(w / 2) - 5), h)
 
     firstFrame = cv2.rectangle(firstFrame, ((int(w / 2) - 5), h), ((int(w / 2) -
-                                                                    5) + 10, h + 10), (255, 0, 0), 2)
+                                                                    5) + 10, h - 10), (255, 0, 0), 2)
 
     # Save image for checking
     cv2.imwrite("firstFrame.jpg", firstFrame)
