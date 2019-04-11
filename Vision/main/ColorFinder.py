@@ -27,8 +27,8 @@ def findColor(image, width, height, x, y):
 
     totalPix = (0, 0, 0)
 
-    for h in range(0, height - 1):
-        for w in range(0, width - 1):
+    for h in range(0, width - 1):
+        for w in range(0, height - 1):
             print(cropped[w][h])
             totalPix = totalPix + cropped[w][h]
 
