@@ -4,7 +4,7 @@ import time
 import math
 
 
-def objPoop(height, width, color, x, y)
+def objPoop(height, width, color, x, y):
     turn = 'z'
     dump = 'e'
 

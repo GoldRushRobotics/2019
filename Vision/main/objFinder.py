@@ -8,7 +8,6 @@ import time
 from MultiThreading import threadedFind
 from ColorFinder import findColor
 from Poop import objPoop
-from movement import 
 
 
 class objFind:
@@ -38,7 +37,7 @@ class objFind:
         Returns tuple of the two largest objects (food, tels) according to the current grayscale image.
         '''
         ret, img = self.vs.read()
-        #img = cv2.resize(img, (64, 36))
+        # img = cv2.resize(img, (64, 36))
         self.img = cv2.flip(img, 0)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -107,26 +106,27 @@ class objFind:
         # colorImg = self.colorImg
         # homeColor = self.homeColor
         gray = cv2.GaussianBlur(self.grayImg, (5, 5, 0)
-        mask = cv2.Canny(gray, 25, 40)
+        mask=cv2.Canny(gray, 25, 40)
         for y in range(0, mask.shape[0]):
             for x in range(0, mask.shape[1] - WIDTH_CHECK):
                 if mask[y][x] == 255:
                     if not isWhite(frame[y][x - WIDTH_CHECK]):
-                        mask[y][x] = 0
+                        mask[y][x]=0
                     elif not isWhite(frame[y][x + WIDTH_CHECK]):
-                        mask[y][x] = 0
+                        mask[y][x]=0
                     else:
-                        count = 0
+                        count=0
                         while(mask[y - count][x] == 255):
-                            count = count + 1
+                            count=count + 1
                             if y - count < 0:
                                 break
                         if(count > LEAST_HEIGHT):
-                            color = findColor(
+                            color=findColor(
                                 self.colorImg, WIDTH_CHECK * 2 + 1, count, x, y)
                             if(self.recentPil == 2):
-                                countF = 0
-                                objPoop(count, WIDTH_CHECK*2+1, color, x, y)
+                                countF=0
+                                objPoop(count, WIDTH_CHECK *
+                                        2 + 1, color, x, y)
                             elif(goHome):
                                 if(self.colorDict[self.homeColor](0) == color):
                                     return x, y, color
@@ -136,12 +136,12 @@ class objFind:
                                 return x, y, color
                             else:
                                 return -1, -1, color
-                            self.recentPil = 1
+                            self.recentPil=1
                         elif(self.recentPil == 1):
                             self.movmt.writeArray("s64")
-                            countF = countF + 1
+                            countF=countF + 1
                             if(countF > NUMBER_OF_FRAMES):
-                                self.recentPil = 2
+                                self.recentPil=2
 
 
 
