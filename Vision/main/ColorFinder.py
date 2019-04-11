@@ -25,18 +25,15 @@ def findColor(image, width, height, x, y):
     # img[height_range, width_range]
     cropped = image[pt1[0]:pt2[0], pt1[1]:pt2[1]]
 
-    # cv2.imshow('img',cropped)
-
-    if cv2.waitKey(25) & 0xFF == ord('q'):
-        exit()
-
     totalPix = (0, 0, 0)
 
     for h in range(0, height - 1):
         for w in range(0, width - 1):
+            print(cropped[w][h])
             totalPix = totalPix + cropped[w][h]
 
     avgPix = totalPix / ((width) * (height))
+    print(avgPix)
 
     # print(avgPix)
 
