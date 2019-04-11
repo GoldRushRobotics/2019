@@ -35,7 +35,7 @@ def setup():
     # Setup the video stream
     capture = cv2.VideoCapture(0)
 
-    (w, h) = (64, 36)
+    (w, h) = (64 * 2, 36 * 2)
 
     capture.set(cv2.CAP_PROP_FRAME_WIDTH, w)
     capture.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
