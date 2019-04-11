@@ -47,10 +47,10 @@ def setup():
     ret, firstFrame = capture.read()
 
     # Calculate the home color from the first frame
-    homeColor, cropped = findColor(firstFrame, 30, 10, (int(w / 2) - 5), 0)
+    homeColor, cropped = findColor(firstFrame, 30, 10, (int(w / 2) - 15), 0)
 
     firstFrame = cv2.rectangle(
-        firstFrame, ((int(w / 2) - 5), 0), (int(w / 2) + 5, 10), (255, 0, 0), 2)
+        firstFrame, ((int(w / 2) - 15), 0), (int(w / 2) + 15, 10), (255, 0, 0), 2)
 
     # Save image for checking
     cv2.imwrite("firstFrame.jpg", firstFrame)
