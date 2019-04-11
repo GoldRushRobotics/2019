@@ -56,7 +56,7 @@ def setup():
     ret, firstFrame = capture.read()
 
     # Calculate the home color from the first frame
-    homeColor = findColor(firstFrame, 10, 10, (int(w / 2) - 5), 1)
+    homeColor = findColor(firstFrame, 10, 10, (int(w / 2) - 5), 0)
 
     firstFrame = cv2.rectangle(
         firstFrame, ((int(w / 2) - 5), 0), (int(w / 2) + 5, 10), (255, 0, 0), 2)

@@ -17,24 +17,13 @@ def findColor(image, width, height, x, y):
     This function takes an image, the width and height of the region, as well as the x,y location of the top left of the region.
     '''
 
+    pt1 = (x, y)
+    pt2 = (x + width, y + height)
+
     color = ' '
-    H_Upper = y
-    H_Lower = y + height
-    W_Upper = x + width
-    W_Lower = x
-
-    # Old values
-
-    # H_Upper = 225
-    # H_Lower = 350
-    # W_Upper = 400
-    # W_Lower = 250
-
-    hDiff = H_Lower - H_Upper
-    wDiff = W_Upper - W_Lower
 
     # img[height_range, width_range]
-    cropped = image[W_Lower:W_Upper, H_Upper:H_Lower]
+    cropped = image[pt1[0]:pt2[0], pt1[1]:pt2[1]]
 
     # cv2.imshow('img',cropped)
 
@@ -43,11 +32,11 @@ def findColor(image, width, height, x, y):
 
     totalPix = (0, 0, 0)
 
-    for h in range(0, hDiff - 1):
-        for w in range(0, wDiff - 1):
+    for h in range(0, height - 1):
+        for w in range(0, width - 1):
             totalPix = totalPix + cropped[w][h]
 
-    avgPix = totalPix / ((wDiff) * (hDiff))
+    avgPix = totalPix / ((width) * (height))
 
     # print(avgPix)
 
