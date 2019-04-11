@@ -17,9 +17,10 @@ class objFind:
     objFind class takes a cv2 video stream and will return the largest objects in a given frame
     '''
 
-    def __init__(self, vs, homeColor):
+    def __init__(self, vs, homeColor, movmt):
 
         self.vs = vs
+        self.movmt = movmt
 
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
@@ -137,7 +138,7 @@ class objFind:
                                 return -1, -1, color
                             self.recentPil = 1
                         elif(self.recentPil == 1):
-                            #move back
+                            self.movmt.writeArray("s64")
                             countF = countF + 1
                             if(countF > NUMBER_OF_FRAMES):
                                 self.recentPil = 2
