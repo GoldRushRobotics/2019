@@ -43,15 +43,6 @@ def setup():
     # Initialize Panduino communications
     movmt = mov(w, h)
 
-    # Move forward initially
-    movmt.writeArray('w64')
-
-    # Wait for camera to initialize
-    time.sleep(2)
-
-    # Stop moving <3
-    movmt.writeArray('z0')
-
     # Grab the first frame
     ret, firstFrame = capture.read()
 
@@ -63,6 +54,15 @@ def setup():
 
     # Save image for checking
     cv2.imwrite("firstFrame.jpg", firstFrame)
+
+    # Move forward initially
+    movmt.writeArray('w64')
+
+    # Wait for camera to initialize
+    time.sleep(2)
+
+    # Stop moving <3
+    movmt.writeArray('z0')
 
     # Explicitly remove first frame to increase free space
     del(firstFrame)
