@@ -54,7 +54,7 @@ long int unsigned times = 0;
 bool going,raised = false;
 int countdown = 180;
 
-const int COUNTFROM = 6; //change this around to change where it counts down from
+const int COUNTFROM = 180; //change this around to change where it counts down from
 //
 
 //these are for the flag
@@ -190,8 +190,8 @@ void loop(void) {
     p.x = map(p.x, TS_MINX, TS_MAXX, tft.width(), 0);
     p.y = tft.height()-(map(p.y, TS_MINY, TS_MAXY, tft.height(), 0));
     
-    if(p.y > 200) { //remember the screen coordinate system was rotated and even with the mapping the touch coords are still kind of weird
-      if(p.x < 242) { //green 
+    if(p.y > 305) { //remember the screen coordinate system was rotated and even with the mapping the touch coords are still kind of weird
+      if(p.x < 160) { //green 
         if(!raised) {
           times = micros();
           Serial1.write("G\n");
