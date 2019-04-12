@@ -76,7 +76,7 @@ def die():
     movmt.writeArray('z0')
 
     # Destroy all cv2 windows
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
     # Close the serial connection
     movmt.ser.close()

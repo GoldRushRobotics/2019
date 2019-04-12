@@ -29,6 +29,7 @@ class objFind:
 
         self.colorImg = None
         self.grayImg = None
+        # Fucking dict of tuples of strings. Nasty.
         self.colorDict = {"b": ("r", "g", "y"), "r": (
             "b", "g", "y"), "y": ("g", "b", "r"), "g": ("y", "b", "r")}
 
@@ -38,7 +39,7 @@ class objFind:
         '''
         ret, img = self.vs.read()
         # img = cv2.resize(img, (64, 36))
-        self.img = cv2.flip(img, 0)
+        # self.img = cv2.flip(img, 0)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
