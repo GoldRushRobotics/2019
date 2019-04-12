@@ -92,7 +92,7 @@ class mov:
         return (yDirec, xDirec)
 
     def whereToGo(self, food, tels):
-        speedScale = 255
+        speedScale = 128
 
         # print(food)
 
