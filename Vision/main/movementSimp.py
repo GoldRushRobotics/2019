@@ -65,15 +65,15 @@ class mov:
         Hey Matt, this is the code you need to write. It should move backwards and look left and right depending on how often it's been called. You can keep track using a new variable self.surch.
         '''
 
-        if (self.surch <= 10):
+        if (self.surch <= 5):
             # move back
             xDirec = "s50"
             yDirec = "a0"
-        elif (self.surch <= 15):
+        elif (self.surch <= 10):
             # look left
             xDirec = "z0"
             yDirec = "a50"
-        elif (self.surch <= 20):
+        elif (self.surch <= 14):
             # look right
             xDirec = "z0"
             yDirec = "d50"
@@ -93,7 +93,7 @@ class mov:
 
     
     def whereToGo(self, food, tels):
-        speedScale = 128
+        speedScale = 255
 
         # print(food)
 
