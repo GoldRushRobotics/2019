@@ -86,7 +86,6 @@ def die():
 
 if __name__ == "__main__":
     setup()
-    die()
 
     try:
 
