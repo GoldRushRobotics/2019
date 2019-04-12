@@ -116,7 +116,7 @@ void drawFlag(int xOffset, int yOffset) {
 void setup(void) {
   
   Serial1.begin(9600);
-  Serial1.println("Screen starting up...");
+  //Serial1.println("Screen starting up...");
 
   tft.reset();
   tft.begin(identifier);  
@@ -194,7 +194,7 @@ void loop(void) {
       if(p.x < 160) { //green 
         if(!raised) {
           times = micros();
-          Serial1.write("G\n");
+          Serial1.write("G");
           going = true;
           countdown = COUNTFROM;           
           tft.setCursor(0,265);
@@ -240,7 +240,7 @@ void loop(void) {
           tft.setRotation(4);//UGH SPAGETTI CODE AND LAST MINUTE CHANGES;
           tft.fillRect(0,265,320,35,WHITE);
         }
-        Serial1.write("S\n");
+        Serial1.write("S");
          //new
         raised=false;
       

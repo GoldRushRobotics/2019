@@ -3,7 +3,7 @@ import time
 import serial
 
 #FIXME change serial port to correct port
-ser = serial.Serial(port='/dev/ttyUSB0', baudrate=9600, writeTimeout = 10)
+ser = serial.Serial(port='/dev/ttyACM0', baudrate=9600, writeTimeout = 10)
 
 p = None
 
@@ -16,12 +16,12 @@ while(1):
 	
 	line = ser.readline()
 	
-	if (line == b'G\n' and pushedGo == False):
+	if (line == "G" and pushedGo == False):
 		pushedStop = False
 		pushedGo = True
 		print('GO')
-		p = subprocess.Popen(['python3', '~/Desktop/CAR/Vision/main.py']) #FIXME - double check file location
-	elif (line == b'S\n' and pushedStop == False):
+		p = subprocess.Popen(['python3', '~/Desktop/CAR/Vision/main/main.py']) #FIXME - double check file location
+	elif (line == "S" and pushedStop == False):
 		pushedGo = False
 		pushedStop = True
 		print('STOP')

@@ -52,6 +52,7 @@ void dump(char);
 void setup(void)
 {
   Serial.begin(115200);
+  Serial1.begin(9600);
   Serial.println("setup");
   pinMode(rightSpd, OUTPUT);
   pinMode(rightDir, OUTPUT);
@@ -70,7 +71,13 @@ void setup(void)
   left.write(homeValLeft);
   right.attach(RIGHT_SERVO_PIN);
   right.write(homeValRight);
-
+  
+  while(Serial1.available() <= 0);
+  
+  while(Serial1.read() != "G");
+  
+  Serial.write("G");
+  
   digitalWrite(frontFeedSpd, HIGH);
   digitalWrite(frontFeedDir, LOW);
   digitalWrite(rampFeedSpd, HIGH);
@@ -81,93 +88,107 @@ bool killSwitchPressed = false;
 
 void loop(void){
   
-  int val = 0;
-  char mode = 0, base;
+  if (Serial1.read() != "S"){
   
-  while(Serial.available() <= 0);
+	  int val = 0;
+	  char mode = 0, base;
+	  
+	  while(Serial.available() <= 0);
 
-  do {
-    int killSwitchState = digitalRead(killSwitchPin1) && digitalRead(killSwitchPin2);
-    if (killSwitchState == 0 && !killSwitchPressed){
-      move(-50,0);
-      delay(500);
-      move(0,0);
-      speed = 0; direction = 0;
-      killSwitchPressed = true;
-    } else {
-      mode = Serial.read();
-    }
-    
-  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f' && mode != 'l' && mode != 'k');
-   
-    /* 
-     *  Commands and accompanying paramters:
-     *  w[0:255] - drives forward ; a[0:255] - turns left ; s[0:255] - drives backwards ; d[0:255] - turns right ; z[0] - stops the vehicle (0) required ; 
-     *  h[r,g,b,y] - sends home value to coloruino ; p[l,r] - poops left or right ; f[0,1,2] - controls feeders (1 go, 2 throwup, 0 stop) ; 
-     *  l[0:255] - controls left servo position ; k[0:255] - controls right servo position
-    */
-    
-  while(Serial.available() <= 0);
+	  do {
+		int killSwitchState = digitalRead(killSwitchPin1) && digitalRead(killSwitchPin2);
+		if (killSwitchState == 0 && !killSwitchPressed){
+		  move(-50,0);
+		  delay(500);
+		  move(0,0);
+		  speed = 0; direction = 0;
+		  killSwitchPressed = true;
+		} else {
+		  mode = Serial.read();
+		}
+		
+	  } while(mode != 'w' && mode != 'a' && mode != 's' && mode != 'd' && mode != 'z' && mode != 'h' && mode != 'p' && mode != 'f' && mode != 'l' && mode != 'k');
+	   
+		/* 
+		 *  Commands and accompanying paramters:
+		 *  w[0:255] - drives forward ; a[0:255] - turns left ; s[0:255] - drives backwards ; d[0:255] - turns right ; z[0] - stops the vehicle (0) required ; 
+		 *  h[r,g,b,y] - sends home value to coloruino ; p[l,r] - poops left or right ; f[0,1,2] - controls feeders (1 go, 2 throwup, 0 stop) ; 
+		 *  l[0:255] - controls left servo position ; k[0:255] - controls right servo position
+		*/
+		
+	  while(Serial.available() <= 0);
 
-  if (mode == 'p'){
-    servoSide = Serial.read();
-  } else if (mode == 'h'){
-    base = Serial.read();
+	  if (mode == 'p'){
+		servoSide = Serial.read();
+	  } else if (mode == 'h'){
+		base = Serial.read();
+	  } else {
+		val = Serial.parseInt();
+	  }
+
+	   killSwitchPressed = false;
+
+	  //Serial.println(mode);
+	  //Serial.println(val);
+	  
+	  switch(mode){
+		case 'w': speed = val; break; //straight
+		//case 'l':
+		case 'a': direction = -val; break; //left
+		//case 'b':
+		case 's': speed = -val; break; //backwards
+		//case 'r':
+		case 'd': direction = val; break; //right
+		case 'z': speed = 0; direction = 0; break; //stop
+		case 'h':
+		  switch(base){
+		    case 'r': 
+		    case 'b':
+		            val = 1;
+		            break;
+		    case 'g':
+		    case 'y':
+		            val = 0;
+		            break;
+		  }
+		  digitalWrite(val, homeSendPin1);
+		  digitalWrite(!val, homeSendPin2); 
+		  break;
+		case 'p': dump(servoSide); break;
+		case 'f':
+		  if (val == 1 || val == 0){ //suck in if 1, stop if 0
+		    digitalWrite(frontFeedSpd, val);
+		    digitalWrite(frontFeedDir, LOW);
+		    digitalWrite(rampFeedSpd, val);
+		    digitalWrite(rampFeedDir, LOW);
+		  } else { //throw up
+		    digitalWrite(frontFeedSpd, HIGH);
+		    digitalWrite(frontFeedDir, HIGH);
+		    digitalWrite(rampFeedSpd, HIGH);
+		    digitalWrite(rampFeedDir, HIGH);
+		  }
+		  break;
+		case 'l':
+		  left.write(val);
+		  break;
+		case 'k':
+		  right.write(val);
+		  break;
+	  }
+		
+	  move(speed, direction);
+  
   } else {
-    val = Serial.parseInt();
+  	Serial.write("S");
+  	speed = 0;
+  	direction = 0;
+  	move
   }
-
-   killSwitchPressed = false;
-
-  //Serial.println(mode);
-  //Serial.println(val);
   
-  switch(mode){
-    case 'w': speed = val; break; //straight
-    //case 'l':
-    case 'a': direction = -val; break; //left
-    //case 'b':
-    case 's': speed = -val; break; //backwards
-    //case 'r':
-    case 'd': direction = val; break; //right
-    case 'z': speed = 0; direction = 0; break; //stop
-    case 'h':
-      switch(base){
-        case 'r': 
-        case 'b':
-                val = 1;
-                break;
-        case 'g':
-        case 'y':
-                val = 0;
-                break;
-      }
-      digitalWrite(val, homeSendPin1);
-      digitalWrite(!val, homeSendPin2); 
-      break;
-    case 'p': dump(servoSide); break;
-    case 'f':
-      if (val == 1 || val == 0){ //suck in if 1, stop if 0
-        digitalWrite(frontFeedSpd, val);
-        digitalWrite(frontFeedDir, LOW);
-        digitalWrite(rampFeedSpd, val);
-        digitalWrite(rampFeedDir, LOW);
-      } else { //throw up
-        digitalWrite(frontFeedSpd, HIGH);
-        digitalWrite(frontFeedDir, HIGH);
-        digitalWrite(rampFeedSpd, HIGH);
-        digitalWrite(rampFeedDir, HIGH);
-      }
-      break;
-    case 'l':
-      left.write(val);
-      break;
-    case 'k':
-      right.write(val);
-      break;
-  }
-    
+  
+  
   move(speed, direction);
+  
   
 }
 
