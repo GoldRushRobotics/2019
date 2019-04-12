@@ -17,6 +17,6 @@ def objPoop(height, width, color, x, y):
         dump = 'l'
 
     if x != -1:  # while x is defined
-        return ("w0 {0}25".format(turn)), "z0 p{0}".format(dump)), False
+        return ("w0 {0}25".format(turn), "z0 p{0}".format(dump)), False
     else:
         return ("w0 {0}25".format(turn), "z0 p{0}".format(dump)), True
