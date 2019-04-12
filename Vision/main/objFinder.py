@@ -21,6 +21,16 @@ class objFind:
         self.vs = vs
         self.movmt = movmt
 
+        self.blue = ((95, 109, 0), (117, 255, 255))
+
+        self.green = ((35, 115, 0), (86, 255, 255))
+
+        self.yellow = ((13, 71, 0), (26, 255, 255))
+
+        self.red = ((0, 118, 0), (6, 255, 255))
+
+        self.st = ((10, 60, 0), (17, 255, 255))
+
         self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
         self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
         self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
@@ -29,6 +39,7 @@ class objFind:
 
         self.colorImg = None
         self.grayImg = None
+        self.hsvImg = None
         # Fucking dict of tuples of strings. Nasty.
         self.colorDict = {"b": ("r", "g", "y"), "r": (
             "b", "g", "y"), "y": ("g", "b", "r"), "g": ("y", "b", "r")}
@@ -40,11 +51,17 @@ class objFind:
         ret, img = self.vs.read()
         # img = cv2.resize(img, (64, 36))
         # self.img = cv2.flip(img, 0)
+        self.hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        avoidThread = threadedFind(2, "TelsThread", self)
-        avoidThread.start()
+        if goHome:
+
+        else:
+            for num, i in enumerate(["r", "g", "b", "y", "st"]):
+                thread = threadedFind(2, "TelsThread", self, i)
+                thread.start()
+                exec("thread{0}=thread".format(num))
 
         if food:
             gotToThread = threadedFind(1, "FoodThread", self)
@@ -61,42 +78,91 @@ class objFind:
             else:
                 return (gotToThread.getVals(), avoidThread.getVals())
 
-    def findFood(self):
+    def findColored(self, color):
+        tels = []
+        food = []
+        pill = []
 
-        balls = self.ball_cascade.detectMultiScale(
-            self.grayImg, 3.5, minNeighbors=5, maxSize=(128, 128))
-        cubes = self.cube_cascade.detectMultiScale(
-            self.grayImg, 3, minNeighbors=5, maxSize=(128, 128))
+        if color == "r":
+            mask = cv2.inRange(self.hsv, self.red)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=1)
+            mask = cv2.dilate(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
 
-        # Ensure that output is a list
-        if len(balls) == 0 and len(cubes) == 0:
-            return -1, -1
-        elif len(balls) == 0:
-            objs = cubes
-        elif len(cubes) == 0:
-            objs = balls
+        elif color == "g":
+            mask = cv2.inRange(self.hsv, self.green)
+            mask = cv2.erode(mask, None, iterations=1)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=1)
+            mask = cv2.dilate(mask, None, iterations=1)
+            mask = cv2.dilate(mask, None, iterations=1)
+
+        elif color == "b":
+            mask = cv2.inRange(self.hsv, self.blue)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=1)
+            mask = cv2.dilate(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=3)
+
+        elif color == "y":
+            mask = cv2.inRange(self.hsv, self.yellow)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+
+        elif color == "st":
+            mask = cv2.inRange(self.hsv, self.st)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.erode(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+            mask = cv2.dilate(mask, None, iterations=2)
+
         else:
-            # combine into a vStack
-            objs = np.vstack((balls, cubes))
+            return food, tels, pill
 
-        # Sort from largest to smallest
-        objs = sorted(objs, reverse=True, key=lambda x: x[3])
+        dictionary = {}
+        dictionary['cnts'] = cv2.findContours(
+            maskB.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        dictionary['cnts'] = dictionary['cnts'][
+            0] if imutils.is_cv2() else dictionary['cnts'][1]
 
-        return objs[0][0], objs[0][1]
+        for key, cnts in dictionary.items():
+            if len(dictionary[key]) > 0:
+                # find the largest contour in the mask, then use
+                # it to compute the minimum enclosing circle and
+                # centroid
+                for cB in dictionary[key]:
+                    approx = cv2.approxPolyDP(
+                        cB, 0.01 * cv2.arcLength(cB, True), True)
+                    if len(approx) <= NUM_SIDES:
+                        x, y, w, h = cv2.boundingRect(cB)
+                        if not (h > w * 2) and color == "st":
+                            tels.append((x, y, w, h))
+                        elif not (h > w * 2):
+                            food.append((x, y, w, h))
+                        else:
+                            pill.append((x, y, w, h))
 
-    def findTels(self):
+                    elif len(approx) > NUM_SIDES:
+                        ((x, y), radius) = cv2.minEnclosingCircle(cB)
+                        mB = cv2.moments(cB)
+                        # centerB = (int(mB["m10"] / mB["m00"]), int(mB["m01"] / mB["m00"]))
+                        # only proceed if the radius meets a minimum size
+                        if radiusB * 1.5 > MIN_VALUE and color == "st":
+                            tels.append((x, y, 2 * radius, 2 * radius))
+                        elif radiusB * 1.5 > MIN_VALUE:
+                            food.append((x, y, 2 * radius, 2 * radius))
 
-        tels = self.tels_cascade.detectMultiScale(
-            self.grayImg, 3.5, minNeighbors=4, maxSize=(128, 128))
-
-        # Sort from largest to smallest
+        food = sorted(food, reverse=True, key=lambda x: x[3])
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
+        pill = sorted(pill, reverse=True, key=lambda x: x[3])
 
-        try:
-
-            return tels[0][0], tels[0][1]
-        except:
-            return -1, -1
+        return food, tels, pill
 
     def findPill(self, goHome):
         WIDTH_CHECK = 2
