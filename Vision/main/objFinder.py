@@ -54,7 +54,7 @@ class objFind:
         self.hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
+        thread0 = thread
         if goHome:
             thread0 = threadedFind(
                 3, "PillThread", self, goHome=goHome)
