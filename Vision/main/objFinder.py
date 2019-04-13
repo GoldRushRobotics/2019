@@ -56,18 +56,17 @@ class objFind:
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
         if goHome:
-
+            thread0 = threadedFind(
+                3, "PillThread", self, goHome=goHome)
         else:
             for num, i in enumerate(["r", "g", "b", "y", "st"]):
-                thread = threadedFind(2, "TelsThread", self, i)
+                thread = threadedFind(num, "{0}Thread".format(i), self, i)
                 thread.start()
                 exec("thread{0}=thread".format(num))
 
         if food:
             gotToThread = threadedFind(1, "FoodThread", self)
         else:
-            gotToThread = threadedFind(
-                3, "PillThread", self, goHome=goHome)
 
         gotToThread.start()
 
@@ -162,7 +161,7 @@ class objFind:
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
         pill = sorted(pill, reverse=True, key=lambda x: x[3])
 
-        return food, tels, pill
+        return food[0], tels[0], pill[0]
 
     def findPill(self, goHome):
         WIDTH_CHECK = 2
