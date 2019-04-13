@@ -133,12 +133,12 @@ class objFind:
 
         dictionary = {}
         dictionary['cnts'] = cv2.findContours(
-            maskB.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         dictionary['cnts'] = dictionary['cnts'][
             0] if imutils.is_cv2() else dictionary['cnts'][1]
 
         for key, cnts in dictionary.items():
-            if len(dictionary[key]) > 0:
+            if (dictionary[key]) not == None:
                 # find the largest contour in the mask, then use
                 # it to compute the minimum enclosing circle and
                 # centroid
