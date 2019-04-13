@@ -138,7 +138,7 @@ class objFind:
             0] if imutils.is_cv2() else dictionary['cnts'][1]
 
         for key, cnts in dictionary.items():
-            if (dictionary[key]) not == None:
+            if not (dictionary[key]) == None:
                 # find the largest contour in the mask, then use
                 # it to compute the minimum enclosing circle and
                 # centroid
