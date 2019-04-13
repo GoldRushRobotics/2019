@@ -85,9 +85,9 @@ class objFind:
                 return (foods, tels)
 
     def findColored(self, color):
-        tels = []
-        food = []
-        pill = []
+        tels = [(0,0,0,0)]
+        food = [(0,0,0,0)]
+        pill = [(0,0,0,0)]
 
         if color == "r":
             mask = cv2.inRange(self.hsv, self.red)
@@ -168,7 +168,7 @@ class objFind:
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
         pill = sorted(pill, reverse=True, key=lambda x: x[3])
 
-        return food[1], tels[1], pill[1]
+        return food[0], tels[0], pill[0]
 
     def findPill(self, goHome):
         WIDTH_CHECK = 2
