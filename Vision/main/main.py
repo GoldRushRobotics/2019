@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
             movmt.goToWhere()
         # Dump foodstuffs at  location
-        while time.time() < dumpEnd[2]:
+        while time.time() < times[2]:
 
             (pill, tels) = finder.findObjs(food=False)
 
@@ -106,11 +106,11 @@ if __name__ == "__main__":
 
             movmt.gotToWhere()
         # Go home quickly
-        while time.time() < homeEnd[3]:
+        while time.time() < times[3]:
 
             (pill, tels) = finder.findObjs(food=False, goHome=True)
 
             movmt.whereToGo(pill, tels)
-
     except (KeyboardInterrupt, ValueError) as e:
         die()
+    die()
