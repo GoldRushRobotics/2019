@@ -59,7 +59,7 @@ class objFind:
             thread0 = threadedFind(
                 3, "PillThread", self, goHome=goHome)
         else:
-            for num, i in enumerate(["r", "g", "b", "y", "st"]):
+            for num, i in ["r", "g", "b", "y", "st"].items():
                 thread = threadedFind(num, "{0}Thread".format(i), self, i)
                 thread.start()
                 exec("thread{0}=thread".format(num))
