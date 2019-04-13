@@ -54,16 +54,28 @@ class objFind:
         self.hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         self.grayImg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        thread0 = thread
         if goHome:
             thread0 = threadedFind(
                 3, "PillThread", self, goHome=goHome)
         else:
-            for num, i in enumerate(["r", "g", "b", "y", "st"]):
-                thread = threadedFind(num, "{0}Thread".format(i), self, i)
-                thread.start()
+           # for num, i in enumerate(["r", "g", "b", "y", "st"]):
+            thread = threadedFind(num, "rThread", self, "r")
+            thread.start()
+            thread0 = thread
+            thread = threadedFind(num, "gThread", self, "g")
+            thread.start()
+            thread1 = thread
+            thread = threadedFind(num, "bThread", self, "b")
+            thread.start()
+            thread2 = thread
+            thread = threadedFind(num, "yThread", self, "y")
+            thread.start()
+            thread3 = thread
+            thread = threadedFind(num, "stthread", self, "st")
+            thread.start()
+            thread4 = thread
                 #exec("thread{0}=thread".format(num))
-                thread0 = thread
+            
                 thread1 = thread
                 thread2 = thread
                 thread3 = thread
