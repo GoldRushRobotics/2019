@@ -168,7 +168,7 @@ class objFind:
         tels = sorted(tels, reverse=True, key=lambda x: x[3])
         pill = sorted(pill, reverse=True, key=lambda x: x[3])
 
-        return food[0], tels[0], pill[0]
+        return food[1], tels[1], pill[1]
 
     def findPill(self, goHome):
         WIDTH_CHECK = 2
