@@ -229,7 +229,7 @@ class objFind:
                             self.recentPil = 1
                         elif(self.recentPil == 1):
                             self.movmt.writeArray("s64")
-                            countF = countF + 1
+                            countF = countF #+ 1
                             if(countF > NUMBER_OF_FRAMES):
                                 self.recentPil = 2
 
