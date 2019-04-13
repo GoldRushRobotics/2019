@@ -31,9 +31,9 @@ class objFind:
 
         self.st = ((10, 60, 0), (17, 255, 255))
 
-        self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
-        self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
-        self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
+        # self.cube_cascade = cv2.CascadeClassifier('cube/cascade.xml')
+        # self.ball_cascade = cv2.CascadeClassifier('ball/cascade.xml')
+        # self.tels_cascade = cv2.CascadeClassifier('tels/cascade.xml')
         self.homeColor = homeColor
         self.recentPil = 0
 
@@ -64,18 +64,25 @@ class objFind:
                 thread.start()
                 exec("thread{0}=thread".format(num))
 
-        if food:
-            gotToThread = threadedFind(1, "FoodThread", self)
-        else:
-
-        gotToThread.start()
-
         # wait until both threads complete to return vals
         while 1:
-            if gotToThread.isAlive() or avoidThread.isAlive():
+            if thread0.isAlive() or thread1.isAlive() or thread2.isAlive() or thread3.isAlive() or thread4.isAlive():
                 pass
             else:
-                return (gotToThread.getVals(), avoidThread.getVals())
+                food = []
+                tels = []
+                pill = []
+                for thread in thread0, thread1, thread2, thread3, thread4:
+                    f, t, p = thread0.getVals()
+                    food.append(f)
+                    tels.append(t)
+                    pill.append(p)
+
+                food = sorted(food, reverse=True, key=lambda x: x[3])
+                tels = sorted(tels, reverse=True, key=lambda x: x[3])
+                pill = sorted(pill, reverse=True, key=lambda x: x[3])
+
+                return (foods, tels)
 
     def findColored(self, color):
         tels = []
